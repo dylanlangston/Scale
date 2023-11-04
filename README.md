@@ -1,1 +1,5 @@
-<img src="README.svg" width="100%"/>
+<div align="center">
+  <object>
+  <img src="README.svg">
+  </object>
+</div>
