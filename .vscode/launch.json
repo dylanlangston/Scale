@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "custom",
+            "name": "Debug",
+            "targetCreateCommands": [
+                "target create ${workspaceFolder}/zig-out/bin/Scale"
+            ],
+            "processCreateCommands": [
+                "process launch"
+            ],
+            "preLaunchTask": "Build",
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+    ]
+}
