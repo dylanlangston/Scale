@@ -13,23 +13,25 @@ pub fn main() void {
     var loadedSettings = Settings.load(allocator);
     defer _ = Settings.save(loadedSettings, allocator);
 
-    raylib.SetConfigFlags(raylib.ConfigFlags{ .FLAG_WINDOW_RESIZABLE = false });
-    raylib.InitWindow(loadedSettings.CurrentResolution.Width, loadedSettings.CurrentResolution.Height, "Scale Game!");
-    raylib.SetTargetFPS(60);
+    raylib.initWindow(loadedSettings.CurrentResolution.Width, loadedSettings.CurrentResolution.Height, "Scale Game!");
+    raylib.setTargetFPS(60);
 
-    defer raylib.CloseWindow();
+    raylib.setExitKey(.key_null);
 
-    while (!raylib.WindowShouldClose()) {
-        raylib.BeginDrawing();
-        defer raylib.EndDrawing();
+    defer raylib.closeWindow();
 
-        if (raylib.IsKeyDown(raylib.KeyboardKey.KEY_ESCAPE)) {
-            std.debug.print("Escape pressed", .{});
+    while (!raylib.windowShouldClose()) {
+        raylib.beginDrawing();
+        defer raylib.endDrawing();
+
+        const key_press = raylib.getKeyPressed();
+        if (key_press != raylib.KeyboardKey.key_null) {
+            std.debug.print("Keycode: {}\n", .{key_press});
         }
 
-        raylib.ClearBackground(raylib.BLACK);
-        raylib.DrawFPS(10, 10);
+        raylib.clearBackground(raylib.Color.black);
+        raylib.drawFPS(10, 10);
 
-        raylib.DrawText("Scale Game", 100, 100, 20, raylib.YELLOW);
+        raylib.drawText("Scale Game", 100, 100, 20, raylib.Color.yellow);
     }
 }

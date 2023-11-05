@@ -28,7 +28,7 @@ pub const Settings = struct {
     }
     pub fn load(allocator: Allocator) Settings {
         // Open file
-        var settings_file = std.fs.cwd().createFile(settingsFile, .{ .read = true }) catch return default_settings;
+        var settings_file = std.fs.cwd().openFile(settingsFile, .{}) catch return default_settings;
         defer settings_file.close();
 
         // Read the contents

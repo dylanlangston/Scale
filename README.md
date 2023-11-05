@@ -1,7 +1,7 @@
 [//]: https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
 
 # Scale Game 🧗‍♂️
-This is a submission to the 2023 *Game Off* event hosted by [GitHub](https://github.com/) on [itch.io](https://itch.io/), It's a game developed using [Zig](https://ziglang.org/) and [Raylib](https://www.raylib.com/). It was created by [@dylanlangston](https://github.com/dylanlangston).
+This is a submission to the 2023 *Game Off* event hosted by [GitHub](https://github.com/) on [itch.io](https://itch.io/), It's a game developed using [Zig](https://ziglang.org/) and [Raylib](https://www.raylib.com/) via [Raylib-Zig](https://github.com/Not-Nik/raylib-zig/tree/devel). It was created by [@dylanlangston](https://github.com/dylanlangston).
 
 #### What's Game Off? [^1]
 
@@ -14,7 +14,7 @@ This is a submission to the 2023 *Game Off* event hosted by [GitHub](https://git
 My interpretion of the theme is a vertical platformer that is procedurally generated. 
 
 #### Getting Started
-1. Install Zig using the [instructions here](https://ziglang.org/learn/getting-started/#installing-zig).
+1. Install Zig version 0.11.0 using the [instructions here](https://ziglang.org/learn/getting-started/#installing-zig).
 2. Configure you build environment for Raylib using the appropriate [instrutions](https://github.com/raysan5/raylib/wiki#development-platforms) for you platform.
 3. Finally, to start the game run the command `zig build run`. Alternatively run the **_Debug_** task in VSCode.
 
@@ -22,6 +22,6 @@ My interpretion of the theme is a vertical platformer that is procedurally gener
 - [Zig Documentation](https://ziglang.org/documentation/master/)
 - [Zig Standard Library Documentation](https://ziglang.org/documentation/master/std/#A;std)
 - [Raylib Documentation]()
-- [Raylib-zig Bindings](https://github.com/ryupold/raylib.zig)
+- [Raylib-zig Bindings](https://github.com/Not-Nik/raylib-zig/tree/devel)
 
 [^1]: Game Off 2023 on [Itch.io](https://itch.io/jam/game-off-2023)
