@@ -11,9 +11,7 @@ pub fn DrawFunction() Views {
 
     raylib.clearBackground(raylib.Color.black);
 
-    raylib.drawText(vm.Message, 100, 100, 20, raylib.Color.yellow);
-
-    vm.Message = "Text Updated :)";
+    raylib.drawText(vm.GetMessage(), 100, 100, 20, raylib.Color.yellow);
 
     return Views.Menu;
 }

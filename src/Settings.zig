@@ -1,9 +1,11 @@
 const std = @import("std");
 const Allocator = std.mem.Allocator;
+const Locales = @import("Localelizer.zig").Locales;
 
 pub const Settings = struct {
     CurrentResolution: Resolution,
     Debug: bool,
+    UserLocale: ?Locales,
 
     pub fn save(self: Settings, allocator: Allocator) bool {
         var settings = std.ArrayList(u8).init(allocator);
@@ -44,13 +46,25 @@ pub const Settings = struct {
         return NormalizeSettings(settings.value);
     }
 
+    pub fn update(base: Settings, diff: anytype) Settings {
+        var updated = base;
+        inline for (std.meta.fields(@TypeOf(diff))) |f| {
+            @field(updated, f.name) = @field(diff, f.name);
+        }
+        return updated;
+    }
+
     fn NormalizeSettings(settings: Settings) Settings {
-        return Settings{ .CurrentResolution = Resolution{ .Width = @max(Resolutions[0].Width, settings.CurrentResolution.Width), .Height = @max(Resolutions[0].Height, settings.CurrentResolution.Height) }, .Debug = settings.Debug };
+        return Settings{
+            .CurrentResolution = Resolution{ .Width = @max(Resolutions[0].Width, settings.CurrentResolution.Width), .Height = @max(Resolutions[0].Height, settings.CurrentResolution.Height) },
+            .Debug = settings.Debug,
+            .UserLocale = settings.UserLocale,
+        };
     }
 
     const settingsFile = "settings.json";
 
-    const default_settings = Settings{ .CurrentResolution = Resolutions[0], .Debug = false };
+    const default_settings = Settings{ .CurrentResolution = Resolutions[0], .Debug = false, .UserLocale = null };
 };
 
 const Resolution = struct {

@@ -33,6 +33,13 @@ pub fn build(b: *std.Build) !void {
     const run_step = b.step("run", "Run Scale");
     run_step.dependOn(&run_cmd.step);
 
+    // // Add locales
+    // b.installDirectory(.{
+    //     .source_dir = .{ .path = "./src/Locales" },
+    //     .install_dir = .bin,
+    //     .install_subdir = "Locales",
+    // });
+
     b.installArtifact(exe);
 
     // Creates a step for unit testing. This only builds the test executable
