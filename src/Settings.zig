@@ -6,6 +6,7 @@ pub const Settings = struct {
     CurrentResolution: Resolution,
     Debug: bool,
     UserLocale: ?Locales,
+    Updated: bool = false,
 
     pub fn save(self: Settings, allocator: Allocator) bool {
         var settings = std.ArrayList(u8).init(allocator);
@@ -51,6 +52,13 @@ pub const Settings = struct {
         inline for (std.meta.fields(@TypeOf(diff))) |f| {
             @field(updated, f.name) = @field(diff, f.name);
         }
+        @field(updated, "Updated") = true;
+        return updated;
+    }
+
+    pub fn UpdatesProcessed(base: Settings) Settings {
+        var updated = base;
+        @field(updated, "Updated") = false;
         return updated;
     }
 
@@ -72,7 +80,7 @@ const Resolution = struct {
     Height: i16,
 };
 
-const Resolutions = [_]Resolution{
+pub const Resolutions = [_]Resolution{
     Resolution{ .Width = 800, .Height = 600 },
     Resolution{ .Width = 800, .Height = 1280 },
     Resolution{ .Width = 1280, .Height = 720 },

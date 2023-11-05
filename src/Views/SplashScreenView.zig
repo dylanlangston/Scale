@@ -8,7 +8,7 @@ const Views = @import("../ViewLocator.zig").Views;
 
 var start_time: f64 = 0;
 fn DrawFunction() Views {
-    if (Shared.GetSettings().Debug) {
+    if (Shared.Settings.GetSettings().Debug) {
         return Views.Menu;
     }
 

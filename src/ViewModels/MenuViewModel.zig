@@ -5,7 +5,7 @@ const Shared = @import("../Scale.zig").Shared;
 fn VM() type {
     return struct {
         pub fn GetMessage() [:0]const u8 {
-            return Shared.GetLocale().?.Title;
+            return Shared.Locale.GetLocale().?.Title;
         }
     };
 }
