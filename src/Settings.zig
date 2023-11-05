@@ -3,6 +3,7 @@ const Allocator = std.mem.Allocator;
 
 pub const Settings = struct {
     CurrentResolution: Resolution,
+    Debug: bool,
 
     pub fn save(self: Settings, allocator: Allocator) bool {
         var settings = std.ArrayList(u8).init(allocator);
@@ -32,17 +33,24 @@ pub const Settings = struct {
         defer settings_file.close();
 
         // Read the contents
-        const buffer_size = 2000;
-        const file_buffer = settings_file.readToEndAlloc(allocator, buffer_size) catch return default_settings;
+        const max_bytes = 10000;
+        const file_buffer = settings_file.readToEndAlloc(allocator, max_bytes) catch return default_settings;
         defer allocator.free(file_buffer);
 
+        // Parse JSON
         var settings = std.json.parseFromSlice(Settings, allocator, file_buffer, .{}) catch return default_settings;
-        return settings.value;
+        defer settings.deinit();
+
+        return NormalizeSettings(settings.value);
+    }
+
+    fn NormalizeSettings(settings: Settings) Settings {
+        return Settings{ .CurrentResolution = Resolution{ .Width = @max(Resolutions[0].Width, settings.CurrentResolution.Width), .Height = @max(Resolutions[0].Height, settings.CurrentResolution.Height) }, .Debug = settings.Debug };
     }
 
     const settingsFile = "settings.json";
 
-    const default_settings = Settings{ .CurrentResolution = Resolutions[0] };
+    const default_settings = Settings{ .CurrentResolution = Resolutions[0], .Debug = false };
 };
 
 const Resolution = struct {
