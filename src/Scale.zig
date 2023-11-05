@@ -86,7 +86,7 @@ pub fn main() void {
     defer raylib.closeWindow();
 
     // Default View on startup is the Splash Screen
-    var current_view: vl.Views = vl.Views.Splash_Screen;
+    var current_view: vl.Views = vl.Views.Raylib_Splash_Screen;
 
     // Load locale
     var locale: ?LocalelizerLocale = null;

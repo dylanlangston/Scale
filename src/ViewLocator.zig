@@ -5,8 +5,8 @@ const BaseView = @import("./Views/View.zig").View;
 pub const ViewLocator = struct {
     fn GetView(view: Views) BaseView {
         switch (view) {
-            Views.Splash_Screen => {
-                return @import("./Views/SplashScreenView.zig").SplashScreenView;
+            Views.Raylib_Splash_Screen => {
+                return @import("./Views/RaylibSplashScreenView.zig").RaylibSplashScreenView;
             },
             Views.Menu => {
                 return @import("./Views/MenuView.zig").MenuView;
@@ -20,4 +20,4 @@ pub const ViewLocator = struct {
     }
 };
 
-pub const Views = enum { Splash_Screen, Menu };
+pub const Views = enum { Raylib_Splash_Screen, Menu };
