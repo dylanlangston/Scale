@@ -10,6 +10,7 @@ pub fn main() void {
     defer Shared.deinit();
 
     // Create window
+    raylib.setConfigFlags(raylib.ConfigFlags.flag_window_transparent);
     raylib.initWindow(Shared.Settings.GetSettings().CurrentResolution.Width, Shared.Settings.GetSettings().CurrentResolution.Height, "Scale Game!");
     raylib.setExitKey(.key_null);
     raylib.setTargetFPS(60);
