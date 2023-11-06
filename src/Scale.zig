@@ -1,79 +1,9 @@
 const std = @import("std");
 const raylib = @import("raylib");
-const SettingsManager = @import("./Settings.zig").Settings;
-const Resolutions = @import("./Settings.zig").Resolutions;
-const BaseView = @import("./Views/View.zig").View;
 const vl = @import("./ViewLocator.zig");
-const LocalelizerLocale = @import("Localelizer.zig").Locale;
+const Shared = @import("Helpers.zig").Shared;
+const Locale = @import("Localelizer.zig").Locale;
 const Locales = @import("Localelizer.zig").Locales;
-const Localelizer = @import("Localelizer.zig").Localelizer;
-
-pub const Shared = struct {
-    var gp = std.heap.GeneralPurposeAllocator(.{ .safety = true }){};
-
-    var allocator: ?std.mem.Allocator = null;
-    pub fn GetAllocator() std.mem.Allocator {
-        if (allocator == null) {
-            allocator = gp.allocator();
-        }
-        return allocator.?;
-    }
-
-    var loaded_settings: ?SettingsManager = null;
-
-    pub const Settings = struct {
-        pub fn GetSettings() SettingsManager {
-            if (loaded_settings == null) {
-                loaded_settings = SettingsManager.load(Shared.GetAllocator());
-            }
-            return loaded_settings.?;
-        }
-
-        pub fn UpdateSettings(newValue: anytype) void {
-            loaded_settings = SettingsManager.update(GetSettings(), newValue);
-        }
-
-        pub fn UpdatesProcessed() void {
-            loaded_settings = SettingsManager.UpdatesProcessed(GetSettings());
-        }
-    };
-
-    pub const Locale = struct {
-        var locale: ?LocalelizerLocale = null;
-        fn GetLocale_Internal() ?LocalelizerLocale {
-            const user_locale = Shared.Settings.GetSettings().UserLocale;
-            if (user_locale == null) return null;
-
-            if (locale == null) {
-                locale = Localelizer.get(user_locale.?, Shared.GetAllocator()) catch return null;
-            }
-
-            return locale;
-        }
-
-        pub fn GetLocale() ?LocalelizerLocale {
-            return GetLocale_Internal();
-        }
-
-        pub fn RefreshLocale() ?LocalelizerLocale {
-            if (locale != null) {
-                locale = null;
-            }
-            return GetLocale_Internal();
-        }
-    };
-
-    pub fn deinit() void {
-        // GeneralPurposeAllocator
-        defer _ = gp.deinit();
-
-        // Localelizer
-        defer Localelizer.deinit();
-
-        // Settings
-        _ = loaded_settings.?.save(Shared.GetAllocator());
-    }
-};
 
 pub fn main() void {
     // Cleanup code
@@ -89,7 +19,7 @@ pub fn main() void {
     var current_view: vl.Views = vl.Views.Raylib_Splash_Screen;
 
     // Load locale
-    var locale: ?LocalelizerLocale = null;
+    var locale: ?Locale = null;
     locale = Shared.Locale.GetLocale();
 
     // fallback if locale is not set

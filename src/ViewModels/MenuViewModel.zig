@@ -1,10 +1,10 @@
 const std = @import("std");
 const ViewModel = @import("./ViewModel.zig").ViewModel;
-const Shared = @import("../Scale.zig").Shared;
+const Shared = @import("../Helpers.zig").Shared;
 
 fn VM() type {
     return struct {
-        pub fn GetMessage() [:0]const u8 {
+        pub fn GetTitle() [:0]const u8 {
             return Shared.Locale.GetLocale().?.Title;
         }
     };

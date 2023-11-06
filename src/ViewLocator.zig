@@ -8,6 +8,9 @@ pub const ViewLocator = struct {
             Views.Raylib_Splash_Screen => {
                 return @import("./Views/RaylibSplashScreenView.zig").RaylibSplashScreenView;
             },
+            Views.Dylan_Splash_Screen => {
+                return @import("./Views/DylanSplashScreenView.zig").DylanSplashScreenView;
+            },
             Views.Menu => {
                 return @import("./Views/MenuView.zig").MenuView;
             },
@@ -20,4 +23,4 @@ pub const ViewLocator = struct {
     }
 };
 
-pub const Views = enum { Raylib_Splash_Screen, Menu };
+pub const Views = enum { Raylib_Splash_Screen, Dylan_Splash_Screen, Menu };

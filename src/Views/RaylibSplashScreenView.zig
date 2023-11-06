@@ -1,5 +1,5 @@
 const std = @import("std");
-const Shared = @import("../Scale.zig").Shared;
+const Shared = @import("../Helpers.zig").Shared;
 const Helpers = @import("../Helpers.zig");
 const View = @import("./View.zig").View;
 const ViewModel = @import("../ViewModels/ViewModel.zig").ViewModel;
@@ -14,6 +14,7 @@ const screen_color = raylib.Color.white;
 fn DrawSplashScreen() Views {
     const vm = SplashScreenViewModel.GetVM(type);
 
+    // Update View Model
     vm.Update();
 
     raylib.clearBackground(screen_color);
@@ -49,17 +50,16 @@ fn DrawSplashScreen() Views {
 
             raylib.drawRectangle(@divTrunc(screenWidth, 2) - 112, @divTrunc(screenHeight, 2) - 112, 224, 224, raylib.fade(screen_color, vm.alpha));
 
-            raylib.drawText(raylib.textSubtext("raylib-zig", 0, vm.lettersCount), @divTrunc(screenWidth, 2) - 98, @divTrunc(screenHeight, 2) + 58, 42, raylib.fade(logo_color, vm.alpha));
+            raylib.drawText(raylib.textSubtext("raylib-zig", 0, vm.lettersCount), @divTrunc(screenWidth, 2) - 96, @divTrunc(screenHeight, 2) + 57, 41, raylib.fade(logo_color, vm.alpha));
         },
         States.Exit => {
-            return Views.Menu;
+            return Views.Dylan_Splash_Screen;
         },
     }
 
     return Views.Raylib_Splash_Screen;
 }
 
-var start_time: f64 = 0;
 fn DrawFunction() Views {
     if (Shared.Settings.GetSettings().Debug) {
         return Views.Menu;

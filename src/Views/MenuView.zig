@@ -11,7 +11,13 @@ pub fn DrawFunction() Views {
 
     raylib.clearBackground(raylib.Color.black);
 
-    raylib.drawText(vm.GetMessage(), 100, 100, 20, raylib.Color.yellow);
+    const title = vm.GetTitle();
+    const screenWidth = raylib.getScreenWidth();
+    const screenHeight = raylib.getScreenHeight();
+    const fontSize = @divFloor(screenHeight, 20);
+    const titleWidth = raylib.measureText(title, fontSize);
+
+    raylib.drawText(title, @divFloor(screenWidth - titleWidth, 2), 100, fontSize, raylib.Color.yellow);
 
     return Views.Menu;
 }
