@@ -1,3 +1,4 @@
+const builtin = @import("builtin");
 const std = @import("std");
 const raylib = @import("raylib");
 const BaseView = @import("./Views/View.zig").View;
@@ -7,14 +8,21 @@ const Locales = @import("Localelizer.zig").Locales;
 const Localelizer = @import("Localelizer.zig").Localelizer;
 const FontManager = @import("FontManager.zig").FontManager;
 const Fonts = @import("FontManager.zig").Fonts;
+const Logger = @import("Logger.zig").Logger;
 
 pub const Shared = struct {
-    var gp = std.heap.GeneralPurposeAllocator(.{ .safety = true }){};
-
+    var gp: std.heap.GeneralPurposeAllocator(.{}) = undefined;
     var allocator: ?std.mem.Allocator = null;
     pub fn GetAllocator() std.mem.Allocator {
         if (allocator == null) {
-            allocator = gp.allocator();
+            if (builtin.os.tag == .wasi) {
+                allocator = std.heap.wasm_allocator;
+            } else if (builtin.mode == .Debug) {
+                gp = std.heap.GeneralPurposeAllocator(.{ .safety = true }){};
+                allocator = gp.allocator();
+            } else {
+                allocator = std.heap.c_allocator;
+            }
         }
         return allocator.?;
     }
@@ -47,10 +55,10 @@ pub const Shared = struct {
         var locale: ?LocalelizerLocale = null;
         fn GetLocale_Internal() ?LocalelizerLocale {
             const user_locale = Shared.Settings.GetSettings().UserLocale;
-            if (user_locale == null) return null;
+            if (user_locale == Locales.unknown) return null;
 
             if (locale == null) {
-                locale = Localelizer.get(user_locale.?, Shared.GetAllocator()) catch return null;
+                locale = Localelizer.get(user_locale, Shared.GetAllocator()) catch return null;
             }
 
             return locale;

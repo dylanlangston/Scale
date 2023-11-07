@@ -1,10 +1,15 @@
 const std = @import("std");
 const Allocator = std.mem.Allocator;
+const Logger = @import("Logger.zig").Logger;
 
 pub const Localelizer = struct {
     fn get_locale_file(locale: Locales) [:0]const u8 {
         switch (locale) {
             Locales.en_us => {
+                return @embedFile("./Locales/en_us.json");
+            },
+            else => {
+                // English as fallback
                 return @embedFile("./Locales/en_us.json");
             },
         }
@@ -15,7 +20,6 @@ pub const Localelizer = struct {
     var loaded_locale: ?std.json.Parsed(Locale) = null;
     pub fn get(locale: Locales, allocator: Allocator) LocalelizerError!Locale {
         const locale_file = get_locale_file(locale);
-
         // Deinit old locale if needed
         deinit();
 
@@ -36,6 +40,9 @@ pub const Localelizer = struct {
             Locales.en_us => {
                 return "English (US)";
             },
+            else => {
+                return "Unknown";
+            },
         }
     }
 };
@@ -44,4 +51,4 @@ pub const Locale = struct {
     Title: [:0]const u8,
 };
 
-pub const Locales = enum { en_us };
+pub const Locales = enum { unknown, en_us };

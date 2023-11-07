@@ -1,14 +1,19 @@
+const builtin = @import("builtin");
 const std = @import("std");
 const Allocator = std.mem.Allocator;
 const Locales = @import("Localelizer.zig").Locales;
+const Logger = @import("Logger.zig").Logger;
 
 pub const Settings = struct {
     CurrentResolution: Resolution,
     Debug: bool,
-    UserLocale: ?Locales,
+    UserLocale: Locales,
     Updated: bool = false,
 
     pub fn save(self: Settings, allocator: Allocator) bool {
+        if (builtin.target.os.tag == .wasi) {
+            return false;
+        }
         var settings = std.ArrayList(u8).init(allocator);
         defer settings.deinit();
 
@@ -31,6 +36,11 @@ pub const Settings = struct {
         return true;
     }
     pub fn load(allocator: Allocator) Settings {
+        Logger.Info("Load settings");
+        if (builtin.target.os.tag == .wasi) {
+            return default_settings;
+        }
+
         // Open file
         var settings_file = std.fs.cwd().openFile(settingsFile, .{}) catch return default_settings;
         defer settings_file.close();
@@ -72,7 +82,7 @@ pub const Settings = struct {
 
     const settingsFile = "settings.json";
 
-    const default_settings = Settings{ .CurrentResolution = Resolutions[0], .Debug = false, .UserLocale = null };
+    const default_settings = Settings{ .CurrentResolution = Resolutions[0], .Debug = false, .UserLocale = Locales.unknown };
 };
 
 const Resolution = struct {

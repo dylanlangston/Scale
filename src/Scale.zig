@@ -1,15 +1,25 @@
+const builtin = @import("builtin");
 const std = @import("std");
 const raylib = @import("raylib");
 const vl = @import("./ViewLocator.zig");
 const Shared = @import("Helpers.zig").Shared;
 const Locale = @import("Localelizer.zig").Locale;
 const Locales = @import("Localelizer.zig").Locales;
+const Logger = @import("Logger.zig").Logger;
 
 pub fn main() void {
     // Cleanup code
     defer Shared.deinit();
 
+    // Set logging level
+    if (Shared.Settings.GetSettings().Debug) {
+        raylib.setTraceLogLevel(raylib.TraceLogLevel.log_all);
+    } else {
+        raylib.setTraceLogLevel(raylib.TraceLogLevel.log_info);
+    }
+
     // Create window
+    Logger.Info("Creating Window");
     raylib.setConfigFlags(raylib.ConfigFlags.flag_window_transparent);
     raylib.initWindow(Shared.Settings.GetSettings().CurrentResolution.Width, Shared.Settings.GetSettings().CurrentResolution.Height, "Scale Game!");
     raylib.setExitKey(.key_null);
@@ -19,25 +29,39 @@ pub fn main() void {
     // Default View on startup is the Splash Screen
     var current_view: vl.Views = vl.Views.Raylib_Splash_Screen;
 
+    Logger.Info_Formatted("Platform {}", .{builtin.os.tag});
+
     // Load locale
+    Logger.Info("Load Locale");
     var locale: ?Locale = null;
     locale = Shared.Locale.GetLocale();
 
     // fallback if locale is not set
-    while (locale == null) {
+    if (locale == null) {
         // For now just set the locale to english since that's the only locale
         Shared.Settings.UpdateSettings(.{
             .UserLocale = Locales.en_us,
         });
 
+        Logger.Debug("Settings Updated");
+
         // Refresh locale
         locale = Shared.Locale.RefreshLocale();
 
+        Logger.Debug("Refreshed locale");
+
         Shared.Settings.UpdatesProcessed();
+
+        Logger.Debug("Updated Processed");
     }
 
-    raylib.setWindowTitle(locale.?.Title);
+    Logger.Debug_Formatted("Title: {s}", .{"test"});
 
+    if (builtin.os.tag != .wasi) {
+        raylib.setWindowTitle(locale.?.Title);
+    }
+
+    Logger.Info("Begin Game Loop");
     while (!raylib.windowShouldClose()) {
         raylib.beginDrawing();
         defer raylib.endDrawing();

@@ -1,3 +1,6 @@
 [submodule "src/raylib-zig"]
 	path = src/raylib-zig
 	url = https://github.com/Not-Nik/raylib-zig.git
+[submodule "src/emscripten"]
+	path = src/emscripten
+	url = https://github.com/emscripten-core/emsdk.git

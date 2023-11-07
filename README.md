@@ -25,3 +25,7 @@ My interpretion of the theme is a vertical platformer that is procedurally gener
 - [Raylib-zig Bindings](https://github.com/Not-Nik/raylib-zig/tree/devel)
 
 [^1]: Game Off 2023 on [Itch.io](https://itch.io/jam/game-off-2023)
+
+#### Credits
+
+#### Todo
