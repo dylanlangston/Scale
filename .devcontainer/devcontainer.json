@@ -9,7 +9,8 @@
 		"vscode": {
 			"extensions": [
 				"svelte.svelte-vscode",
-				"ziglang.vscode-zig"
+				"ziglang.vscode-zig",
+				"vadimcn.vscode-lldb"
 			]
 		}
 	}

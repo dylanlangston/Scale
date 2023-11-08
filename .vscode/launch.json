@@ -1,26 +1,11 @@
 {
     "configurations": [
         {
-            "name": "Debug Web (Launch Browser)",
-            "request": "launch",
-            "runtimeArgs": [
-                "run",
-                "dev-open"
-            ],
-            "runtimeExecutable": "npm",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "type": "node",
-            "localRoot": "${workspaceFolder}/src/scale-website",
-            "preLaunchTask": "Build Web",
-        },
-        {
             "name": "Debug Web",
             "request": "launch",
             "runtimeArgs": [
                 "run",
-                "dev"
+                "dev-open"
             ],
             "runtimeExecutable": "npm",
             "skipFiles": [

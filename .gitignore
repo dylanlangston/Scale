@@ -1,3 +1,5 @@
 zig-cache/
 zig-out/
 /settings.json
+src/scale-website/static/index.wasm
+src/scale-website/static/emscripten.js

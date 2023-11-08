@@ -1,4 +1,5 @@
 const std = @import("std");
+const builtin = @import("builtin");
 const rl = @import("src/raylib-zig/build.zig");
 
 pub fn build(b: *std.Build) !void {
@@ -8,6 +9,17 @@ pub fn build(b: *std.Build) !void {
     var raylib_math = rl.math.getModule(b, "src/raylib-zig");
     //web exports are completely separate
     if (target.getOsTag() == .emscripten) {
+        const cwd_path = b.build_root.path.?;
+        const emscripten_absolute_path = b.pathJoin(&[_][]const u8{
+            cwd_path,
+            "./src/emscripten/upstream/emscripten",
+        });
+
+        // Set the sysroot folder for emscripten
+        b.sysroot = emscripten_absolute_path;
+
+        setupEmscripten(b);
+
         const exe_lib = rl.compileForEmscripten(b, "Scale", "src/Scale.zig", target, optimize);
         exe_lib.addModule("raylib", raylib);
         exe_lib.addModule("raylib-math", raylib_math);
@@ -20,6 +32,9 @@ pub fn build(b: *std.Build) !void {
         run_step.step.dependOn(&link_step.step);
         const run_option = b.step("run", "Run Scale");
         run_option.dependOn(&run_step.step);
+
+        try copyWASMRunStep(b, cwd_path);
+
         return;
     }
 
@@ -57,4 +72,46 @@ pub fn build(b: *std.Build) !void {
     // running the unit tests.
     const test_step = b.step("test", "Run unit tests");
     test_step.dependOn(&run_unit_tests.step);
+}
+
+pub fn setupEmscripten(b: *std.build) void {
+    std.debug.print("Install Emscripten\n", .{});
+    _ = b.exec(&[_][]const u8{
+        b.pathJoin(&[_][]const u8{ ".", "src", "emscripten", "emsdk" }),
+        "install",
+        "latest",
+    });
+
+    std.debug.print("Activate Emscripten\n", .{});
+    _ = b.exec(&[_][]const u8{
+        b.pathJoin(&[_][]const u8{ ".", "src", "emscripten", "emsdk" }),
+        "activate",
+        "latest",
+    });
+}
+
+pub fn copyWASMRunStep(b: *std.Build, cwd_path: []const u8) !void {
+    std.debug.print("Copy output into scale-website\n", .{});
+    const indexjs_absolute_path = b.pathJoin(&[_][]const u8{
+        cwd_path,
+        "zig-out/htmlout/index.js",
+    });
+    const indexwasm_absolute_path = b.pathJoin(&[_][]const u8{
+        cwd_path,
+        "zig-out/htmlout/index.wasm",
+    });
+    const dest_indexjs_absolute_path = b.pathJoin(&[_][]const u8{
+        cwd_path,
+        "src/scale-website/static/emscripten.js",
+    });
+    const dest_indexwasm_absolute_path = b.pathJoin(&[_][]const u8{
+        cwd_path,
+        "src/scale-website/static/index.wasm",
+    });
+
+    const indexjs_step = b.addSystemCommand(&[_][]const u8{ "cp", indexjs_absolute_path, dest_indexjs_absolute_path });
+    const indexwasm_step = b.addSystemCommand(&[_][]const u8{ "cp", indexwasm_absolute_path, dest_indexwasm_absolute_path });
+
+    b.getInstallStep().dependOn(&indexjs_step.step);
+    b.getInstallStep().dependOn(&indexwasm_step.step);
 }
