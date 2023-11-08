@@ -16,7 +16,8 @@ pub const Shared = struct {
     pub fn GetAllocator() std.mem.Allocator {
         if (allocator == null) {
             if (builtin.os.tag == .wasi) {
-                allocator = std.heap.wasm_allocator;
+                // Using anything else causes Out of Memory
+                allocator = std.heap.raw_c_allocator;
             } else if (builtin.mode == .Debug) {
                 gp = std.heap.GeneralPurposeAllocator(.{ .safety = true }){};
                 allocator = gp.allocator();
@@ -28,7 +29,8 @@ pub const Shared = struct {
     }
 
     pub fn GetFont(font: Fonts) raylib.Font {
-        return FontManager.GetFont(font) catch {
+        return FontManager.GetFont(font) catch |err| {
+            Logger.Debug_Formatted("Failed to get font: {}", .{err});
             return raylib.getFontDefault();
         };
     }

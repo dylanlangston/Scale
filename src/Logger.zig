@@ -22,7 +22,7 @@ pub const Logger = struct {
         raylib.traceLog(raylib.TraceLogLevel.log_fatal, text);
     }
 
-    pub fn Trace_Formatted(comptime format: []const u8, comptime T: type, args: T) void {
+    pub fn Trace_Formatted(comptime format: []const u8, args: anytype) void {
         log_formatted(raylib.TraceLogLevel.log_trace, format, args);
     }
     pub fn Debug_Formatted(comptime format: []const u8, args: anytype) void {
@@ -44,14 +44,12 @@ pub const Logger = struct {
     fn log_formatted(level: raylib.TraceLogLevel, comptime format: []const u8, args: anytype) void {
         const aloc = Shared.GetAllocator();
         const text = std.fmt.allocPrint(aloc, format, args) catch {
-            std.debug.print(format, args);
-            std.debug.print("\n", .{});
+            std.debug.print("DEBUG FALLBACK LOGGER:" ++ format ++ "\n", args);
             return;
         };
         defer aloc.free(text);
         const raylib_text = aloc.dupeZ(u8, text) catch {
-            std.debug.print(format, args);
-            std.debug.print("\n", .{});
+            std.debug.print("DEBUG FALLBACK LOGGER:" ++ format ++ "\n", args);
             return;
         };
         defer aloc.free(raylib_text);

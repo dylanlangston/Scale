@@ -5,7 +5,7 @@ const Shared = @import("Helpers.zig").Shared;
 pub const FontManager = struct {
     var LoadedFonts: ?std.AutoHashMap(Fonts, raylib.Font) = null;
 
-    const FontManagerErrors = error{ FaildToLoad, FailedToAppend };
+    const FontManagerErrors = error{FailedToAppend};
 
     pub fn GetFont(font: Fonts) FontManagerErrors!raylib.Font {
         if (LoadedFonts == null) {

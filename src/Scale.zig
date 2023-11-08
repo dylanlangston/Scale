@@ -8,6 +8,15 @@ const Locales = @import("Localelizer.zig").Locales;
 const Logger = @import("Logger.zig").Logger;
 
 pub fn main() void {
+    // Check that we can allocate memory
+    const alloc = Shared.GetAllocator();
+    if (alloc.create(u1)) |f| {
+        defer alloc.destroy(f);
+    } else |err| {
+        std.debug.print("Failed to allocate!! {}", .{err});
+        return;
+    }
+
     // Cleanup code
     defer Shared.deinit();
 
@@ -78,7 +87,7 @@ pub fn main() void {
 
         if (new_view != current_view) {
             current_view = new_view;
-            std.debug.print("New View: {}\n", .{current_view});
+            Logger.Debug_Formatted("New View: {}", .{current_view});
         }
 
         const settings = Shared.Settings.GetSettings();

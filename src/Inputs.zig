@@ -1,10 +1,18 @@
 const std = @import("std");
 const raylib = @import("raylib");
+const Logger = @import("Logger.zig").Logger;
 
 pub const Inputs = struct {
     pub fn Up() bool {
         var gamepad: i8 = 0;
         while (raylib.isGamepadAvailable(gamepad)) {
+            var totalAxis: i32 = raylib.getGamepadAxisCount(gamepad);
+            while (totalAxis >= 0) {
+                const axis = raylib.getGamepadAxisMovement(gamepad, totalAxis);
+                if (axis != 0) Logger.Info_Formatted("Axis-{}: {}", .{ totalAxis, axis });
+                totalAxis -= 1;
+            }
+
             if (raylib.isGamepadButtonDown(0, raylib.GamepadButton.gamepad_button_left_face_up)) return true;
             gamepad += 1;
         }
