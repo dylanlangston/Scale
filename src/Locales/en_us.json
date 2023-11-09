@@ -1,3 +1,6 @@
 {
-    "Title": "Scale Game!"
-}
+    "Title": "Scale Game!",
+    "Menu_StartGame": "Start",
+    "Menu_Settings": "Settings",
+    "Menu_Quit": "Quit"
+  }
