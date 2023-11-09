@@ -1,6 +1,7 @@
 {
     "Title": "Scale Game!",
-    "Menu_StartGame": "Start",
+    "Menu_StartGame": "Start Game",
     "Menu_Settings": "Settings",
-    "Menu_Quit": "Quit"
+    "Menu_Quit": "Quit",
+    "Missing_Text": "Text not found!"
   }

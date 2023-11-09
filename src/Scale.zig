@@ -81,13 +81,16 @@ pub fn main() void {
 
         // Get the current view
         const view = vl.ViewLocator.Build(current_view);
+        view.init();
 
         // Draw the current view
         const new_view = view.DrawRoutine();
 
         if (new_view != current_view) {
+            view.deinit();
+
             current_view = new_view;
-            Logger.Debug_Formatted("New View: {}", .{current_view});
+            Logger.Info_Formatted("New View: {}", .{current_view});
         }
 
         const settings = Shared.Settings.GetSettings();

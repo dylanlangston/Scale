@@ -25,6 +25,7 @@ fn DrawFunction() Views {
     raylib.drawTextEx(font, text, raylib.Vector2.init(positionX, positionY), fontSize, @floatFromInt(font.glyphPadding), raylib.Color.green);
 
     if (framesCounter == 120) {
+        framesCounter = 0;
         return Views.Menu;
     }
 

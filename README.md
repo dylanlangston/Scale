@@ -15,13 +15,13 @@ My interpretion of the theme is a vertical platformer that is procedurally gener
 
 #### Getting Started
 1. Install Zig version 0.11.0 using the [instructions here](https://ziglang.org/learn/getting-started/#installing-zig).
-2. Configure you build environment for Raylib using the appropriate [instrutions](https://github.com/raysan5/raylib/wiki#development-platforms) for you platform.
+2. Configure you build environment for Raylib using the appropriate [instructions](https://github.com/raysan5/raylib/wiki#development-platforms) for you platform.
 3. Finally, to start the game run the command `zig build run`. Alternatively run the **_Debug_** task in VSCode.
 
 #### Resources
 - [Zig Documentation](https://ziglang.org/documentation/master/)
 - [Zig Standard Library Documentation](https://ziglang.org/documentation/master/std/#A;std)
-- [Raylib Documentation]()
+- [Raylib Documentation](https://www.raylib.com/cheatsheet/cheatsheet.html)
 - [Raylib-zig Bindings](https://github.com/Not-Nik/raylib-zig/tree/devel)
 
 [^1]: Game Off 2023 on [Itch.io](https://itch.io/jam/game-off-2023)

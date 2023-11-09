@@ -95,8 +95,6 @@ pub fn setupEmscripten(b: *std.build) void {
 }
 
 pub fn copyWASMRunStep(b: *std.Build, dependsOn: *std.Build.Step, cwd_path: []const u8) !void {
-    std.debug.print("Copy output into scale-website\n", .{});
-
     const indexjs_step = b.addSystemCommand(&[_][]const u8{
         "cp",
         b.pathJoin(&[_][]const u8{

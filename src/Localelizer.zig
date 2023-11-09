@@ -52,6 +52,7 @@ pub const Locale = struct {
     Menu_StartGame: [:0]const u8,
     Menu_Settings: [:0]const u8,
     Menu_Quit: [:0]const u8,
+    Missing_Text: [:0]const u8,
 };
 
 pub const Locales = enum { unknown, en_us };

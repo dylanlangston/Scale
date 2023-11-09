@@ -5,14 +5,13 @@ const View = @import("./View.zig").View;
 const ViewModel = @import("../ViewModels/ViewModel.zig").ViewModel;
 const raylib = @import("raylib");
 const Views = @import("../ViewLocator.zig").Views;
-
 const SplashScreenViewModel = @import("../ViewModels/RaylibSplashScreenViewModel.zig").RaylibSplashScreenViewModel;
 
 const logo_color = raylib.Color.orange;
 const screen_color = raylib.Color.white;
 
 fn DrawSplashScreen() Views {
-    const vm = SplashScreenViewModel.GetVM(type);
+    const vm = SplashScreenViewModel.GetVM();
 
     // Update View Model
     vm.Update();

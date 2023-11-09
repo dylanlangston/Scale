@@ -82,7 +82,7 @@ pub const Settings = struct {
 
     const settingsFile = "settings.json";
 
-    const default_settings = Settings{ .CurrentResolution = Resolutions[0], .Debug = false, .UserLocale = Locales.unknown };
+    const default_settings = Settings{ .CurrentResolution = Resolutions[0], .Debug = true, .UserLocale = Locales.unknown };
 };
 
 const Resolution = struct {

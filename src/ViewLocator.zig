@@ -19,6 +19,7 @@ pub const ViewLocator = struct {
 
     pub fn Build(view: Views) BaseView {
         const BuiltView = GetView(view);
+        BuiltView.init();
         return BuiltView;
     }
 };

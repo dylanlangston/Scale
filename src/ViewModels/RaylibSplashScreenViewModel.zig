@@ -1,10 +1,11 @@
 const std = @import("std");
 const ViewModel = @import("./ViewModel.zig").ViewModel;
-const Shared = @import("../Scale.zig").Shared;
+const Shared = @import("../Helpers.zig").Shared;
 const States = @import("../Views/RaylibSplashScreenView.zig").States;
+const Logger = @import("../Logger.zig").Logger;
 
-fn VM() type {
-    return struct {
+pub const RaylibSplashScreenViewModel = ViewModel.Create(
+    struct {
         pub var framesCounter: i16 = 0;
         pub var lettersCount: i16 = 0;
         pub var state = States.Blinking;
@@ -66,7 +67,12 @@ fn VM() type {
                 States.Exit => {},
             }
         }
-    };
-}
+    },
+    .{
+        .DeInit = deinit,
+    },
+);
 
-pub const RaylibSplashScreenViewModel = ViewModel{ .Get = @constCast(@ptrCast(&VM)) };
+fn deinit() void {
+    RaylibSplashScreenViewModel.GetVM().Reset();
+}
