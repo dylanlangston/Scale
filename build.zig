@@ -12,7 +12,11 @@ pub fn build(b: *std.Build) !void {
         const cwd_path = b.build_root.path.?;
         const emscripten_absolute_path = b.pathJoin(&[_][]const u8{
             cwd_path,
-            "./src/emscripten/upstream/emscripten",
+            ".",
+            "src",
+            "emscripten",
+            "upstream",
+            "emscripten",
         });
 
         // Set the sysroot folder for emscripten
@@ -33,7 +37,7 @@ pub fn build(b: *std.Build) !void {
         const run_option = b.step("run", "Run Scale");
         run_option.dependOn(&run_step.step);
 
-        try copyWASMRunStep(b, cwd_path);
+        try copyWASMRunStep(b, &link_step.step, cwd_path);
 
         return;
     }
@@ -90,27 +94,43 @@ pub fn setupEmscripten(b: *std.build) void {
     });
 }
 
-pub fn copyWASMRunStep(b: *std.Build, cwd_path: []const u8) !void {
+pub fn copyWASMRunStep(b: *std.Build, dependsOn: *std.Build.Step, cwd_path: []const u8) !void {
     std.debug.print("Copy output into scale-website\n", .{});
-    const indexjs_absolute_path = b.pathJoin(&[_][]const u8{
-        cwd_path,
-        "zig-out/htmlout/index.js",
-    });
-    const indexwasm_absolute_path = b.pathJoin(&[_][]const u8{
-        cwd_path,
-        "zig-out/htmlout/index.wasm",
-    });
-    const dest_indexjs_absolute_path = b.pathJoin(&[_][]const u8{
-        cwd_path,
-        "src/scale-website/static/emscripten.js",
-    });
-    const dest_indexwasm_absolute_path = b.pathJoin(&[_][]const u8{
-        cwd_path,
-        "src/scale-website/static/index.wasm",
-    });
 
-    const indexjs_step = b.addSystemCommand(&[_][]const u8{ "cp", indexjs_absolute_path, dest_indexjs_absolute_path });
-    const indexwasm_step = b.addSystemCommand(&[_][]const u8{ "cp", indexwasm_absolute_path, dest_indexwasm_absolute_path });
+    const indexjs_step = b.addSystemCommand(&[_][]const u8{
+        "cp",
+        b.pathJoin(&[_][]const u8{
+            cwd_path,
+            "zig-out",
+            "htmlout",
+            "index.js",
+        }),
+        b.pathJoin(&[_][]const u8{
+            cwd_path,
+            "src",
+            "scale-website",
+            "static",
+            "emscripten.js",
+        }),
+    });
+    const indexwasm_step = b.addSystemCommand(&[_][]const u8{
+        "cp",
+        b.pathJoin(&[_][]const u8{
+            cwd_path,
+            "zig-out",
+            "htmlout",
+            "index.wasm",
+        }),
+        b.pathJoin(&[_][]const u8{
+            cwd_path,
+            "src",
+            "scale-website",
+            "static",
+            "index.wasm",
+        }),
+    });
+    indexjs_step.step.dependOn(dependsOn);
+    indexwasm_step.step.dependOn(dependsOn);
 
     b.getInstallStep().dependOn(&indexjs_step.step);
     b.getInstallStep().dependOn(&indexwasm_step.step);

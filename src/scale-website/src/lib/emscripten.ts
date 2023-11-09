@@ -1,12 +1,13 @@
 export class Module {
-    public print(): (t: string) => void {
-        return (t: any) => console.log(t);
-    }
-
+    public print(t: string): void {
+        console.log(t);
+    };
+    
     public canvas: HTMLCanvasElement = (() => {
         const e = <HTMLCanvasElement>document.getElementById("canvas");
         e?.addEventListener("webglcontextlost", (e => {
-            alert("WebGL context lost. You will need to reload the page."), e.preventDefault()
+            alert("WebGL context lost. You will need to reload the page.");
+            e.preventDefault();
         }), !1);
         return e;
     })();
