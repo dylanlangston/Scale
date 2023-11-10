@@ -66,9 +66,7 @@ pub fn main() void {
 
     Logger.Debug_Formatted("Title: {s}", .{"test"});
 
-    if (builtin.os.tag != .wasi) {
-        raylib.setWindowTitle(locale.?.Title);
-    }
+    raylib.setWindowTitle(locale.?.Title);
 
     Logger.Info("Begin Game Loop");
     while (!raylib.windowShouldClose()) {
@@ -90,7 +88,7 @@ pub fn main() void {
             view.deinit();
 
             current_view = new_view;
-            Logger.Info_Formatted("New View: {}", .{current_view});
+            Logger.Debug_Formatted("New View: {}", .{current_view});
         }
 
         const settings = Shared.Settings.GetSettings();

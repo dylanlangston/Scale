@@ -3,6 +3,7 @@ const std = @import("std");
 const Allocator = std.mem.Allocator;
 const Locales = @import("Localelizer.zig").Locales;
 const Logger = @import("Logger.zig").Logger;
+const Shared = @import("Helpers.zig").Shared;
 
 pub const Settings = struct {
     CurrentResolution: Resolution,
@@ -11,9 +12,6 @@ pub const Settings = struct {
     Updated: bool = false,
 
     pub fn save(self: Settings, allocator: Allocator) bool {
-        if (builtin.target.os.tag == .wasi) {
-            return false;
-        }
         var settings = std.ArrayList(u8).init(allocator);
         defer settings.deinit();
 
@@ -21,6 +19,11 @@ pub const Settings = struct {
             std.debug.print("Unable to serialize settings: {}\n", .{err});
             return false;
         };
+
+        if (builtin.target.os.tag == .wasi) {
+            SaveWasmSettings(settings.items);
+            return true;
+        }
 
         var settings_file = std.fs.cwd().createFile(settingsFile, .{ .read = true }) catch |err| {
             std.debug.print("Unable to create settings file: {}\n", .{err});
@@ -38,7 +41,11 @@ pub const Settings = struct {
     pub fn load(allocator: Allocator) Settings {
         Logger.Info("Load settings");
         if (builtin.target.os.tag == .wasi) {
-            return default_settings;
+            const wasm_settings = GetWasmSettings();
+            var settings = std.json.parseFromSlice(Settings, allocator, wasm_settings.?, .{}) catch return default_settings;
+            defer settings.deinit();
+
+            return NormalizeSettings(settings.value);
         }
 
         // Open file
@@ -82,7 +89,7 @@ pub const Settings = struct {
 
     const settingsFile = "settings.json";
 
-    const default_settings = Settings{ .CurrentResolution = Resolutions[0], .Debug = true, .UserLocale = Locales.unknown };
+    const default_settings = Settings{ .CurrentResolution = Resolutions[0], .Debug = false, .UserLocale = Locales.unknown };
 };
 
 const Resolution = struct {
@@ -109,3 +116,40 @@ pub const Resolutions = [_]Resolution{
     Resolution{ .Width = 3440, .Height = 1440 },
     Resolution{ .Width = 3840, .Height = 2160 },
 };
+
+fn GetWasmSettings() ?([:0]const u8) {
+    // We load the settings via arguments passed emscripten on startup
+    var args = std.process.ArgIterator.initWithAllocator(Shared.GetAllocator()) catch {
+        return null;
+    };
+    defer args.deinit();
+    _ = args.skip();
+    const settings = args.next();
+    return settings;
+}
+
+export fn updateWasmResolution(width: i16, height: i16) void {
+    Shared.Settings.UpdateSettings(.{
+        .CurrentResolution = Resolution{ .Width = width, .Height = height },
+    });
+}
+
+var wasm_settings_buf: std.ArrayList(u8) = undefined;
+export fn getSettingsVal(int: usize) u8 {
+    return wasm_settings_buf.items[int];
+}
+export fn getSettingsSize() u32 {
+    return wasm_settings_buf.items.len;
+}
+fn SaveWasmSettings(settings: []u8) void {
+    wasm_settings_buf.deinit();
+    wasm_settings_buf = std.ArrayList(u8).init(Shared.GetAllocator());
+
+    wasm_settings_buf.appendSlice(settings) catch {
+        Logger.Error("Failed to save settings");
+    };
+
+    // This is a bit of a hack, we just post a message saying "save-settings" right now to trigger the save
+    // We should call a JS function from ZIG but I've failed to get that to work for too long and need to move on...
+    std.log.default.info("{s}", .{"save-settings"});
+}

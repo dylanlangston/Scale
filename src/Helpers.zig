@@ -16,7 +16,6 @@ pub const Shared = struct {
     pub fn GetAllocator() std.mem.Allocator {
         if (allocator == null) {
             if (builtin.os.tag == .wasi) {
-                // Using anything else causes Out of Memory
                 allocator = std.heap.raw_c_allocator;
             } else if (builtin.mode == .Debug) {
                 gp = std.heap.GeneralPurposeAllocator(.{ .safety = true }){};
@@ -46,10 +45,18 @@ pub const Shared = struct {
 
         pub fn UpdateSettings(newValue: anytype) void {
             loaded_settings = SettingsManager.update(GetSettings(), newValue);
+
+            if (builtin.target.os.tag == .wasi) {
+                SaveNow();
+            }
         }
 
         pub fn UpdatesProcessed() void {
             loaded_settings = SettingsManager.UpdatesProcessed(GetSettings());
+        }
+
+        pub fn SaveNow() void {
+            _ = loaded_settings.?.save(Shared.GetAllocator());
         }
     };
 

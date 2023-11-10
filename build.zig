@@ -1,6 +1,6 @@
 const std = @import("std");
 const builtin = @import("builtin");
-const rl = @import("src/raylib-zig/build.zig");
+const rl = @import("src/Build_raylib.zig");
 
 pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
@@ -124,7 +124,7 @@ pub fn copyWASMRunStep(b: *std.Build, dependsOn: *std.Build.Step, cwd_path: []co
             "src",
             "scale-website",
             "static",
-            "index.wasm",
+            "scale.wasm",
         }),
     });
     indexjs_step.step.dependOn(dependsOn);
