@@ -4,11 +4,16 @@ const Shared = @import("../Helpers.zig").Shared;
 const Logger = @import("../Logger.zig").Logger;
 const raylib = @import("raylib");
 
-pub const Selection = enum { Start, Settings, Quit, None };
+pub const Selection = enum {
+    Start,
+    Settings,
+    Quit,
+    None,
+};
 
 pub const MenuViewModel = ViewModel.Create(
     struct {
-        pub var selection = Selection.None;
+        pub var selection = Selection.Start;
         pub var Rectangles: [std.enums.directEnumArrayLen(Selection, 0) - 1]raylib.Rectangle = undefined;
 
         pub fn GetSelectionText(select: Selection) [:0]const u8 {

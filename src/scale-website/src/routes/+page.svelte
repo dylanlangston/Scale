@@ -29,13 +29,18 @@ function loadEmscripten(): void {
   };
 }
 
-function UpdateSize(): void {
-  if(screen.width === window.innerWidth){
-   // this is full screen
-   return;
+const padding_horizontal = 24;
+let updateSizeTimeout: number|undefined = undefined;
+function UpdateSize(e: Event): void {
+  if ((<any>Browser).isFullscreen)
+  {
+    return;
   }
-  const padding_horizontal = 24;
-  (<any>window).Module._updateWasmResolution(window.innerWidth, (window.innerHeight - padding_horizontal));
+  
+  clearTimeout(updateSizeTimeout);
+  updateSizeTimeout = setTimeout(() => {
+    (<any>window).Module._updateWasmResolution((<any>e.target).innerWidth, ((<any>e.target).innerHeight - padding_horizontal));
+  }, 50);
 }
 
 onMount(() => {

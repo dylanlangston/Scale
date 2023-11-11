@@ -14,7 +14,20 @@ pub const ViewLocator = struct {
             Views.Menu => {
                 return @import("./Views/MenuView.zig").MenuView;
             },
+            Views.Scale => {
+                return @import("./Views/ScaleView.zig").ScaleView;
+            },
+            Views.Settings => {
+                return @import("./Views/SettingsView.zig").SettingsView;
+            },
+            else => {
+                return BaseView{ .DrawRoutine = DrawQuit };
+            },
         }
+    }
+
+    fn DrawQuit() Views {
+        return Views.Quit;
     }
 
     pub fn Build(view: Views) BaseView {
@@ -24,4 +37,11 @@ pub const ViewLocator = struct {
     }
 };
 
-pub const Views = enum { Raylib_Splash_Screen, Dylan_Splash_Screen, Menu };
+pub const Views = enum {
+    Raylib_Splash_Screen,
+    Dylan_Splash_Screen,
+    Menu,
+    Scale,
+    Settings,
+    Quit,
+};

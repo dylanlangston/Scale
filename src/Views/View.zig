@@ -11,16 +11,13 @@ pub const View = struct {
     // Initialize View Model if needed
     var isInitialized = false;
     pub fn init(self: View) void {
-        if (isInitialized == false and self.VM != undefined and self.VM.*.Init != undefined) {
+        if (isInitialized == false and @intFromPtr(self.VM) != 0 and @intFromPtr(self.VM.*.Init) != 0) {
             self.VM.*.Init();
             isInitialized = true;
         }
     }
     pub fn deinit(self: View) void {
-        defer Shared.GetAllocator().destroy(&self);
-        defer Shared.GetAllocator().destroy(self.VM);
-
-        if (self.VM != undefined and self.VM.*.DeInit != undefined) {
+        if (@intFromPtr(self.VM) != 0 and @intFromPtr(self.VM.*.DeInit) != 0) {
             self.VM.*.DeInit();
             isInitialized = false;
         }

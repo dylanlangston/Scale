@@ -139,7 +139,7 @@ export fn getSettingsVal(int: usize) u8 {
     return wasm_settings_buf.items[int];
 }
 export fn getSettingsSize() u32 {
-    return wasm_settings_buf.items.len;
+    return @intCast(wasm_settings_buf.items.len);
 }
 fn SaveWasmSettings(settings: []u8) void {
     wasm_settings_buf.deinit();

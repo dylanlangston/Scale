@@ -8,7 +8,6 @@ const Views = @import("../ViewLocator.zig").Views;
 const SplashScreenViewModel = @import("../ViewModels/RaylibSplashScreenViewModel.zig").RaylibSplashScreenViewModel;
 
 const logo_color = raylib.Color.orange;
-const screen_color = raylib.Color.white;
 
 fn DrawSplashScreen() Views {
     const vm = SplashScreenViewModel.GetVM();
@@ -16,6 +15,10 @@ fn DrawSplashScreen() Views {
     // Update View Model
     vm.Update();
 
+    var screen_color = raylib.Color.white;
+    if (vm.alpha < 1.0) {
+        screen_color = raylib.Color.black.brightness(vm.alpha);
+    }
     raylib.clearBackground(screen_color);
 
     const screenWidth = raylib.getScreenWidth();
@@ -75,4 +78,7 @@ pub const States = enum {
     Exit,
 };
 
-pub const RaylibSplashScreenView = View{ .DrawRoutine = DrawFunction, .VM = &SplashScreenViewModel };
+pub const RaylibSplashScreenView = View{
+    .DrawRoutine = DrawFunction,
+    .VM = &SplashScreenViewModel,
+};
