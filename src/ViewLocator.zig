@@ -17,6 +17,9 @@ pub const ViewLocator = struct {
             Views.Scale => {
                 return @import("./Views/ScaleView.zig").ScaleView;
             },
+            Views.Paused => {
+                return @import("./Views/PausedView.zig").PausedView;
+            },
             Views.Settings => {
                 return @import("./Views/SettingsView.zig").SettingsView;
             },
@@ -42,6 +45,7 @@ pub const Views = enum {
     Dylan_Splash_Screen,
     Menu,
     Scale,
+    Paused,
     Settings,
     Quit,
 };

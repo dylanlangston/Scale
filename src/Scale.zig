@@ -7,6 +7,7 @@ const Locale = @import("Localelizer.zig").Locale;
 const Locales = @import("Localelizer.zig").Locales;
 const Logger = @import("Logger.zig").Logger;
 const Views = @import("ViewLocator.zig").Views;
+const Inputs = @import("Inputs.zig").Inputs;
 
 pub fn main() void {
     // Check that we can allocate memory
@@ -30,7 +31,6 @@ pub fn main() void {
 
     // Create window
     Logger.Info("Creating Window");
-    raylib.setConfigFlags(raylib.ConfigFlags.flag_msaa_4x_hint);
     raylib.initWindow(Shared.Settings.GetSettings().CurrentResolution.Width, Shared.Settings.GetSettings().CurrentResolution.Height, "Scale Game!");
     raylib.setExitKey(.key_null);
     raylib.setTargetFPS(60);
@@ -74,21 +74,21 @@ pub fn main() void {
         raylib.beginDrawing();
         defer raylib.endDrawing();
 
-        if (Shared.Settings.GetSettings().Debug) {
-            raylib.drawFPS(10, 10);
-        }
-
         // Get the current view
         const view = vl.ViewLocator.Build(current_view);
         view.init();
 
         // Draw the current view
         const new_view = view.DrawRoutine();
+        defer current_view = new_view;
+
+        if (Shared.Settings.GetSettings().Debug) {
+            raylib.drawFPS(10, 10);
+        }
 
         if (new_view != current_view) {
             view.deinit();
 
-            current_view = new_view;
             Logger.Debug_Formatted("New View: {}", .{current_view});
         }
 

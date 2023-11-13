@@ -83,5 +83,9 @@ pub const Inputs = struct {
     pub fn B_Pressed() bool {}
     pub fn X_Pressed() bool {}
     pub fn Y_Pressed() bool {}
-    pub fn Start_Pressed() bool {}
+    pub fn Start_Pressed() bool {
+        if (raylib.isKeyPressed(raylib.KeyboardKey.key_escape)) return true;
+
+        return false;
+    }
 };

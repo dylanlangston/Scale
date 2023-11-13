@@ -9,6 +9,8 @@ const Localelizer = @import("Localelizer.zig").Localelizer;
 const FontManager = @import("FontManager.zig").FontManager;
 const Fonts = @import("FontManager.zig").Fonts;
 const Logger = @import("Logger.zig").Logger;
+const PausedViewModel = @import("./ViewModels/PausedViewModel.zig").PausedViewModel;
+const Views = @import("ViewLocator.zig").Views;
 
 pub const Shared = struct {
     var gp: std.heap.GeneralPurposeAllocator(.{}) = undefined;
@@ -84,6 +86,12 @@ pub const Shared = struct {
             return GetLocale_Internal();
         }
     };
+
+    pub fn Pause(view: Views) Views {
+        const paused_vm = PausedViewModel.GetVM();
+        paused_vm.PauseView(view);
+        return Views.Paused;
+    }
 
     pub fn deinit() void {
         // GeneralPurposeAllocator
