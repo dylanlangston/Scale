@@ -68,8 +68,8 @@ onMount(() => {
   }
 
   .btn-fullscreen {
-    -webkit-text-stroke: 1px white;
-    -webkit-text-fill-color: black;
+    text-stroke: 1px white;
+    text-fill-color: black;
   }
 </style>
 
