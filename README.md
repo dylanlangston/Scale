@@ -5,7 +5,7 @@ This is a submission to the 2023 *Game Off* event hosted by [GitHub](https://git
 
 #### What's Game Off? [^1]
 
-> [Game Off](https://itch.io/jam/game-off-2023) is GitHub's annual game jam challenging individuals and teams to build a game during the month of November. Use whatever programming languages, game engines, or libraries you like. You're also welcome to use AI tools to help generate code, assets, or anything in between! The theme for this year's jam is SCALE!
+> [Game Off](https://itch.io/jam/game-off-2023) is GitHub's annual game jam challenging individuals and teams to build a game during the month of November. Use whatever programming languages, game engines, or libraries you like. You're also welcome to use AI tools to help generate code, assets, or anything in between!
 >
 > The theme for this year's jam is **SCALE**!
 
