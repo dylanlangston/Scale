@@ -1,5 +1,8 @@
 export class Module {
 
+    public requestFullscreen?: (lockPointer: boolean, resizeCanvas: boolean) => void;
+    public _updateWasmResolution?: (width: number, height: number) => void;
+
     public preRun(mod: any): void {
         mod.arguments.push(Module.getSettings());
     }
@@ -28,6 +31,8 @@ export class Module {
         .then((output) => {
             console.log('wasm instantiation succeeded');
             successCallback(output.instance);
+            // Trigger a resize on load to ensure the correct canvas size
+            window.dispatchEvent(new Event('resize'));
         }).catch((e) => {
             console.log('wasm instantiation failed! ' + e);
         });
@@ -49,10 +54,6 @@ export class Module {
     
     public canvas: HTMLCanvasElement = (() => {
         const e = <HTMLCanvasElement>document.getElementById("canvas");
-        e?.addEventListener("load", (e) => {
-            // Trigger a resize on load to ensure the correct canvas size
-            window.dispatchEvent(new Event('resize'));
-        });
         e?.addEventListener("webglcontextlost", (e => {
             alert("WebGL context lost. You will need to reload the page.");
             e.preventDefault();
