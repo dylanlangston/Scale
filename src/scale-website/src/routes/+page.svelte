@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Module } from "$lib/emscripten";
   import { onMount} from "svelte";
+  import { BrowserDetector } from "browser-dtector";
 
   function toggleFullScreen(): void {
     const lockPointer = false;
@@ -71,7 +72,6 @@ function cloneCanvas(): HTMLImageElement {
 
 function loadEmscripten(): void {
   loadScript("emscripten.js");
-  loadScript("fixes.js");
 
   window.Module = new Module();
   window.Module.setStatus("Downloading...");
@@ -85,6 +85,11 @@ function loadEmscripten(): void {
     }
   };
 }
+
+let isMobile = () => {
+  const detector = new BrowserDetector();
+  return detector.parseUserAgent().isMobile;
+};
 
 onMount(() => {
   loadEmscripten();
@@ -105,7 +110,7 @@ onMount(() => {
   }
 </style>
 
-<div class="portrait:hidden ">
+<div class="portrait:hidden">
   <span id="controls" class="absolute right-0 pr-3 pt-2" title="Fullscreen">
     <button type="button" on:click={() => toggleFullScreen()}><a class="rounded-lg bg-slate-400/[.3] font-extrabold text-3xl btn-fullscreen p-2 pt-0">⛶</a></button>
   </span>
@@ -120,10 +125,14 @@ onMount(() => {
   </div>
 </div>
 
-<div class="landscape:hidden ">
+<div class="landscape:hidden">
   <div class="absolute flex top-0 bottom-0 left-0 right-0 items-center justify-center pointer-events-none">
     <div class="rounded-lg bg-slate-50 shadow-xl p-8 m-8">
-      <div class="text-center text-6xl font-bold">Rotate! 🔄</div>
+      {#if isMobile()}
+        <div class="text-center text-6xl font-bold">Rotate! 🔄</div>
+      {:else}
+        <div class="text-center text-6xl font-bold">Resize! ↔️npm</div>
+      {/if}
     </div>
   </div>
 </div>
