@@ -126,8 +126,7 @@ onMount(() => {
     const emscripten = loadEmscripten();
     emscripten.onload = (e) => {
       window.addEventListener('resize', UpdateSize);
-      window.addEventListener("deviceorientation", UpdateSize, true);
-
+      window.addEventListener("deviceorientationabsolute", UpdateSize, true);
     };
   }
 })
