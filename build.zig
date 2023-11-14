@@ -7,6 +7,7 @@ pub fn build(b: *std.Build) !void {
     const optimize = b.standardOptimizeOption(.{});
     var raylib = rl.getModule(b, "src/raylib-zig");
     var raylib_math = rl.math.getModule(b, "src/raylib-zig");
+
     //web exports are completely separate
     if (target.getOsTag() == .emscripten) {
         const cwd_path = b.build_root.path.?;
@@ -34,6 +35,25 @@ pub fn build(b: *std.Build) !void {
         exe_lib.addModule("raylib", raylib);
         exe_lib.addModule("raylib-math", raylib_math);
         const raylib_artifact = rl.getArtifact(b, target, optimize);
+
+        // Override raylib's default config.h with our custom one
+        const raylib_artifact_src_folder = raylib_artifact.step.owner.build_root.path.?;
+        const copy_raylib_config_header = b.addSystemCommand(&[_][]const u8{
+            "cp",
+            b.pathJoin(&[_][]const u8{
+                cwd_path,
+                "src",
+                "Includes",
+                "raylib_config.h",
+            }),
+            b.pathJoin(&[_][]const u8{
+                raylib_artifact_src_folder,
+                "src",
+                "config.h",
+            }),
+        });
+        raylib_artifact.step.dependOn(&copy_raylib_config_header.step);
+
         // Note that raylib itself is not actually added to the exe_lib output file, so it also needs to be linked with emscripten.
         exe_lib.linkLibrary(raylib_artifact);
         const link_step = try rl.linkWithEmscripten(
