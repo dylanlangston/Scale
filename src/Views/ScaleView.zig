@@ -15,17 +15,9 @@ const PlayerModel = @import("../Models/Player.zig").Player;
 const WorldModel = @import("../Models/World.zig").World;
 
 pub fn DrawFunction() Views {
-    const VM = ScaleViewModel.GetVM();
-    _ = VM;
     WorldModel.Player = WorldModel.Player.UpdatePosition();
     const playerPosition = WorldModel.Player.Position;
     const PlayerSize = PlayerModel.GetSize();
-    Logger.Info_Formatted("X: {} Y:{} Width:{} Height:{}", .{
-        playerPosition.x,
-        playerPosition.y,
-        playerPosition.width,
-        playerPosition.height,
-    });
 
     raylib.clearBackground(raylib.Color.green);
 

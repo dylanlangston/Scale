@@ -231,6 +231,8 @@ pub fn linkWithEmscripten(
         "-sEXPORTED_FUNCTIONS=['_malloc','_free','_main','_getSettingsVal','_getSettingsSize', '_updateWasmResolution']",
         "-sEXPORTED_RUNTIME_METHODS=ccall,cwrap",
         "-sWASM=1",
+        "-sASSERTIONS",
+        "-sALLOW_MEMORY_GROWTH",
     });
     return emcc_command;
 }

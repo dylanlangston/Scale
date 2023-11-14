@@ -63,7 +63,9 @@ export class Module {
 
     public setStatus(e: string): void {
         const statusElement = <HTMLElement>document.getElementById("status");
-        statusElement.innerHTML = e;
+        const statusContainerElement = document.getElementById("status-container");
+        statusContainerElement!.hidden = (e.length == 0 || e == null || e == undefined);
+        statusElement.innerText = e;
     }
 
     public totalDependencies: number = 0;

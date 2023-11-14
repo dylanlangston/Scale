@@ -10,7 +10,7 @@ pub const World = struct {
     pub var Platforms: std.ArrayList(PlatformModel) = undefined;
 
     pub fn Init() !void {
-        Platforms.deinit();
+        Deinit();
 
         const screenWidth: f32 = @floatFromInt(raylib.getScreenWidth());
         const screenHeight: f32 = @floatFromInt(raylib.getScreenHeight());
@@ -38,6 +38,10 @@ pub const World = struct {
                 .width = 50,
             },
         });
+    }
+
+    pub fn Deinit() void {
+        Platforms.clearAndFree();
     }
 
     pub fn GetCurrentScreenSize() raylib.Rectangle {

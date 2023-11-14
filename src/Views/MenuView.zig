@@ -125,7 +125,7 @@ pub fn DrawFunction() Views {
 fn GetSelection() Views {
     switch (vm.selection) {
         Selection.Start => {
-            return Views.Scale;
+            return Views.GameplayIntro;
         },
         Selection.Settings => {
             return Views.Settings;

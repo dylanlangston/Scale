@@ -13,6 +13,7 @@ pub const ScaleViewModel = ViewModel.Create(
     struct {},
     .{
         .Init = init,
+        .DeInit = deinit,
     },
 );
 
@@ -20,4 +21,8 @@ fn init() void {
     WorldModel.Init() catch {
         Logger.Error("Failed to Init World!");
     };
+}
+
+fn deinit() void {
+    WorldModel.Deinit();
 }

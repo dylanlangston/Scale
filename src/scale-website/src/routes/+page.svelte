@@ -19,27 +19,12 @@ function loadScript(name: string): void {
     document.head.append(script);
 }
 
-function loadEmscripten(): void {
-    loadScript("fixes.js");
-    loadScript("emscripten.js");
-
-  window.Module = new Module();
-  window.Module.setStatus("Downloading...");
-  window.onerror = (e: any) => {
-    const canvas = <HTMLCanvasElement>document.getElementById("canvas");
-    canvas.style.display = 'none';
-
-    window.Module.setStatus("Exception thrown, see JavaScript console");
-    window.Module.setStatus = (e: any) => {
-      e && console.error("[post-exception status] " + e);
-    }
-  };
-}
-
 const padding_horizontal = 0;
 let updateSizeTimeout: number|undefined = undefined;
 function UpdateSize(e: Event): void {
   clearTimeout(updateSizeTimeout);
+  const new_canvas = cloneCanvas();
+
   updateSizeTimeout = setTimeout(() => {
     if (window.Browser.isFullscreen)
     {
@@ -51,7 +36,54 @@ function UpdateSize(e: Event): void {
     {
       updateWasmResolution((<Window>e.target).innerWidth, ((<Window>e.target).innerHeight - padding_horizontal));
     }
+    clearTimeout(hideNewCanvasTimeout);
+    hideNewCanvasTimeout = setTimeout(() => {
+      new_canvas.hidden = true;
+    }, 250);
+    
   }, 10);
+}
+
+function getCanvasImage(): string | null {
+  const newCanvas = <HTMLCanvasElement>document.createElement("canvas");
+  newCanvas.width = window.Module.canvas.width;
+  newCanvas.height = window.Module.canvas.height;
+  const context = newCanvas.getContext('2d');
+  context?.drawImage(window.Module.canvas, 0, 0);
+  const img_data = context?.getImageData(2, 2, 1, 1);
+  return img_data?.data[3] == 0 ? null : newCanvas.toDataURL("image/png");
+}
+
+let hideNewCanvasTimeout: number|undefined = undefined;
+
+function cloneCanvas(): HTMLImageElement {
+  const newCanvas = <HTMLImageElement>document.getElementById("canvas-copy");
+  newCanvas.width = window.innerWidth;
+  newCanvas.height = window.innerHeight;
+
+  const canvasImage = getCanvasImage();
+  if (canvasImage == null) return newCanvas;
+
+  newCanvas.src = canvasImage;
+  newCanvas.hidden = false;
+  return newCanvas;
+}
+
+function loadEmscripten(): void {
+  loadScript("emscripten.js");
+  loadScript("fixes.js");
+
+  window.Module = new Module();
+  window.Module.setStatus("Downloading...");
+  window.onerror = (e: any) => {
+    document.getElementById("canvas")!.style.display = 'none';
+    document.getElementById("canvas-copy")!.style.display = 'none';
+
+    window.Module.setStatus("Exception thrown, see JavaScript console.\nReload page to try again.");
+    window.Module.setStatus = (e: any) => {
+      e && console.error("[post-exception status] " + e);
+    }
+  };
 }
 
 onMount(() => {
@@ -73,14 +105,25 @@ onMount(() => {
   }
 </style>
 
-<span id="controls" class="absolute right-0 pr-3 pt-2" title="Fullscreen">
-  <button type="button" on:click={() => toggleFullScreen()}><a class="rounded-lg bg-slate-400/[.3] font-extrabold text-4xl btn-fullscreen p-2 pt-0 pb-1">⛶</a></button>
-</span>
-<div class="emscripten">
-  <canvas class="emscripten w-100 bg-gray-300" width="1" height="1" id="canvas" on:contextmenu={(e) => e.preventDefault()} tabindex=-1></canvas>
+<div class="portrait:hidden ">
+  <span id="controls" class="absolute right-0 pr-3 pt-2" title="Fullscreen">
+    <button type="button" on:click={() => toggleFullScreen()}><a class="rounded-lg bg-slate-400/[.3] font-extrabold text-3xl btn-fullscreen p-2 pt-0">⛶</a></button>
+  </span>
+  <div class="emscripten">
+    <canvas class="emscripten w-full h-full" id="canvas" on:contextmenu={(e) => e.preventDefault()} tabindex=-1></canvas>
+    <img hidden class="absolute top-0 left-0 w-full h-full object-fill" id="canvas-copy"/>
+  </div>
+  <div class="absolute flex top-0 bottom-0 left-0 right-0 items-center justify-center pointer-events-none -z-50">
+    <div id="status-container" class="rounded-lg bg-slate-50 shadow-xl p-8 m-8">
+      <div class="emscripten text-center text-6xl font-bold" id="status" contenteditable="true"><div class="jsonly">Starting...</div><noscript>Please enable Javascript to play.</noscript></div>
+    </div>
+  </div>
 </div>
-<div class="absolute flex top-0 bottom-0 left-0 right-0 items-center justify-center pointer-events-none -z-50">
-  <div class="rounded-lg bg-slate-50 shadow-xl p-8 m-8">
-    <div class="emscripten text-center text-6xl font-bold" id="status">Downloading...</div>
+
+<div class="landscape:hidden ">
+  <div class="absolute flex top-0 bottom-0 left-0 right-0 items-center justify-center pointer-events-none">
+    <div class="rounded-lg bg-slate-50 shadow-xl p-8 m-8">
+      <div class="text-center text-6xl font-bold">Rotate! 🔄</div>
+    </div>
   </div>
 </div>

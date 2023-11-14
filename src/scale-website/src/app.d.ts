@@ -9,11 +9,14 @@ declare global {
 		// interface PageData {}
 		// interface Platform {}
 	}
-	interface Window {
+	interface Window extends Window {
 		Module: Module;
 		Browser: Browser;
 	}
 	interface Browser {
 		isFullscreen: boolean;
+	}
+	interface FS {
+		readFile: (memoryFSname: string) => Uint8Array;
 	}
 }

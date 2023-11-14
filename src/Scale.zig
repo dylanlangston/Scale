@@ -38,6 +38,7 @@ pub fn main() void {
 
     // Default View on startup is the Splash Screen
     var current_view: vl.Views = vl.Views.Raylib_Splash_Screen;
+    defer DeinitViews();
 
     Logger.Info_Formatted("Platform {}", .{builtin.os.tag});
 
@@ -87,7 +88,7 @@ pub fn main() void {
         }
 
         if (new_view != current_view) {
-            view.deinit();
+            if (new_view != Views.Paused) view.deinit();
 
             Logger.Debug_Formatted("New View: {}", .{current_view});
         }
@@ -109,5 +110,12 @@ pub fn main() void {
             // Ensure that this code doesn't run again until the settings are updated
             Shared.Settings.UpdatesProcessed();
         }
+    }
+}
+
+fn DeinitViews() void {
+    for (std.enums.values(Views)) |v| {
+        const view = vl.ViewLocator.Build(v);
+        view.deinit();
     }
 }
