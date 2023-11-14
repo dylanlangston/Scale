@@ -66,8 +66,6 @@ pub fn main() void {
         Logger.Debug("Updated Processed");
     }
 
-    Logger.Debug_Formatted("Title: {s}", .{"test"});
-
     raylib.setWindowTitle(locale.?.Title);
 
     Logger.Info("Begin Game Loop");

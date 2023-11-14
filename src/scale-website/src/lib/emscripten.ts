@@ -3,13 +3,18 @@ export class Module {
     public requestFullscreen?: (lockPointer: boolean, resizeCanvas: boolean) => void;
     public _updateWasmResolution?: (width: number, height: number) => void;
 
-    public preRun(mod: any): void {
-        mod.arguments.push(Module.getSettings());
+    public preRun(mod: Module): void {
+        mod.arguments.forEach(arg => console.log("arg: " + arg));
+        mod.arguments.splice(1, 0, Module.getSettings()!);
     }
 
+    public arguments: string[] = [
+        "./this.program"
+    ];
+
     private static settingsName: string = "settings";
-    private static getSettings(): string|null {
-        return window.localStorage.getItem(Module.settingsName) ?? "";
+    private static getSettings(): string {
+        return window.localStorage.getItem(Module.settingsName) ?? "{}";
     }
     private static saveSettings() {
         let u8array = [];
@@ -18,6 +23,44 @@ export class Module {
         }
         const settings = new TextDecoder().decode(new Uint8Array(u8array))
         window.localStorage.setItem(Module.settingsName, settings);
+    }
+
+    public static updateSettingsFromQueryString(): boolean {
+        const oldSettings = Module.getSettings();
+        if (window.location.search.length == 0) return false;
+
+        try
+        {
+            Module.setStatus("Updating Settings...");
+            const settings = JSON.parse(oldSettings);
+
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+    
+            const getValue = (v: string) => {
+                try 
+                {
+                    return JSON.parse(v);
+                }
+                catch 
+                {
+                    return v;
+                }
+            };
+    
+            urlParams.forEach((value, key) => {
+              settings[key] = getValue(value);
+            });
+    
+            const newSettings = JSON.stringify(settings);
+            window.localStorage.setItem(Module.settingsName, newSettings);
+            return true;
+        }
+        catch 
+        {
+            return false;
+        }
+
     }
 
     public instantiateWasm(imports: any, successCallback: any) {
@@ -62,6 +105,9 @@ export class Module {
     })();
 
     public setStatus(e: string): void {
+        Module.setStatus(e);
+    }
+    public static setStatus(e: string): void {
         const statusElement = <HTMLElement>document.getElementById("status");
         const statusContainerElement = document.getElementById("status-container");
         statusContainerElement!.hidden = (e.length == 0 || e == null || e == undefined);

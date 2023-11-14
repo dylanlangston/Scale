@@ -5,10 +5,16 @@
 
   function toggleFullScreen(): void {
     const lockPointer = false;
-    const resizeCanvas = true;
+    const resizeCanvas = false;
     const requestFullscreen = window.Module.requestFullscreen;
     if (requestFullscreen)
     {
+      const updateWasmResolution = window.Module._updateWasmResolution;
+      if (updateWasmResolution)
+      {
+        const resolution = fitInto16x9AspectRatio(window.screen.width, window.screen.height);
+        updateWasmResolution(resolution.width, resolution.height);
+      }
       requestFullscreen(lockPointer, resizeCanvas);
     }
   }
@@ -23,8 +29,10 @@ function loadScript(name: string): void {
 const padding_horizontal = 0;
 let updateSizeTimeout: number|undefined = undefined;
 function UpdateSize(e: Event): void {
+  clearTimeout(hideNewCanvasTimeout);
   clearTimeout(updateSizeTimeout);
   const new_canvas = cloneCanvas();
+  window.Module.canvas.hidden = true;
 
   updateSizeTimeout = setTimeout(() => {
     if (window.Browser.isFullscreen)
@@ -35,14 +43,29 @@ function UpdateSize(e: Event): void {
     const updateWasmResolution = window.Module._updateWasmResolution;
     if (updateWasmResolution)
     {
-      updateWasmResolution((<Window>e.target).innerWidth, ((<Window>e.target).innerHeight - padding_horizontal));
+      const resolution = fitInto16x9AspectRatio((<Window>e.target).innerWidth, ((<Window>e.target).innerHeight - padding_horizontal));
+
+      updateWasmResolution(resolution.width, resolution.height);
     }
-    clearTimeout(hideNewCanvasTimeout);
-    hideNewCanvasTimeout = setTimeout(() => {
-      new_canvas.hidden = true;
-    }, 250);
-    
   }, 10);
+
+  hideNewCanvasTimeout = setTimeout(() => {
+    window.Module.canvas.hidden = false;
+    new_canvas.hidden = true;
+  }, 250);
+}
+
+function fitInto16x9AspectRatio(originalWidth: number, originalHeight: number): { width: number; height: number } {
+    const targetAspectRatio = 16 / 9;
+    const currentAspectRatio = originalWidth / originalHeight;
+
+    if (currentAspectRatio > targetAspectRatio) {
+        const newWidth = originalHeight * targetAspectRatio;
+        return { width: newWidth, height: originalHeight };
+    } else {
+        const newHeight = originalWidth / targetAspectRatio;
+        return { width: originalWidth, height: newHeight };
+    }
 }
 
 function getCanvasImage(): string | null {
@@ -59,8 +82,9 @@ let hideNewCanvasTimeout: number|undefined = undefined;
 
 function cloneCanvas(): HTMLImageElement {
   const newCanvas = <HTMLImageElement>document.getElementById("canvas-copy");
-  newCanvas.width = window.innerWidth;
-  newCanvas.height = window.innerHeight;
+  const resolution = fitInto16x9AspectRatio(window.innerWidth, window.innerHeight);
+  newCanvas.width = resolution.width;
+  newCanvas.height = resolution.height;
 
   const canvasImage = getCanvasImage();
   if (canvasImage == null) return newCanvas;
@@ -92,9 +116,16 @@ let isMobile = () => {
 };
 
 onMount(() => {
-  loadEmscripten();
+  if (Module.updateSettingsFromQueryString())
+  {
+    window.location.search = "";
+  }
+  else {
+    loadEmscripten();
+  }
 
   window.addEventListener('resize', UpdateSize);
+  window.addEventListener("deviceorientation", UpdateSize, true);
 })
 </script>
 
@@ -111,16 +142,16 @@ onMount(() => {
 </style>
 
 <div class="portrait:hidden">
-  <span id="controls" class="absolute right-0 pr-3 pt-2" title="Fullscreen">
+  <span id="controls" class="absolute right-0 pr-3 pt-2 z-50" title="Fullscreen">
     <button type="button" on:click={() => toggleFullScreen()}><a class="rounded-lg bg-slate-400/[.3] font-extrabold text-3xl btn-fullscreen p-2 pt-0">⛶</a></button>
   </span>
-  <div class="emscripten">
-    <canvas class="emscripten w-full h-full" id="canvas" on:contextmenu={(e) => e.preventDefault()} tabindex=-1></canvas>
-    <img hidden class="absolute top-0 left-0 w-full h-full object-fill" id="canvas-copy"/>
+  <div class="emscripten z-0">
+    <canvas class="emscripten absolute top-0 bottom-0 left-0 right-0 m-auto" id="canvas" on:contextmenu={(e) => e.preventDefault()} tabindex=-1></canvas>
+    <img hidden class="absolute top-0 bottom-0 left-0 right-0 m-auto" id="canvas-copy"/>
   </div>
   <div class="absolute flex top-0 bottom-0 left-0 right-0 items-center justify-center pointer-events-none -z-50">
     <div id="status-container" class="rounded-lg bg-slate-50 shadow-xl p-8 m-8">
-      <div class="emscripten text-center text-6xl font-bold" id="status" contenteditable="true"><div class="jsonly">Starting...</div><noscript>Please enable Javascript to play.</noscript></div>
+      <div class="emscripten text-center text-2xl lg:text-6xl font-bold" id="status" contenteditable="true"><div class="jsonly">Starting...</div><noscript>Please enable Javascript to play.</noscript></div>
     </div>
   </div>
 </div>
@@ -129,9 +160,9 @@ onMount(() => {
   <div class="absolute flex top-0 bottom-0 left-0 right-0 items-center justify-center pointer-events-none">
     <div class="rounded-lg bg-slate-50 shadow-xl p-8 m-8">
       {#if isMobile()}
-        <div class="text-center text-6xl font-bold">Rotate! 🔄</div>
+        <div class="text-center text-2xl lg:text-6xl font-bold">Rotate! 🔄</div>
       {:else}
-        <div class="text-center text-6xl font-bold">Resize! ↔️npm</div>
+        <div class="text-center text-2xl lg:text-6xl font-bold">Resize! ↔️</div>
       {/if}
     </div>
   </div>
