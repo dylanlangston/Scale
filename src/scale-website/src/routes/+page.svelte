@@ -19,11 +19,12 @@
     }
   }
 
-function loadScript(name: string): void {
+function loadScript(name: string): HTMLScriptElement {
     const script = document.createElement("script");
     script.setAttribute("type", "text/javascript");
     script.setAttribute("src", name);
     document.head.append(script);
+    return script;
 }
 
 const padding_horizontal = 0;
@@ -44,7 +45,6 @@ function UpdateSize(e: Event): void {
     if (updateWasmResolution)
     {
       const resolution = fitInto16x9AspectRatio((<Window>e.target).innerWidth, ((<Window>e.target).innerHeight - padding_horizontal));
-
       updateWasmResolution(resolution.width, resolution.height);
     }
   }, 10);
@@ -94,8 +94,8 @@ function cloneCanvas(): HTMLImageElement {
   return newCanvas;
 }
 
-function loadEmscripten(): void {
-  loadScript("emscripten.js");
+function loadEmscripten(): HTMLScriptElement {
+  const script = loadScript("emscripten.js");
 
   window.Module = new Module();
   window.Module.setStatus("Downloading...");
@@ -108,6 +108,8 @@ function loadEmscripten(): void {
       e && console.error("[post-exception status] " + e);
     }
   };
+
+  return script;
 }
 
 let isMobile = () => {
@@ -121,11 +123,13 @@ onMount(() => {
     window.location.search = "";
   }
   else {
-    loadEmscripten();
-  }
+    const emscripten = loadEmscripten();
+    emscripten.onload = (e) => {
+      window.addEventListener('resize', UpdateSize);
+      window.addEventListener("deviceorientation", UpdateSize, true);
 
-  window.addEventListener('resize', UpdateSize);
-  window.addEventListener("deviceorientation", UpdateSize, true);
+    };
+  }
 })
 </script>
 
@@ -139,11 +143,15 @@ onMount(() => {
     text-stroke: 1px white;
     text-fill-color: black;
   }
+
+  .emoji {
+    font-family: Apple Color Emoji,Segoe UI Emoji,Noto Color Emoji,Android Emoji,EmojiSymbols,EmojiOne Mozilla,Twemoji Mozilla,Segoe UI Symbol,Noto Color Emoji Compat,emoji,noto-emojipedia-fallback;
+  }
 </style>
 
 <div class="portrait:hidden">
   <span id="controls" class="absolute right-0 pr-3 pt-2 z-50" title="Fullscreen">
-    <button type="button" on:click={() => toggleFullScreen()}><a class="rounded-lg bg-slate-400/[.3] font-extrabold text-3xl btn-fullscreen p-2 pt-0">⛶</a></button>
+    <button type="button" on:click={() => toggleFullScreen()}><a class="rounded-lg bg-slate-400/[.3] font-extrabold text-3xl btn-fullscreen p-2 pt-0 pb-0.5">⛶</a></button>
   </span>
   <div class="emscripten z-0">
     <canvas class="emscripten absolute top-0 bottom-0 left-0 right-0 m-auto" id="canvas" on:contextmenu={(e) => e.preventDefault()} tabindex=-1></canvas>
@@ -160,9 +168,9 @@ onMount(() => {
   <div class="absolute flex top-0 bottom-0 left-0 right-0 items-center justify-center pointer-events-none">
     <div class="rounded-lg bg-slate-50 shadow-xl p-8 m-8">
       {#if isMobile()}
-        <div class="text-center text-2xl lg:text-6xl font-bold">Rotate! 🔄</div>
+        <div class="text-center text-2xl lg:text-6xl font-bold emoji">Rotate! 🔄</div>
       {:else}
-        <div class="text-center text-2xl lg:text-6xl font-bold">Resize! ↔️</div>
+        <div class="text-center text-2xl lg:text-6xl font-bold emoji">Resize! ↔️</div>
       {/if}
     </div>
   </div>
