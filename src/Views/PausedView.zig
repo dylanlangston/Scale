@@ -12,10 +12,11 @@ const Colors = @import("../Colors.zig").Colors;
 const Logger = @import("../Logger.zig").Logger;
 const BaseView = @import("../Views/View.zig").View;
 const PausedViewModel = @import("../ViewModels/PausedViewModel.zig").PausedViewModel;
+const PauseOptions = @import("../ViewModels/PausedViewModel.zig").PauseOptions;
+
+const vm: type = PausedViewModel.GetVM();
 
 pub fn DrawFunction() Views {
-    const vm = PausedViewModel.GetVM();
-
     raylib.clearBackground(Colors.Blue.Base);
 
     const screenWidth: f32 = @floatFromInt(raylib.getScreenWidth());
@@ -47,10 +48,9 @@ pub fn DrawFunction() Views {
         );
     }
 
-    const foregroundColor = Colors.Blue.Base;
-    const backgroundColor = Colors.Blue.Dark.alpha(0.5);
+    const foregroundColor = Colors.Blue.Dark;
+    const backgroundColor = Colors.Blue.Dark.alpha(0.75);
     const accentColor = Colors.Blue.Light;
-    _ = accentColor;
 
     const background_rec = raylib.Rectangle.init(
         startX,
@@ -73,7 +73,9 @@ pub fn DrawFunction() Views {
         foregroundColor,
     );
 
-    const text = Shared.Locale.GetLocale().?.Paused;
+    const locale = Shared.Locale.GetLocale().?;
+
+    const text = locale.Paused;
     const textWidth = raylib.measureText(text, @intFromFloat(fontSize));
     raylib.drawText(
         text,
@@ -83,11 +85,56 @@ pub fn DrawFunction() Views {
         foregroundColor,
     );
 
-    if (Inputs.Start_Pressed()) {
-        return vm.View;
+    const yes = locale.Continue;
+    const yesWidth: f32 = @floatFromInt(raylib.measureText(yes, @intFromFloat(fontSize)));
+    const no = locale.Quit;
+    const noWidth: f32 = @floatFromInt(raylib.measureText(no, @intFromFloat(fontSize)));
+
+    const combinedYesNoWidth: f32 = yesWidth + noWidth;
+    const YesNoPadding = (background_rec.width - combinedYesNoWidth) / 3;
+
+    const yesNoPosY: i32 = @divFloor((@as(i32, @intFromFloat(screenHeight)) - @as(i32, @intFromFloat(fontSize))), 2) + (@as(i32, @intFromFloat(fontSize)) * 2);
+
+    raylib.drawText(
+        yes,
+        @intFromFloat(background_rec.x + YesNoPadding),
+        yesNoPosY,
+        @intFromFloat(fontSize),
+        if (vm.selection == PauseOptions.Continue) accentColor else foregroundColor,
+    );
+
+    raylib.drawText(
+        no,
+        @intFromFloat(background_rec.x + yesWidth + YesNoPadding + YesNoPadding),
+        yesNoPosY,
+        @intFromFloat(fontSize),
+        if (vm.selection == PauseOptions.Quit) accentColor else foregroundColor,
+    );
+
+    if (Inputs.Left_Pressed() and vm.selection != PauseOptions.Continue) {
+        vm.selection = PauseOptions.Continue;
+    }
+
+    if (Inputs.Right_Pressed() and vm.selection != PauseOptions.Quit) {
+        vm.selection = PauseOptions.Quit;
+    }
+
+    if (Inputs.A_Pressed()) {
+        return GetSelection();
     }
 
     return Views.Paused;
+}
+
+fn GetSelection() Views {
+    switch (vm.selection) {
+        PauseOptions.Continue => {
+            return vm.View;
+        },
+        PauseOptions.Quit => {
+            return Views.Menu;
+        },
+    }
 }
 
 pub const PausedView = View{

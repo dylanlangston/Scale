@@ -3,7 +3,9 @@
     "Title": "Scale Game!",
     "Menu_StartGame": "Start Game",
     "Menu_Settings": "Settings",
-    "Menu_Quit": "Quit",
+    "Menu_Quit": "Exit Scale Game",
     "Paused": "Paused",
+    "Continue": "Continue",
+    "Quit": "Quit",
     "Missing_Text": "Text not found!"
   }

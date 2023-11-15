@@ -54,6 +54,8 @@ pub const Locale = struct {
     Menu_Settings: [:0]const u8,
     Menu_Quit: [:0]const u8,
     Paused: [:0]const u8,
+    Continue: [:0]const u8,
+    Quit: [:0]const u8,
     Missing_Text: [:0]const u8,
 };
 

@@ -8,8 +8,15 @@ const Colors = @import("../Colors.zig").Colors;
 const Views = @import("../ViewLocator.zig").Views;
 const RndGen = std.rand.DefaultPrng;
 
+pub const PauseOptions = enum {
+    Continue,
+    Quit,
+};
+
 pub const PausedViewModel = ViewModel.Create(
     struct {
+        pub var selection = PauseOptions.Continue;
+
         pub var View: Views = undefined;
         pub var BackgroundTexture: ?raylib.Texture = null;
 
@@ -23,6 +30,7 @@ pub const PausedViewModel = ViewModel.Create(
             defer img.unload();
             BackgroundTexture = img.toTexture();
             View = v;
+            selection = PauseOptions.Continue;
         }
     },
     .{},
