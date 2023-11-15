@@ -78,7 +78,7 @@
 
 #define MAX_KEYBOARD_KEYS             512       // Maximum number of keyboard keys supported
 #define MAX_MOUSE_BUTTONS               8       // Maximum number of mouse buttons supported
-#define MAX_GAMEPADS                    4       // Maximum number of gamepads supported
+#define MAX_GAMEPADS                    1       // Maximum number of gamepads supported
 #define MAX_GAMEPAD_AXIS                8       // Maximum number of axis supported (per gamepad)
 #define MAX_GAMEPAD_BUTTONS            32       // Maximum number of buttons supported (per gamepad)
 #define MAX_TOUCH_POINTS                8       // Maximum number of touch points supported
@@ -180,6 +180,11 @@
 // Support text management functions
 // If not defined, still some functions are supported: TextLength(), TextFormat()
 #define SUPPORT_TEXT_MANIPULATION       1
+
+// On font atlas image generation [GenImageFontAtlas()], add a 3x3 pixels white rectangle
+// at the bottom-right corner of the atlas. It can be useful to for shapes drawing, to allow
+// drawing text and shapes with a single draw call [SetShapesTexture()].
+#define SUPPORT_FONT_ATLAS_WHITE_REC    1
 
 // rtext: Configuration values
 //------------------------------------------------------------------------------------
