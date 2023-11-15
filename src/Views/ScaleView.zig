@@ -15,11 +15,13 @@ const PlayerModel = @import("../Models/Player.zig").Player;
 const WorldModel = @import("../Models/World.zig").World;
 
 pub fn DrawFunction() Views {
+    WorldModel.Platforms = WorldModel.UpdatePlatforms();
+
     WorldModel.Player = WorldModel.Player.UpdatePosition();
     const playerPosition = WorldModel.Player.Position;
     const PlayerSize = PlayerModel.GetSize();
 
-    raylib.clearBackground(raylib.Color.green);
+    raylib.clearBackground(Colors.Green.Base);
 
     raylib.drawRectangle(
         @intFromFloat(playerPosition.x),
@@ -46,7 +48,7 @@ pub fn DrawFunction() Views {
         numberButtonsPressed += 1;
     }
 
-    var moveModifier: f32 = if (numberButtonsPressed > 1) 6 else 32;
+    var moveModifier: f32 = if (numberButtonsPressed > 1) 48 else 32;
 
     if (Inputs.Up_Held()) {
         WorldModel.Player = WorldModel.Player.MoveUp(moveModifier);
@@ -66,10 +68,6 @@ pub fn DrawFunction() Views {
 
     if (Inputs.Start_Pressed()) {
         return Shared.Pause(Views.Scale);
-    }
-
-    if (Inputs.A_Pressed()) {
-        return Views.Menu;
     }
 
     return Views.Scale;

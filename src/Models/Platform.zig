@@ -2,6 +2,7 @@ const builtin = @import("builtin");
 const std = @import("std");
 const raylib = @import("raylib");
 const World = @import("World.zig").World;
+const Logger = @import("../Logger.zig").Logger;
 
 pub const Platform = struct {
     Position: raylib.Rectangle,
@@ -17,8 +18,8 @@ pub const Platform = struct {
         return new_position_x;
     }
 
-    pub fn GetSize(self: Platform) Platform {
-        const current_screen = World.GetCurrentScreen();
+    pub fn GetSize(self: Platform) PlatformSize {
+        const current_screen = World.GetCurrentScreenSize();
         return PlatformSize{
             .width = self.GetSizeX(current_screen),
             .height = self.GetSizeY(current_screen),
@@ -51,9 +52,10 @@ pub const Platform = struct {
     }
 
     pub fn UpdatePosition(self: Platform) Platform {
-        const current_screen = World.GetCurrentScreen();
+        const current_screen = World.GetCurrentScreenSize();
         return Platform{
             .Position = self.GetPosition(current_screen),
+            .Size = self.GetSize(),
         };
     }
 };

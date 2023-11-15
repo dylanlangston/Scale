@@ -32,17 +32,31 @@ pub const Player = struct {
     fn GetPositionX(self: Player, current_screen: raylib.Rectangle) f32 {
         if (current_screen.width != self.Position.width) {
             const new_position_x: f32 = self.Position.x / self.Position.width * current_screen.width;
-            return new_position_x;
+            return self.EnsureWithinBounnds(
+                directions.horizontal,
+                new_position_x,
+                Player.GetSize(),
+            );
         }
-        return self.Position.x;
+        return self.EnsureWithinBounnds(
+            directions.horizontal,
+            self.Position.x,
+            Player.GetSize(),
+        );
     }
 
     fn GetPositionY(self: Player, current_screen: raylib.Rectangle) f32 {
+        const size = Player.GetSize();
+        const camera_move_mod: f32 = size.height / 64;
         if (current_screen.height != self.Position.height) {
             const new_position_y: f32 = self.Position.y / self.Position.height * current_screen.height;
-            return new_position_y;
+            return self.EnsureWithinBounnds(directions.vertical, new_position_y, size);
         }
-        return self.Position.y;
+        return self.EnsureWithinBounnds(
+            directions.vertical,
+            self.Position.y + camera_move_mod,
+            size,
+        );
     }
 
     fn GetPosition(self: Player, current_screen: raylib.Rectangle) raylib.Rectangle {
@@ -54,6 +68,41 @@ pub const Player = struct {
         );
     }
 
+    const directions = enum {
+        up,
+        down,
+        left,
+        right,
+        vertical,
+        horizontal,
+    };
+
+    fn EnsureWithinBounnds(self: Player, direction: directions, f: f32, size: PlayerSize) f32 {
+        switch (direction) {
+            directions.left,
+            directions.up,
+            => {
+                if (f < 0) return 0;
+            },
+            directions.down => {
+                if (f > self.Position.height - size.height) return self.Position.height - size.height;
+            },
+            directions.right => {
+                if (f > self.Position.width - size.width) return self.Position.width - size.width;
+            },
+            directions.vertical => {
+                if (f < 0) return 0;
+                if (f > self.Position.height - size.height) return self.Position.height - size.height;
+            },
+            directions.horizontal => {
+                if (f < 0) return 0;
+                if (f > self.Position.width - size.width) return self.Position.width - size.width;
+            },
+        }
+
+        return f;
+    }
+
     pub fn UpdatePosition(self: Player) Player {
         const current_screen = World.GetCurrentScreenSize();
         return Player{
@@ -63,8 +112,11 @@ pub const Player = struct {
 
     pub fn MoveUp(self: Player, move_mod: f32) Player {
         const playerSize = Player.GetSize();
-        var new_y = self.Position.y - (playerSize.height / move_mod);
-        if (new_y < 0) new_y = 0;
+        const new_y = self.EnsureWithinBounnds(
+            directions.up,
+            (self.Position.y - (playerSize.height / move_mod)),
+            playerSize,
+        );
 
         return Player{
             .Position = raylib.Rectangle.init(
@@ -78,9 +130,11 @@ pub const Player = struct {
 
     pub fn MoveDown(self: Player, move_mod: f32) Player {
         const playerSize = Player.GetSize();
-        var new_y = self.Position.y + (playerSize.height / move_mod);
-        const size = Player.GetSize();
-        if (new_y > self.Position.height - size.height) new_y = self.Position.height - size.height;
+        const new_y = self.EnsureWithinBounnds(
+            directions.down,
+            (self.Position.y + (playerSize.height / move_mod)),
+            playerSize,
+        );
 
         return Player{
             .Position = raylib.Rectangle.init(
@@ -94,8 +148,11 @@ pub const Player = struct {
 
     pub fn MoveLeft(self: Player, move_mod: f32) Player {
         const playerSize = Player.GetSize();
-        var new_x = self.Position.x - (playerSize.width / move_mod);
-        if (new_x < 0) new_x = 0;
+        const new_x = self.EnsureWithinBounnds(
+            directions.left,
+            (self.Position.x - (playerSize.width / move_mod)),
+            playerSize,
+        );
 
         return Player{
             .Position = raylib.Rectangle.init(
@@ -109,9 +166,11 @@ pub const Player = struct {
 
     pub fn MoveRight(self: Player, move_mod: f32) Player {
         const playerSize = Player.GetSize();
-        var new_x = self.Position.x + (playerSize.width / move_mod);
-        const size = Player.GetSize();
-        if (new_x > self.Position.width - size.width) new_x = self.Position.width - size.width;
+        const new_x = self.EnsureWithinBounnds(
+            directions.right,
+            (self.Position.x + (playerSize.width / move_mod)),
+            playerSize,
+        );
 
         return Player{
             .Position = raylib.Rectangle.init(

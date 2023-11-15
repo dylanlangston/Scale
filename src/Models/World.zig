@@ -4,6 +4,7 @@ const raylib = @import("raylib");
 const PlayerModel = @import("../Models/Player.zig").Player;
 const PlatformModel = @import("../Models/Platform.zig").Platform;
 const Shared = @import("../Helpers.zig").Shared;
+const Logger = @import("../Logger.zig").Logger;
 
 pub const World = struct {
     pub var Player: PlayerModel = undefined;
@@ -19,7 +20,7 @@ pub const World = struct {
         Player = PlayerModel{
             .Position = raylib.Rectangle.init(
                 (screenWidth - PlayerSize.width) / 2,
-                screenHeight - PlayerSize.height,
+                (screenHeight - PlayerSize.height) / 2,
                 screenWidth,
                 screenHeight,
             ),
@@ -38,6 +39,21 @@ pub const World = struct {
                 .width = 50,
             },
         });
+    }
+
+    pub fn UpdatePlatforms() std.ArrayList(PlatformModel) {
+        for (Platforms.items, 0..) |platform, index| {
+            Platforms.replaceRange(
+                index,
+                1,
+                &[1]PlatformModel{
+                    platform.UpdatePosition(),
+                },
+            ) catch {
+                Logger.Info("Failed to update platform!");
+            };
+        }
+        return Platforms;
     }
 
     pub fn Deinit() void {
