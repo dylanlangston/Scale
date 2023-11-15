@@ -73,10 +73,10 @@ pub fn DrawFunction() Views {
         foregroundColor,
     );
 
-    const text = "Paused";
+    const text = Shared.Locale.GetLocale().?.Paused;
     const textWidth = raylib.measureText(text, @intFromFloat(fontSize));
     raylib.drawText(
-        "Paused",
+        text,
         @divFloor((@as(i32, @intFromFloat(screenWidth)) - textWidth), 2),
         @divFloor((@as(i32, @intFromFloat(screenHeight)) - @as(i32, @intFromFloat(fontSize))), 2),
         @intFromFloat(fontSize),
