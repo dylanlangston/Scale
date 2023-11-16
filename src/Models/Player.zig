@@ -47,14 +47,13 @@ pub const Player = struct {
 
     fn GetPositionY(self: Player, current_screen: raylib.Rectangle) f32 {
         const size = Player.GetSize();
-        const camera_move_mod: f32 = size.height / 64;
         if (current_screen.height != self.Position.height) {
             const new_position_y: f32 = self.Position.y / self.Position.height * current_screen.height;
             return self.EnsureWithinBounnds(directions.vertical, new_position_y, size);
         }
         return self.EnsureWithinBounnds(
             directions.vertical,
-            self.Position.y + camera_move_mod,
+            self.Position.y,
             size,
         );
     }

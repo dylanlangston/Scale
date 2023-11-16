@@ -19,25 +19,78 @@ pub fn DrawFunction() Views {
     raylib.clearBackground(Colors.Gray.Base);
 
     const locale = Shared.Locale.GetLocale().?;
-    const font = Shared.GetFont(Fonts.SpaceMeatball);
+    const font = Shared.GetFont(Fonts.EightBitDragon);
+    const brick = Shared.GetTexture(.Brick);
 
     const title = locale.Title;
     const screenWidth = raylib.getScreenWidth();
     const screenHeight = raylib.getScreenHeight();
-    const fontSize = @divFloor(screenHeight, 20);
+    const fontSize = @divFloor(screenWidth, 20);
     const startY = @divFloor(screenHeight, 4);
-    const titleWidth = raylib.measureText(title, fontSize * 2);
 
-    const foregroundColor = Colors.Blue.Base;
-    const backgroundColor = Colors.Blue.Dark;
-    const accentColor = Colors.Blue.Light;
-    raylib.drawText(
-        title,
-        @divFloor(screenWidth - titleWidth, 2),
-        startY,
-        fontSize * 2,
-        backgroundColor,
+    const bricks_scale_x: f32 = 800 / @as(f32, @floatFromInt(screenWidth));
+    const bricks_scale_y: f32 = 450 / @as(f32, @floatFromInt(screenHeight));
+    const brick_size_x: f32 = 32 / bricks_scale_x;
+    const brick_size_y: f32 = 32 / bricks_scale_y;
+    const bricks_x: f32 = 25;
+    const bricks_y: f32 = 14;
+    const brick_rect = raylib.Rectangle.init(
+        0,
+        0,
+        @floatFromInt(brick.width),
+        @floatFromInt(brick.height),
     );
+    for (0..bricks_x) |x| {
+        for (0..bricks_y) |y| {
+            const dest = raylib.Rectangle.init(
+                @as(f32, @floatFromInt(x)) * brick_size_x,
+                @as(f32, @floatFromInt(y)) * brick_size_y,
+                brick_size_x,
+                brick_size_y,
+            );
+            raylib.drawTexturePro(
+                brick,
+                brick_rect,
+                dest,
+                raylib.Vector2.init(0, 0),
+                0,
+                Colors.Miyazaki.Tan,
+            );
+        }
+    }
+
+    const foregroundColor = Colors.Miyazaki.Blue_Gray;
+    const backgroundColor = Colors.Miyazaki.Blue_Gray.alpha(0.75);
+    const accentColor = Colors.Miyazaki.Blue;
+
+    // Title
+    const titleFont = Shared.GetFont(Fonts.EcBricksRegular);
+    const TitleTextSize = raylib.measureTextEx(
+        font,
+        title,
+        @as(f32, @floatFromInt(fontSize)) * 4,
+        @floatFromInt(font.glyphPadding),
+    );
+    const titleFontsizeF: f32 = TitleTextSize.y;
+    raylib.drawTextEx(
+        titleFont,
+        title,
+        raylib.Vector2.init(
+            ((@as(f32, @floatFromInt(screenWidth)) - TitleTextSize.x - titleFontsizeF) / 2) + 10,
+            @as(f32, @floatFromInt(startY)) - (titleFontsizeF / 2),
+        ),
+        titleFontsizeF,
+        @floatFromInt(titleFont.glyphPadding),
+        Colors.Miyazaki.Brown,
+    );
+
+    // raylib.drawText(
+    //     title,
+    //     @divFloor(screenWidth - titleWidth, 2),
+    //     startY,
+    //     fontSize * 3,
+    //     backgroundColor,
+    // );
 
     var index: usize = 0;
     for (std.enums.values(Selection)) |select| {
@@ -77,16 +130,11 @@ pub fn DrawFunction() Views {
             font,
             text,
             raylib.Vector2.init(
-                (vm.Rectangles[index].x + vm.Rectangles[index].width / 2 - raylib.measureTextEx(
-                    font,
-                    text,
-                    fontsizeF,
-                    0,
-                ).x / 2),
+                8 + vm.Rectangles[index].x + ((vm.Rectangles[index].width - TextSize.x) / 2),
                 vm.Rectangles[index].y + 8,
             ),
             fontsizeF,
-            0,
+            @floatFromInt(font.glyphPadding),
             selected_or_not_color,
         );
 

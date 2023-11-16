@@ -16,11 +16,24 @@ pub const FontManager = struct {
             return LoadedFonts.?.get(font).?;
         }
 
+        // https://www.fontspace.com/
         switch (font) {
-            Fonts.SpaceMeatball => {
-                const bytes = @embedFile("./Fonts/Space Meatball.otf");
-                const f = raylib.loadFontFromMemory(".otf", bytes, 100, undefined);
-                LoadedFonts.?.put(Fonts.SpaceMeatball, f) catch return FontManagerErrors.FailedToAppend;
+            Fonts.EightBitDragon => {
+                const bytes = @embedFile("./Fonts/EightBitDragon.ttf");
+                const f = raylib.loadFontFromMemory(".ttf", bytes, 100, undefined);
+                LoadedFonts.?.put(Fonts.EightBitDragon, f) catch return FontManagerErrors.FailedToAppend;
+                return f;
+            },
+            Fonts.TwoLines => {
+                const bytes = @embedFile("./Fonts/2Lines.ttf");
+                const f = raylib.loadFontFromMemory(".ttf", bytes, 100, undefined);
+                LoadedFonts.?.put(Fonts.TwoLines, f) catch return FontManagerErrors.FailedToAppend;
+                return f;
+            },
+            Fonts.EcBricksRegular => {
+                const bytes = @embedFile("./Fonts/EcBricksRegular.ttf");
+                const f = raylib.loadFontFromMemory(".ttf", bytes, 100, undefined);
+                LoadedFonts.?.put(Fonts.EcBricksRegular, f) catch return FontManagerErrors.FailedToAppend;
                 return f;
             },
         }
@@ -33,4 +46,8 @@ pub const FontManager = struct {
     }
 };
 
-pub const Fonts = enum { SpaceMeatball };
+pub const Fonts = enum {
+    EightBitDragon,
+    TwoLines,
+    EcBricksRegular,
+};

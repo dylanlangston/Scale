@@ -18,7 +18,7 @@ fn DrawFunction() Views {
     raylib.clearBackground(Colors.Tone.Dark);
 
     const text = Shared.Locale.GetLocale().?.Dylan_Splash_Text;
-    const font = Shared.GetFont(Fonts.SpaceMeatball);
+    const font = Shared.GetFont(Fonts.TwoLines);
     const screenWidth: f32 = @floatFromInt(raylib.getScreenWidth());
     const screenHeight: f32 = @floatFromInt(raylib.getScreenHeight());
     const fontSize: f32 = screenWidth / 25;

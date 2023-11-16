@@ -21,6 +21,7 @@ pub fn DrawFunction() Views {
 
     const screenWidth: f32 = @floatFromInt(raylib.getScreenWidth());
     const screenHeight: f32 = @floatFromInt(raylib.getScreenHeight());
+    const font = Shared.GetFont(Fonts.EightBitDragon);
     const fontSize = @divFloor(screenWidth, 20);
     const startY = @divFloor(screenHeight, 4);
     const startX = @divFloor(screenWidth, 4);
@@ -44,13 +45,13 @@ pub fn DrawFunction() Views {
             rec2,
             raylib.Vector2.init(0, 0),
             0,
-            Colors.Gray.Base,
+            Colors.Miyazaki.Tan,
         );
     }
 
-    const foregroundColor = Colors.Blue.Dark;
-    const backgroundColor = Colors.Blue.Dark.alpha(0.75);
-    const accentColor = Colors.Blue.Light;
+    const foregroundColor = Colors.Miyazaki.Blue_Gray;
+    const backgroundColor = Colors.Miyazaki.Blue_Gray.alpha(0.75);
+    const accentColor = Colors.Miyazaki.Light_Blue;
 
     const background_rec = raylib.Rectangle.init(
         startX,
@@ -76,38 +77,68 @@ pub fn DrawFunction() Views {
     const locale = Shared.Locale.GetLocale().?;
 
     const text = locale.Paused;
-    const textWidth = raylib.measureText(text, @intFromFloat(fontSize));
-    raylib.drawText(
+    const textSize = raylib.measureTextEx(
+        font,
         text,
-        @divFloor((@as(i32, @intFromFloat(screenWidth)) - textWidth), 2),
-        @divFloor((@as(i32, @intFromFloat(screenHeight)) - @as(i32, @intFromFloat(fontSize))), 2),
-        @intFromFloat(fontSize),
+        fontSize * 2,
+        @floatFromInt(font.glyphPadding),
+    );
+    const textSizeF: f32 = textSize.y;
+    raylib.drawTextEx(
+        font,
+        text,
+        raylib.Vector2.init(
+            ((screenWidth - textSize.x) / 2),
+            (screenHeight - textSizeF) / 2,
+        ),
+        textSizeF,
+        @floatFromInt(font.glyphPadding),
         foregroundColor,
     );
 
     const yes = locale.Continue;
-    const yesWidth: f32 = @floatFromInt(raylib.measureText(yes, @intFromFloat(fontSize)));
-    const no = locale.Quit;
-    const noWidth: f32 = @floatFromInt(raylib.measureText(no, @intFromFloat(fontSize)));
+    const yesSize = raylib.measureTextEx(
+        font,
+        yes,
+        fontSize,
+        @floatFromInt(font.glyphPadding),
+    );
+    const yesSizeF: f32 = yesSize.y;
 
-    const combinedYesNoWidth: f32 = yesWidth + noWidth;
+    const no = locale.Quit;
+    const noSize = raylib.measureTextEx(
+        font,
+        no,
+        fontSize,
+        @floatFromInt(font.glyphPadding),
+    );
+    const noSizeF: f32 = noSize.y;
+
+    const yesNoPosY: f32 = ((screenHeight - fontSize) / 2) + (yesSizeF * 2);
+    const combinedYesNoWidth: f32 = yesSize.x + noSize.x;
     const YesNoPadding = (background_rec.width - combinedYesNoWidth) / 3;
 
-    const yesNoPosY: i32 = @divFloor((@as(i32, @intFromFloat(screenHeight)) - @as(i32, @intFromFloat(fontSize))), 2) + (@as(i32, @intFromFloat(fontSize)) * 2);
-
-    raylib.drawText(
+    raylib.drawTextEx(
+        font,
         yes,
-        @intFromFloat(background_rec.x + YesNoPadding),
-        yesNoPosY,
-        @intFromFloat(fontSize),
+        raylib.Vector2.init(
+            background_rec.x + YesNoPadding,
+            yesNoPosY,
+        ),
+        yesSizeF,
+        @floatFromInt(font.glyphPadding),
         if (vm.selection == PauseOptions.Continue) accentColor else foregroundColor,
     );
 
-    raylib.drawText(
+    raylib.drawTextEx(
+        font,
         no,
-        @intFromFloat(background_rec.x + yesWidth + YesNoPadding + YesNoPadding),
-        yesNoPosY,
-        @intFromFloat(fontSize),
+        raylib.Vector2.init(
+            background_rec.x + yesSize.x + YesNoPadding + YesNoPadding,
+            yesNoPosY,
+        ),
+        noSizeF,
+        @floatFromInt(font.glyphPadding),
         if (vm.selection == PauseOptions.Quit) accentColor else foregroundColor,
     );
 

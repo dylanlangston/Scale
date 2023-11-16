@@ -8,6 +8,8 @@ const Locales = @import("Localelizer.zig").Locales;
 const Localelizer = @import("Localelizer.zig").Localelizer;
 const FontManager = @import("FontManager.zig").FontManager;
 const Fonts = @import("FontManager.zig").Fonts;
+const TextureManager = @import("TextureManager.zig").TextureManager;
+const Textures = @import("TextureManager.zig").Textures;
 const Logger = @import("Logger.zig").Logger;
 const PausedViewModel = @import("./ViewModels/PausedViewModel.zig").PausedViewModel;
 const Views = @import("ViewLocator.zig").Views;
@@ -33,6 +35,13 @@ pub const Shared = struct {
         return FontManager.GetFont(font) catch |err| {
             Logger.Debug_Formatted("Failed to get font: {}", .{err});
             return raylib.getFontDefault();
+        };
+    }
+
+    pub fn GetTexture(font: Textures) raylib.Texture {
+        return TextureManager.GetTexture(font) catch |err| {
+            Logger.Debug_Formatted("Failed to get texture: {}", .{err});
+            return raylib.loadTextureFromImage(raylib.loadImageFromScreen());
         };
     }
 
