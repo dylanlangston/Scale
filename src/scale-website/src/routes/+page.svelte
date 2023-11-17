@@ -4,19 +4,46 @@
   import { BrowserDetector } from "browser-dtector";
 
   function toggleFullScreen(): void {
-    const lockPointer = false;
-    const resizeCanvas = false;
-    const requestFullscreen = window.Module.requestFullscreen;
-    if (requestFullscreen)
-    {
+    const elem = document.documentElement;
+    if (!document.fullscreenElement) {
+      const resolution = fitInto16x9AspectRatio(window.screen.availWidth, window.screen.availHeight);
       const updateWasmResolution = window.Module._updateWasmResolution;
       if (updateWasmResolution)
       {
-        const resolution = fitInto16x9AspectRatio(window.screen.width, window.screen.height);
         updateWasmResolution(resolution.width, resolution.height);
+        window.Module.canvas.style.width = resolution.width + "px !important";
+        window.Module.canvas.style.height = resolution.height + "px !important";
       }
-      requestFullscreen(lockPointer, resizeCanvas);
+      setTimeout(() => {
+        elem.requestFullscreen({ navigationUI: "show" }).then(() => {
+
+        }).catch((err) => {
+          alert(
+            `Error attempting to enable fullscreen mode: ${err.message} (${err.name})`,
+            );
+          UpdateSize(<any>null);
+        });
+      }, 50);
+
+    } else {
+      document.exitFullscreen().then(() => {
+        UpdateSize(<any>null);
+      })
+      
     }
+    // const lockPointer = false;
+    // const resizeCanvas = false;
+    // const requestFullscreen = window.Module.requestFullscreen;
+    // if (requestFullscreen)
+    // {
+    //   requestFullscreen(lockPointer, resizeCanvas);
+    //   const updateWasmResolution = window.Module._updateWasmResolution;
+    //   if (updateWasmResolution)
+    //   {
+    //     const resolution = fitInto16x9AspectRatio(window.screen.width, window.screen.height);
+    //     updateWasmResolution(resolution.width, resolution.height);
+    //   }
+    // }
   }
 
 function loadScript(name: string): HTMLScriptElement {
@@ -30,21 +57,20 @@ function loadScript(name: string): HTMLScriptElement {
 const padding_horizontal = 0;
 let updateSizeTimeout: number|undefined = undefined;
 function UpdateSize(e: Event): void {
+  if (document.fullscreenElement) {
+    return;
+  }
+
   clearTimeout(hideNewCanvasTimeout);
   clearTimeout(updateSizeTimeout);
   const new_canvas = cloneCanvas();
   window.Module.canvas.hidden = true;
 
   updateSizeTimeout = setTimeout(() => {
-    if (window.Browser.isFullscreen)
-    {
-      return;
-    }
-
     const updateWasmResolution = window.Module._updateWasmResolution;
     if (updateWasmResolution)
     {
-      const resolution = fitInto16x9AspectRatio((<Window>e.target).innerWidth, ((<Window>e.target).innerHeight - padding_horizontal));
+      const resolution = fitInto16x9AspectRatio(window.innerWidth, (window.innerHeight - padding_horizontal));
       updateWasmResolution(resolution.width, resolution.height);
     }
   }, 10);
@@ -140,10 +166,6 @@ onMount(() => {
 
   .emoji {
     font-family: Apple Color Emoji,Segoe UI Emoji,Noto Color Emoji,Android Emoji,EmojiSymbols,EmojiOne Mozilla,Twemoji Mozilla,Segoe UI Symbol,Noto Color Emoji Compat,emoji,noto-emojipedia-fallback;
-  }
-
-  :fullscreen {
-    background-color: yellow;
   }
 </style>
 
