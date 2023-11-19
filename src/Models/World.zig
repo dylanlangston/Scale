@@ -20,10 +20,12 @@ pub const World = struct {
         Player = PlayerModel{
             .Position = raylib.Rectangle.init(
                 (screenWidth - PlayerSize.width) / 2,
-                (screenHeight - PlayerSize.height) / 2,
+                screenHeight - PlayerSize.height,
                 screenWidth,
                 screenHeight,
             ),
+            .Velocity = raylib.Vector2.init(0, 0),
+            .IsJumping = false,
         };
 
         Platforms = std.ArrayList(PlatformModel).init(Shared.GetAllocator());

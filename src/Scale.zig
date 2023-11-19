@@ -8,6 +8,7 @@ const Locales = @import("Localelizer.zig").Locales;
 const Logger = @import("Logger.zig").Logger;
 const Views = @import("ViewLocator.zig").Views;
 const Inputs = @import("Inputs.zig").Inputs;
+const FontManager = @import("FontManager.zig").FontManager;
 
 pub fn main() void {
     // Check that we can allocate memory
@@ -36,8 +37,14 @@ pub fn main() void {
     raylib.setTargetFPS(60);
     defer raylib.closeWindow();
 
+    FontManager.Init();
+
     // Default View on startup is the Splash Screen
     var current_view: vl.Views = vl.Views.Raylib_Splash_Screen;
+
+    if (Shared.Settings.GetSettings().Debug and Shared.Settings.GetSettings().DebugView != null) {
+        current_view = @enumFromInt(Shared.Settings.GetSettings().DebugView.?);
+    }
     defer DeinitViews();
 
     Logger.Info_Formatted("Platform {}", .{builtin.os.tag});

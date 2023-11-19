@@ -1,11 +1,20 @@
 const std = @import("std");
 const raylib = @import("raylib");
 const Shared = @import("Helpers.zig").Shared;
+const Logger = @import("Logger.zig").Logger;
 
 pub const FontManager = struct {
     var LoadedFonts: ?std.AutoHashMap(Fonts, raylib.Font) = null;
 
     const FontManagerErrors = error{FailedToAppend};
+
+    pub fn Init() void {
+        for (std.enums.values(Fonts)) |font| {
+            _ = GetFont(font) catch {
+                Logger.Error("Failed to init font");
+            };
+        }
+    }
 
     pub fn GetFont(font: Fonts) FontManagerErrors!raylib.Font {
         if (LoadedFonts == null) {

@@ -126,7 +126,15 @@ pub const Inputs = struct {
 
         return false;
     }
-    pub fn B_Pressed() bool {}
+    pub fn B_Pressed() bool {
+        const button = raylib.isGamepadButtonPressed(0, @as(raylib.GamepadButton, @enumFromInt(7)));
+        if (button) return true;
+        //Logger.Info_Formatted("Button: {}", .{@intFromEnum(raylib.getGamepadButtonPressed())});
+
+        if (raylib.isKeyPressed(raylib.KeyboardKey.key_space)) return true;
+
+        return false;
+    }
     pub fn X_Pressed() bool {}
     pub fn Y_Pressed() bool {}
     pub fn Start_Pressed() bool {

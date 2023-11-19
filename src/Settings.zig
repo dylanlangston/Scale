@@ -8,6 +8,7 @@ const Shared = @import("Helpers.zig").Shared;
 pub const Settings = struct {
     CurrentResolution: Resolution,
     Debug: bool,
+    DebugView: ?i32,
     UserLocale: Locales,
     Updated: bool = false,
 
@@ -83,13 +84,19 @@ pub const Settings = struct {
         return Settings{
             .CurrentResolution = Resolution{ .Width = @max(Resolutions[0].Width, settings.CurrentResolution.Width), .Height = @max(Resolutions[0].Height, settings.CurrentResolution.Height) },
             .Debug = settings.Debug,
+            .DebugView = settings.DebugView,
             .UserLocale = settings.UserLocale,
         };
     }
 
     const settingsFile = "settings.json";
 
-    const default_settings = Settings{ .CurrentResolution = Resolutions[0], .Debug = false, .UserLocale = Locales.unknown };
+    const default_settings = Settings{
+        .CurrentResolution = Resolutions[0],
+        .Debug = false,
+        .DebugView = null,
+        .UserLocale = Locales.unknown,
+    };
 };
 
 const Resolution = struct {

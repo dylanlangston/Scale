@@ -2,9 +2,12 @@ const builtin = @import("builtin");
 const std = @import("std");
 const raylib = @import("raylib");
 const World = @import("World.zig").World;
+const Logger = @import("../Logger.zig").Logger;
 
 pub const Player = struct {
     Position: raylib.Rectangle,
+    Velocity: raylib.Vector2,
+    IsJumping: bool,
 
     const Size = PlayerSize{
         .width = 5,
@@ -102,20 +105,77 @@ pub const Player = struct {
         return f;
     }
 
+    fn IsCollidingX(position: raylib.Rectangle, current_screen: raylib.Rectangle, size: PlayerSize) bool {
+        if (position.x + size.width >= current_screen.width) {
+            return true;
+        }
+        return false;
+    }
+
+    fn IsCollidingY(position: raylib.Rectangle, current_screen: raylib.Rectangle, size: PlayerSize) bool {
+        if (position.y + size.height >= current_screen.height) {
+            return true;
+        }
+        return false;
+    }
+
     pub fn UpdatePosition(self: Player) Player {
         const current_screen = World.GetCurrentScreenSize();
+
+        var newPosition: raylib.Rectangle = undefined;
+        var newVelocity: raylib.Vector2 = undefined;
+        var newIsJumping: bool = undefined;
+        if (self.IsJumping) {
+            const playerSize = Player.GetSize();
+
+            // Apply gravity
+            const new_velcoityY = self.Velocity.y - (GRAVITY);
+            newVelocity = raylib.Vector2.init(
+                self.Velocity.x,
+                new_velcoityY,
+            );
+
+            const new_y = self.EnsureWithinBounnds(
+                directions.vertical,
+                (self.Position.y - (playerSize.height * newVelocity.y)),
+                playerSize,
+            );
+
+            newPosition = raylib.Rectangle.init(
+                self.Position.x,
+                new_y,
+                self.Position.width,
+                self.Position.height,
+            );
+
+            newIsJumping = !IsCollidingY(newPosition, current_screen, playerSize);
+        } else {
+            newPosition = self.GetPosition(current_screen);
+            newVelocity = self.Velocity;
+            newIsJumping = self.IsJumping;
+        }
+
         return Player{
-            .Position = self.GetPosition(current_screen),
+            .Position = newPosition,
+            .Velocity = newVelocity,
+            .IsJumping = newIsJumping,
         };
     }
 
-    pub fn MoveUp(self: Player, move_mod: f32) Player {
+    const GRAVITY: f32 = 0.1;
+    const JUMP_FORCE: f32 = 1.0;
+
+    pub fn Jump(self: Player, move_mod: f32) Player {
+        if (self.IsJumping) return self;
+
         const playerSize = Player.GetSize();
         const new_y = self.EnsureWithinBounnds(
             directions.up,
             (self.Position.y - (playerSize.height / move_mod)),
             playerSize,
         );
+
+        Logger.Debug("Jump");
 
         return Player{
             .Position = raylib.Rectangle.init(
@@ -124,10 +184,17 @@ pub const Player = struct {
                 self.Position.width,
                 self.Position.height,
             ),
+            .Velocity = raylib.Vector2.init(
+                self.Velocity.x,
+                JUMP_FORCE,
+            ),
+            .IsJumping = true,
         };
     }
 
     pub fn MoveDown(self: Player, move_mod: f32) Player {
+        if (self.IsJumping) return self;
+
         const playerSize = Player.GetSize();
         const new_y = self.EnsureWithinBounnds(
             directions.down,
@@ -142,14 +209,18 @@ pub const Player = struct {
                 self.Position.width,
                 self.Position.height,
             ),
+            .Velocity = self.Velocity,
+            .IsJumping = self.IsJumping,
         };
     }
 
     pub fn MoveLeft(self: Player, move_mod: f32) Player {
+        if (self.IsJumping) return self;
+
         const playerSize = Player.GetSize();
         const new_x = self.EnsureWithinBounnds(
             directions.left,
-            (self.Position.x - (playerSize.width / move_mod)),
+            (self.Position.x - (playerSize.width / move_mod * 2)),
             playerSize,
         );
 
@@ -160,14 +231,18 @@ pub const Player = struct {
                 self.Position.width,
                 self.Position.height,
             ),
+            .Velocity = self.Velocity,
+            .IsJumping = self.IsJumping,
         };
     }
 
     pub fn MoveRight(self: Player, move_mod: f32) Player {
+        if (self.IsJumping) return self;
+
         const playerSize = Player.GetSize();
         const new_x = self.EnsureWithinBounnds(
             directions.right,
-            (self.Position.x + (playerSize.width / move_mod)),
+            (self.Position.x + (playerSize.width / move_mod * 2)),
             playerSize,
         );
 
@@ -178,6 +253,8 @@ pub const Player = struct {
                 self.Position.width,
                 self.Position.height,
             ),
+            .Velocity = self.Velocity,
+            .IsJumping = self.IsJumping,
         };
     }
 };

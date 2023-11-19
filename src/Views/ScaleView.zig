@@ -50,13 +50,13 @@ pub fn DrawFunction() Views {
 
     var moveModifier: f32 = if (numberButtonsPressed > 1) 48 else 32;
 
-    if (Inputs.Up_Held()) {
-        WorldModel.Player = WorldModel.Player.MoveUp(moveModifier);
+    if (Inputs.B_Pressed()) {
+        WorldModel.Player = WorldModel.Player.Jump(moveModifier);
     }
 
-    if (Inputs.Down_Held()) {
-        WorldModel.Player = WorldModel.Player.MoveDown(moveModifier);
-    }
+    // if (Inputs.Down_Held()) {
+    //     WorldModel.Player = WorldModel.Player.MoveDown(moveModifier);
+    // }
 
     if (Inputs.Left_Held()) {
         WorldModel.Player = WorldModel.Player.MoveLeft(moveModifier);

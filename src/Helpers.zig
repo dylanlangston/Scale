@@ -112,6 +112,9 @@ pub const Shared = struct {
         // Fonts
         defer FontManager.deinit();
 
+        // Textures
+        defer TextureManager.deinit();
+
         // Settings
         _ = loaded_settings.?.save(Shared.GetAllocator());
     }
