@@ -7,6 +7,7 @@ const Shared = @import("Helpers.zig").Shared;
 
 pub const Settings = struct {
     CurrentResolution: Resolution,
+    TargetFPS: i32,
     Debug: bool,
     DebugView: ?i32,
     UserLocale: Locales,
@@ -83,6 +84,7 @@ pub const Settings = struct {
     fn NormalizeSettings(settings: Settings) Settings {
         return Settings{
             .CurrentResolution = Resolution{ .Width = @max(Resolutions[0].Width, settings.CurrentResolution.Width), .Height = @max(Resolutions[0].Height, settings.CurrentResolution.Height) },
+            .TargetFPS = settings.TargetFPS,
             .Debug = settings.Debug,
             .DebugView = settings.DebugView,
             .UserLocale = settings.UserLocale,
@@ -92,7 +94,8 @@ pub const Settings = struct {
     const settingsFile = "settings.json";
 
     const default_settings = Settings{
-        .CurrentResolution = Resolutions[0],
+        .CurrentResolution = Resolutions[8],
+        .TargetFPS = 120,
         .Debug = false,
         .DebugView = null,
         .UserLocale = Locales.unknown,

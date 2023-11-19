@@ -9,11 +9,11 @@ const Colors = @import("../Colors.zig").Colors;
 const Logger = @import("../Logger.zig").Logger;
 const DylanSplashScreenViewModel = @import("../ViewModels/DylanSplashScreenViewModel.zig").DylanSplashScreenViewModel;
 
-var framesCounter: i16 = 0;
+var framesCounter: f32 = 0;
 fn DrawFunction() Views {
     const vm = DylanSplashScreenViewModel.GetVM();
 
-    framesCounter += 1;
+    framesCounter += raylib.getFrameTime() * 60;
 
     raylib.clearBackground(Colors.Tone.Dark);
 
@@ -22,22 +22,22 @@ fn DrawFunction() Views {
     const screenWidth: f32 = @floatFromInt(raylib.getScreenWidth());
     const screenHeight: f32 = @floatFromInt(raylib.getScreenHeight());
     const fontSize: f32 = screenWidth / 25;
-    const offset_mod: f32 = screenHeight / @as(f32, @floatFromInt(framesCounter));
+    const offset_mod: f32 = screenHeight / framesCounter;
     var color = vm.GetRandomColor(offset_mod);
     const TextSize = raylib.measureTextEx(font, text, fontSize, @floatFromInt(font.glyphPadding));
 
     const positionX: f32 = (screenWidth - TextSize.x) / 2;
     const positionY: f32 = (screenHeight - TextSize.y) / 2;
 
-    const opacity: f32 = @as(f32, @floatFromInt(260 - framesCounter)) / 260;
+    const opacity: f32 = (260 - framesCounter) / 260;
     const transparentColor = color.alpha(opacity);
 
     if (framesCounter > 230) {
-        const opaqu: f32 = @as(f32, @floatFromInt(260 - framesCounter)) / 30;
+        const opaqu: f32 = framesCounter / 30;
         color = color.alpha(opaqu);
     }
 
-    var lines_loop_counter = framesCounter;
+    var lines_loop_counter: i32 = @intFromFloat(framesCounter);
     const midWidth: i32 = @intFromFloat(screenWidth / 2);
     const midHeight: i32 = @intFromFloat(screenHeight / 2);
     while (lines_loop_counter < 260) {
@@ -83,7 +83,7 @@ fn DrawFunction() Views {
         color,
     );
 
-    if (framesCounter == 260) {
+    if (framesCounter >= 260) {
         framesCounter = 0;
         return Views.Menu;
     }

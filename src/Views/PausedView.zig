@@ -49,7 +49,7 @@ pub fn DrawFunction() Views {
         );
     }
 
-    const foregroundColor = Colors.Miyazaki.Blue_Gray;
+    const foregroundColor = Colors.Miyazaki.Blue;
     const backgroundColor = Colors.Miyazaki.Blue_Gray.alpha(0.75);
     const accentColor = Colors.Miyazaki.Light_Blue;
 

@@ -33,26 +33,26 @@ fn DrawSplashScreen() Views {
                 raylib.drawRectangle(logoPositionX, logoPositionY, 16, 16, logo_color);
         },
         States.ExpandTopLeft => {
-            raylib.drawRectangle(logoPositionX, logoPositionY, vm.topSideRecWidth, 16, logo_color);
-            raylib.drawRectangle(logoPositionX, logoPositionY, 16, vm.leftSideRecHeight, logo_color);
+            raylib.drawRectangle(logoPositionX, logoPositionY, @intFromFloat(vm.topSideRecWidth), 16, logo_color);
+            raylib.drawRectangle(logoPositionX, logoPositionY, 16, @intFromFloat(vm.leftSideRecHeight), logo_color);
         },
         States.ExpandBottomRight => {
-            raylib.drawRectangle(logoPositionX, logoPositionY, vm.topSideRecWidth, 16, logo_color);
-            raylib.drawRectangle(logoPositionX, logoPositionY, 16, vm.leftSideRecHeight, logo_color);
+            raylib.drawRectangle(logoPositionX, logoPositionY, @intFromFloat(vm.topSideRecWidth), 16, logo_color);
+            raylib.drawRectangle(logoPositionX, logoPositionY, 16, @intFromFloat(vm.leftSideRecHeight), logo_color);
 
-            raylib.drawRectangle(logoPositionX + 240, logoPositionY, 16, vm.rightSideRecHeight, logo_color);
-            raylib.drawRectangle(logoPositionX, logoPositionY + 240, vm.bottomSideRecWidth, 16, logo_color);
+            raylib.drawRectangle(logoPositionX + 240, logoPositionY, 16, @intFromFloat(vm.rightSideRecHeight), logo_color);
+            raylib.drawRectangle(logoPositionX, logoPositionY + 240, @intFromFloat(vm.bottomSideRecWidth), 16, logo_color);
         },
         States.Letters => {
-            raylib.drawRectangle(logoPositionX, logoPositionY, vm.topSideRecWidth, 16, raylib.fade(logo_color, vm.alpha));
-            raylib.drawRectangle(logoPositionX, logoPositionY + 16, 16, vm.leftSideRecHeight - 32, raylib.fade(logo_color, vm.alpha));
+            raylib.drawRectangle(logoPositionX, logoPositionY, @intFromFloat(vm.topSideRecWidth), 16, raylib.fade(logo_color, vm.alpha));
+            raylib.drawRectangle(logoPositionX, logoPositionY + 16, 16, @intFromFloat(vm.leftSideRecHeight - 32), raylib.fade(logo_color, vm.alpha));
 
-            raylib.drawRectangle(logoPositionX + 240, logoPositionY + 16, 16, vm.rightSideRecHeight - 32, raylib.fade(logo_color, vm.alpha));
-            raylib.drawRectangle(logoPositionX, logoPositionY + 240, vm.bottomSideRecWidth, 16, raylib.fade(logo_color, vm.alpha));
+            raylib.drawRectangle(logoPositionX + 240, logoPositionY + 16, 16, @intFromFloat(vm.rightSideRecHeight - 32), raylib.fade(logo_color, vm.alpha));
+            raylib.drawRectangle(logoPositionX, logoPositionY + 240, @intFromFloat(vm.bottomSideRecWidth), 16, raylib.fade(logo_color, vm.alpha));
 
             raylib.drawRectangle(@divTrunc(screenWidth, 2) - 112, @divTrunc(screenHeight, 2) - 112, 224, 224, raylib.fade(screen_color, vm.alpha));
 
-            raylib.drawText(raylib.textSubtext("raylib-zig", 0, vm.lettersCount), @divTrunc(screenWidth, 2) - 96, @divTrunc(screenHeight, 2) + 57, 41, raylib.fade(logo_color, vm.alpha));
+            raylib.drawText(raylib.textSubtext("raylib-zig", 0, @intFromFloat(vm.lettersCount)), @divTrunc(screenWidth, 2) - 96, @divTrunc(screenHeight, 2) + 57, 41, raylib.fade(logo_color, vm.alpha));
         },
         States.Exit => {
             return Views.Dylan_Splash_Screen;

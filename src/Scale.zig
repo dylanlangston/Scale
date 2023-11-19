@@ -23,8 +23,10 @@ pub fn main() void {
     // Cleanup code
     defer Shared.deinit();
 
+    const _settings = Shared.Settings.GetSettings();
+
     // Set logging level
-    if (Shared.Settings.GetSettings().Debug) {
+    if (_settings.Debug) {
         raylib.setTraceLogLevel(raylib.TraceLogLevel.log_all);
     } else {
         raylib.setTraceLogLevel(raylib.TraceLogLevel.log_info);
@@ -32,9 +34,10 @@ pub fn main() void {
 
     // Create window
     Logger.Info("Creating Window");
-    raylib.initWindow(Shared.Settings.GetSettings().CurrentResolution.Width, Shared.Settings.GetSettings().CurrentResolution.Height, "Scale Game!");
+    raylib.setConfigFlags(raylib.ConfigFlags.flag_msaa_4x_hint);
+    raylib.initWindow(_settings.CurrentResolution.Width, _settings.CurrentResolution.Height, "Scale Game!");
     raylib.setExitKey(.key_null);
-    raylib.setTargetFPS(60);
+    raylib.setTargetFPS(_settings.TargetFPS);
     defer raylib.closeWindow();
 
     FontManager.Init();
@@ -42,8 +45,8 @@ pub fn main() void {
     // Default View on startup is the Splash Screen
     var current_view: vl.Views = vl.Views.Raylib_Splash_Screen;
 
-    if (Shared.Settings.GetSettings().Debug and Shared.Settings.GetSettings().DebugView != null) {
-        current_view = @enumFromInt(Shared.Settings.GetSettings().DebugView.?);
+    if (_settings.Debug and _settings.DebugView != null) {
+        current_view = @enumFromInt(_settings.DebugView.?);
     }
     defer DeinitViews();
 

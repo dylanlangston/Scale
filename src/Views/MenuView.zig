@@ -59,9 +59,9 @@ pub fn DrawFunction() Views {
         }
     }
 
-    const foregroundColor = Colors.Miyazaki.Blue_Gray;
+    const foregroundColor = Colors.Miyazaki.Blue;
     const backgroundColor = Colors.Miyazaki.Blue_Gray.alpha(0.75);
-    const accentColor = Colors.Miyazaki.Blue;
+    const accentColor = Colors.Miyazaki.Light_Blue;
 
     // Title
     const titleFont = Shared.GetFont(Fonts.EcBricksRegular);
@@ -81,7 +81,7 @@ pub fn DrawFunction() Views {
         ),
         titleFontsizeF,
         @floatFromInt(titleFont.glyphPadding),
-        Colors.Miyazaki.Brown,
+        Colors.Miyazaki.Earth,
     );
 
     // raylib.drawText(

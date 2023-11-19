@@ -1,4 +1,5 @@
 const std = @import("std");
+const raylib = @import("raylib");
 const ViewModel = @import("./ViewModel.zig").ViewModel;
 const Shared = @import("../Helpers.zig").Shared;
 const States = @import("../Views/RaylibSplashScreenView.zig").States;
@@ -6,14 +7,14 @@ const Logger = @import("../Logger.zig").Logger;
 
 pub const RaylibSplashScreenViewModel = ViewModel.Create(
     struct {
-        pub var framesCounter: i16 = 0;
-        pub var lettersCount: i16 = 0;
+        pub var framesCounter: f32 = 0;
+        pub var lettersCount: f32 = 0;
         pub var state = States.Blinking;
         pub var alpha: f32 = 1.0;
-        pub var topSideRecWidth: i16 = 16;
-        pub var leftSideRecHeight: i16 = 16;
-        pub var bottomSideRecWidth: i16 = 16;
-        pub var rightSideRecHeight: i16 = 16;
+        pub var topSideRecWidth: f32 = 16;
+        pub var leftSideRecHeight: f32 = 16;
+        pub var bottomSideRecWidth: f32 = 16;
+        pub var rightSideRecHeight: f32 = 16;
 
         pub fn Reset() void {
             framesCounter = 0;
@@ -29,34 +30,34 @@ pub const RaylibSplashScreenViewModel = ViewModel.Create(
         pub fn Update() void {
             switch (state) {
                 States.Blinking => {
-                    framesCounter += 1;
-                    if (framesCounter == 120) {
+                    framesCounter += raylib.getFrameTime() * 60;
+                    if (framesCounter >= 120) {
                         state = States.ExpandTopLeft;
                         framesCounter = 0;
                     }
                 },
                 States.ExpandTopLeft => {
-                    topSideRecWidth += 4;
-                    leftSideRecHeight += 4;
+                    topSideRecWidth += 4 * raylib.getFrameTime() * 60;
+                    leftSideRecHeight += 4 * raylib.getFrameTime() * 60;
 
-                    if (topSideRecWidth == 256) state = States.ExpandBottomRight;
+                    if (topSideRecWidth >= 256) state = States.ExpandBottomRight;
                 },
                 States.ExpandBottomRight => {
-                    bottomSideRecWidth += 4;
-                    rightSideRecHeight += 4;
+                    bottomSideRecWidth += 4 * raylib.getFrameTime() * 60;
+                    rightSideRecHeight += 4 * raylib.getFrameTime() * 60;
 
-                    if (bottomSideRecWidth == 256) state = States.Letters;
+                    if (bottomSideRecWidth >= 256) state = States.Letters;
                 },
                 States.Letters => {
-                    framesCounter += 1;
+                    framesCounter += raylib.getFrameTime() * 60;
 
-                    if (@divTrunc(framesCounter, 12) == 0) {
+                    if (framesCounter / 6 >= 1) {
                         lettersCount += 1;
                         framesCounter = 0;
                     }
 
                     if (lettersCount >= 10) {
-                        alpha -= 0.02;
+                        alpha -= 0.02 * raylib.getFrameTime() * 60;
 
                         if (alpha <= 0.0) {
                             alpha = 0.0;

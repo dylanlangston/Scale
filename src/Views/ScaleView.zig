@@ -14,22 +14,22 @@ const ScaleViewModel = @import("../ViewModels/ScaleViewModel.zig").ScaleViewMode
 const PlayerModel = @import("../Models/Player.zig").Player;
 const WorldModel = @import("../Models/World.zig").World;
 
+const moveModifier: f32 = 32;
+
 pub fn DrawFunction() Views {
     WorldModel.Platforms = WorldModel.UpdatePlatforms();
 
     WorldModel.Player = WorldModel.Player.UpdatePosition();
-    const playerPosition = WorldModel.Player.Position;
-    const PlayerSize = PlayerModel.GetSize();
 
-    raylib.clearBackground(Colors.Green.Base);
+    raylib.clearBackground(Colors.Green.Dark);
 
-    raylib.drawRectangle(
-        @intFromFloat(playerPosition.x),
-        @intFromFloat(playerPosition.y),
-        @intFromFloat(PlayerSize.width),
-        @intFromFloat(PlayerSize.height),
-        Colors.Red.Base,
-    );
+    for (WorldModel.Platforms.items) |platform| {
+        _ = platform;
+        //platform.Draw();
+    }
+
+    // Draw Player
+    WorldModel.Player.Draw();
 
     const up = Inputs.Up_Held();
     const down = Inputs.Up_Held();
@@ -48,22 +48,20 @@ pub fn DrawFunction() Views {
         numberButtonsPressed += 1;
     }
 
-    var moveModifier: f32 = if (numberButtonsPressed > 1) 48 else 32;
-
     if (Inputs.B_Pressed()) {
-        WorldModel.Player = WorldModel.Player.Jump(moveModifier);
+        WorldModel.Player = WorldModel.Player.Jump();
     }
 
     // if (Inputs.Down_Held()) {
-    //     WorldModel.Player = WorldModel.Player.MoveDown(moveModifier);
+    //     WorldModel.Player = WorldModel.Player.MoveDown();
     // }
 
     if (Inputs.Left_Held()) {
-        WorldModel.Player = WorldModel.Player.MoveLeft(moveModifier);
+        WorldModel.Player = WorldModel.Player.MoveLeft();
     }
 
     if (Inputs.Right_Held()) {
-        WorldModel.Player = WorldModel.Player.MoveRight(moveModifier);
+        WorldModel.Player = WorldModel.Player.MoveRight();
     }
 
     if (Inputs.Start_Pressed()) {

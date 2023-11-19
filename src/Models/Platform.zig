@@ -3,19 +3,20 @@ const std = @import("std");
 const raylib = @import("raylib");
 const World = @import("World.zig").World;
 const Logger = @import("../Logger.zig").Logger;
+const Colors = @import("../Colors.zig").Colors;
 
 pub const Platform = struct {
     Position: raylib.Rectangle,
     Size: PlatformSize,
 
     fn GetSizeX(self: Platform, current_screen: raylib.Rectangle) f32 {
-        const new_position_x: f32 = self.Size.width / 100 * current_screen.width;
+        const new_position_x: f32 = current_screen.width / 100 * self.Size.width;
         return new_position_x;
     }
 
     fn GetSizeY(self: Platform, current_screen: raylib.Rectangle) f32 {
-        const new_position_x: f32 = self.Size.height / 100 * current_screen.width;
-        return new_position_x;
+        const new_position_y: f32 = current_screen.height / 100 * self.Size.height;
+        return new_position_y;
     }
 
     pub fn GetSize(self: Platform) PlatformSize {
@@ -57,6 +58,18 @@ pub const Platform = struct {
             .Position = self.GetPosition(current_screen),
             .Size = self.GetSize(),
         };
+    }
+
+    pub fn Draw(self: Platform) void {
+        const platformPosition = self.Position;
+        const platformSize = self.GetSize();
+        raylib.drawRectangle(
+            @intFromFloat(platformPosition.x),
+            @intFromFloat(platformPosition.y),
+            100,
+            @intFromFloat(platformSize.height),
+            Colors.Purple.Light,
+        );
     }
 };
 

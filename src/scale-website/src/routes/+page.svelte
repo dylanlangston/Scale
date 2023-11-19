@@ -60,11 +60,7 @@ function UpdateSize(e: Event): void {
   if (document.fullscreenElement) {
     return;
   }
-
-  clearTimeout(hideNewCanvasTimeout);
   clearTimeout(updateSizeTimeout);
-  const new_canvas = cloneCanvas();
-  window.Module.canvas.hidden = true;
 
   updateSizeTimeout = setTimeout(() => {
     const updateWasmResolution = window.Module._updateWasmResolution;
@@ -74,11 +70,6 @@ function UpdateSize(e: Event): void {
       updateWasmResolution(resolution.width, resolution.height);
     }
   }, 10);
-
-  hideNewCanvasTimeout = setTimeout(() => {
-    window.Module.canvas.hidden = false;
-    new_canvas.hidden = true;
-  }, 250);
 }
 
 function fitInto16x9AspectRatio(originalWidth: number, originalHeight: number): { width: number; height: number } {
@@ -92,32 +83,6 @@ function fitInto16x9AspectRatio(originalWidth: number, originalHeight: number): 
         const newHeight = originalWidth / targetAspectRatio;
         return { width: originalWidth, height: newHeight };
     }
-}
-
-function getCanvasImage(): string | null {
-  const newCanvas = <HTMLCanvasElement>document.createElement("canvas");
-  newCanvas.width = window.Module.canvas.width;
-  newCanvas.height = window.Module.canvas.height;
-  const context = newCanvas.getContext('2d');
-  context?.drawImage(window.Module.canvas, 0, 0);
-  const img_data = context?.getImageData(2, 2, 1, 1);
-  return img_data?.data[3] == 0 ? null : newCanvas.toDataURL("image/png");
-}
-
-let hideNewCanvasTimeout: number|undefined = undefined;
-
-function cloneCanvas(): HTMLImageElement {
-  const newCanvas = <HTMLImageElement>document.getElementById("canvas-copy");
-  const resolution = fitInto16x9AspectRatio(window.innerWidth, window.innerHeight);
-  newCanvas.width = resolution.width;
-  newCanvas.height = resolution.height;
-
-  const canvasImage = getCanvasImage();
-  if (canvasImage == null) return newCanvas;
-
-  newCanvas.src = canvasImage;
-  newCanvas.hidden = false;
-  return newCanvas;
 }
 
 function loadEmscripten(): HTMLScriptElement {
@@ -176,8 +141,7 @@ onMount(() => {
     </button>
   </span>
   <div class="emscripten z-0">
-    <canvas class="emscripten absolute top-0 bottom-0 left-0 right-0 m-auto" id="canvas" on:contextmenu={(e) => e.preventDefault()} tabindex=-1></canvas>
-    <img hidden class="absolute top-0 bottom-0 left-0 right-0 m-auto" id="canvas-copy"/>
+    <canvas class="emscripten bg-black absolute top-0 bottom-0 left-0 right-0 m-auto" width="1" height="1" id="canvas" on:contextmenu={(e) => e.preventDefault()} tabindex=-1></canvas>
   </div>
   <div class="absolute flex top-0 bottom-0 left-0 right-0 items-center justify-center pointer-events-none -z-50">
     <div id="status-container" class="rounded-lg bg-slate-50 shadow-xl p-8 m-8">
