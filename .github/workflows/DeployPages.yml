@@ -50,7 +50,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: '${{ github.workspace }}/src/scale-website'
+          path: '${{ github.workspace }}/src/scale-website/build'
 
   deploy:
     needs: build
