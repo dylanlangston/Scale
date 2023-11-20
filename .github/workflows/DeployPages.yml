@@ -58,8 +58,13 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v2.0.0
+        with:
+          name: "Scale-Game"
+          path: "${{ github.workspace }}/build.tar"
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2 # or the latest "vX.X.X" version tag for this action
         with: 
-          artifact_name: "build.tar"
+          artifact_name: "Scale-Game"
