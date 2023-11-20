@@ -5,12 +5,18 @@ const Logger = @import("Logger.zig").Logger;
 pub const Localelizer = struct {
     fn get_locale_file(locale: Locales) [:0]const u8 {
         switch (locale) {
-            Locales.en_us => {
-                return @embedFile("./Locales/en_us.json");
+            Locales.english => {
+                return @embedFile("./Locales/english.json");
+            },
+            Locales.spanish => {
+                return @embedFile("./Locales/spanish.json");
+            },
+            Locales.french => {
+                return @embedFile("./Locales/french.json");
             },
             else => {
                 // English as fallback
-                return @embedFile("./Locales/en_us.json");
+                return @embedFile("./Locales/english.json");
             },
         }
     }
@@ -59,4 +65,9 @@ pub const Locale = struct {
     Missing_Text: [:0]const u8,
 };
 
-pub const Locales = enum { unknown, en_us };
+pub const Locales = enum {
+    unknown,
+    english,
+    spanish,
+    french,
+};

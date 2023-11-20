@@ -64,7 +64,7 @@ pub fn main() void {
     if (locale == null) {
         // For now just set the locale to english since that's the only locale
         Shared.Settings.UpdateSettings(.{
-            .UserLocale = Locales.en_us,
+            .UserLocale = Locales.english,
         });
 
         Logger.Debug("Settings Updated");
