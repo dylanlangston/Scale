@@ -31,10 +31,17 @@ jobs:
         with:
           node-version: "16"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
-      - name: "Build"
+      - name: "Restore Submodules"
         run: |
           cd ${{ github.workspace }}
           git submodule update --init --recursive
+      - name: "Install Node Modules"
+        run: |
+          cd ${{ github.workspace }}/src/scale-website
+          npm install
+      - name: "Build"
+        run: |
+          cd ${{ github.workspace }}
           zig build -Dtarget=wasm32-emscripten -Doptimize=ReleaseFast
           cd ${{ github.workspace }}/src/scale-website
           npm run build
