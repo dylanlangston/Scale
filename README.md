@@ -1,5 +1,8 @@
 [//]: https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
 [![Codespaces Prebuilds](https://github.com/dylanlangston/Scale/actions/workflows/codespaces/create_codespaces_prebuilds/badge.svg)](https://github.com/dylanlangston/Scale/actions/workflows/codespaces/create_codespaces_prebuilds)
+[![GitHub License](https://img.shields.io/github/license/dylanlangston/Scale)](https://github.com/dylanlangston/Scale/blob/main/LICENSE)
+[![GitHub repo size](https://img.shields.io/github/repo-size/dylanlangston/Scale)]()
+
 # Scale Game 🧗‍♂️
 This is a submission to the 2023 *Game Off* event hosted by [GitHub](https://github.com/) on [itch.io](https://itch.io/), It's a game developed using [Zig](https://ziglang.org/) and [Raylib](https://www.raylib.com/) via [Raylib-Zig](https://github.com/Not-Nik/raylib-zig/tree/devel). It was created by [@dylanlangston](https://github.com/dylanlangston).
 
