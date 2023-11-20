@@ -21,6 +21,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Checkout submodules
+        uses: textbook/git-checkout-submodule-action@2.1.1
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
       - name: Setup Zig
         uses: goto-bus-stop/setup-zig@v2.1.1
         with:
@@ -31,29 +35,23 @@ jobs:
         with:
           node-version: "16"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
-      - name: "Restore Submodules"
-        run: |
-          cd ${{ github.workspace }}
-          git submodule update --init --recursive
       - name: "Install Node Modules"
         run: |
           cd ${{ github.workspace }}/src/scale-website
           npm install
-      - name: "Build"
+      - name: "Build Zig"
         run: |
           cd ${{ github.workspace }}
           zig build -Dtarget=wasm32-emscripten -Doptimize=ReleaseFast
+      - name: "Build Svelte"
+        run: |
           cd ${{ github.workspace }}/src/scale-website
           npm run build
-      - name: "Bundle"
-        run: |
-          tar -zcvf ${{ github.workspace }}/build.tar ${{ github.workspace }}/src/scale-website/build
-      - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v2.0.0
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
         with:
-          name: "Scale-Game"
-          path: "${{ github.workspace }}/build.tar"
-          
+          path: '${{ github.workspace }}/src/scale-website'
+
   deploy:
     needs: build
     permissions:
@@ -66,6 +64,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2 # or the latest "vX.X.X" version tag for this action
-        with: 
-          artifact_name: "Scale-Game"
+        uses: actions/deploy-pages@v2
