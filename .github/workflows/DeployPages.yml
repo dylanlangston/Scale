@@ -42,7 +42,7 @@ jobs:
       - name: "Build Zig"
         run: |
           cd ${{ github.workspace }}
-          zig build -Dtarget=wasm32-emscripten -Doptimize=ReleaseFast
+          zig build -Dtarget=wasm32-emscripten
       - name: "Build Svelte"
         run: |
           cd ${{ github.workspace }}/src/scale-website
