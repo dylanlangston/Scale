@@ -45,8 +45,21 @@ jobs:
           zig build -Dtarget=wasm32-emscripten -Doptimize=ReleaseFast
           cd ${{ github.workspace }}/src/scale-website
           npm run build
-          ls ${{ github.workspace }}/src/scale-website/build
-      #- name: Deploy GitHub Pages site
-      #  uses: actions/deploy-pages@v1.2.9
-      #  with:
-      #     artifact_name: "build.tar.gz"
+          tar -zcvf ${{ github.workspace }}/build.tar ${{ github.workspace }}/src/scale-website/build
+          ls ${{ github.workspace }}
+          
+  deploy:
+    needs: build
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2 # or the latest "vX.X.X" version tag for this action
+        with: 
+          artifact_name: "build.tar"
