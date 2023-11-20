@@ -37,7 +37,7 @@ My interpretion of the theme is a vertical platformer that is procedurally gener
 1. Complete steps to __Clone__ and __Debug Locally__ above first.
 2. Change directories into the `./Scale` folder. Build the zig portion of the game using command `zig build -Dtarget=wasm32-emscripten`. Alternatively run the **_Build Web_** task in VSCode.
 3. If you haven't already, install NodeJS LTS from [here](https://nodejs.org/en/download) (or your preferred source).
-4. Change directories into the created `./Scale/src/scale-website` folder. Then install the required node packages using `npm install`.
+4. Change directories into the `./Scale/src/scale-website` folder. Then install the required node packages using `npm install`.
 5. Build the web version by running the command `npm run build`. You can find the generated static site in the `./Scale/src/scale-website/build` folder.
 
 ### Credits
