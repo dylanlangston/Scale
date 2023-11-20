@@ -32,7 +32,7 @@ jobs:
           node-version: "16"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
       - name: "Build"
-      - run: |
+        run: |
           cd ${{ github.workspace }}
           zig build -Dtarget=wasm32-emscripten -Doptimize=ReleaseFast
           cd ${{ github.workspace }}/src/scale-website
