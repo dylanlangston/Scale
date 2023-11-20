@@ -1,0 +1,44 @@
+name: Deploy Pages
+
+on:
+  push:
+    branches: ["main"]
+    
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Zig
+        uses: goto-bus-stop/setup-zig@v2.1.1
+        with:
+          version: 0.11.0
+          cache: ${{ steps.detect-package-manager.outputs.manager }}
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: ${{ steps.detect-package-manager.outputs.manager }}
+      - name: "Build"
+      - run: |
+          cd ${{ github.workspace }}
+          zig build -Dtarget=wasm32-emscripten -Doptimize=ReleaseFast
+          cd ${{ github.workspace }}/src/scale-website
+          npm run build
+          ls ${{ github.workspace }}/src/scale-website/build
+      #- name: Deploy GitHub Pages site
+      #  uses: actions/deploy-pages@v1.2.9
+      #  with:
+      #     artifact_name: "build.tar.gz"
