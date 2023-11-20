@@ -4,3 +4,6 @@
 [submodule "src/emscripten"]
 	path = src/emscripten
 	url = https://github.com/emscripten-core/emsdk.git
+[submodule "src/raygui"]
+	path = src/raygui
+	url = https://github.com/ryupold/raygui.zig

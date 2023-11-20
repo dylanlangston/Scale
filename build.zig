@@ -1,6 +1,7 @@
 const std = @import("std");
 const builtin = @import("builtin");
 const rl = @import("src/Build_raylib.zig");
+const raygui = @import("src/raygui/build.zig");
 
 pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
@@ -32,8 +33,10 @@ pub fn build(b: *std.Build) !void {
             target,
             optimize,
         );
+
         exe_lib.addModule("raylib", raylib);
         exe_lib.addModule("raylib-math", raylib_math);
+        raygui.addTo(b, exe_lib, target, optimize);
         const raylib_artifact = rl.getArtifact(b, target, optimize);
 
         // Override raylib's default config.h with our custom one
@@ -76,6 +79,7 @@ pub fn build(b: *std.Build) !void {
     rl.link(b, exe, target, optimize);
     exe.addModule("raylib", raylib);
     exe.addModule("raylib-math", raylib_math);
+    raygui.addTo(b, exe, target, optimize);
 
     const run_cmd = b.addRunArtifact(exe);
     const run_step = b.step("run", "Run Scale");
