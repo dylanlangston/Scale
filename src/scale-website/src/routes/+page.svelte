@@ -62,14 +62,20 @@ function UpdateSize(e: Event): void {
   }
   clearTimeout(updateSizeTimeout);
 
-  updateSizeTimeout = setTimeout(() => {
+  const updateSize = () => {
     const updateWasmResolution = window.Module._updateWasmResolution;
     if (updateWasmResolution)
     {
       const resolution = fitInto16x9AspectRatio(window.innerWidth, (window.innerHeight - padding_horizontal));
-      updateWasmResolution(resolution.width, resolution.height);
+      try {
+        updateWasmResolution(resolution.width, resolution.height);
+      }
+      catch {
+      }
     }
-  }, 10);
+  };
+
+  updateSizeTimeout = setTimeout(updateSize, 10);
 }
 
 function fitInto16x9AspectRatio(originalWidth: number, originalHeight: number): { width: number; height: number } {
@@ -92,7 +98,6 @@ function loadEmscripten(): HTMLScriptElement {
   window.Module.setStatus("Downloading...");
   window.onerror = (e: any) => {
     document.getElementById("canvas")!.style.display = 'none';
-    document.getElementById("canvas-copy")!.style.display = 'none';
 
     window.Module.setStatus("Exception thrown, see JavaScript console.\nReload page to try again.");
     window.Module.setStatus = (e: any) => {

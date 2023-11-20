@@ -65,7 +65,10 @@ export class Module {
 
     public instantiateWasm(imports: any, successCallback: any) {
         console.log('instantiateWasm: instantiating asynchronously');
-        fetch("scale.wasm")
+        fetch("scale.wasm", { 
+            cache: "default",
+            mode: "same-origin",
+        })
         .then((response) => response.arrayBuffer())
         .then((bytes) => {
             console.log('wasm download finished, begin instantiating');
