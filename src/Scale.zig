@@ -34,7 +34,10 @@ pub fn main() void {
 
     // Create window
     Logger.Info("Creating Window");
-    raylib.setConfigFlags(raylib.ConfigFlags.flag_msaa_4x_hint);
+    raylib.setConfigFlags(
+        @enumFromInt( //@intFromEnum(raylib.ConfigFlags.flag_window_always_run) +
+            @intFromEnum(raylib.ConfigFlags.flag_msaa_4x_hint)),
+    );
     raylib.initWindow(_settings.CurrentResolution.Width, _settings.CurrentResolution.Height, "Scale Game!");
     raylib.setExitKey(.key_null);
     raylib.setTargetFPS(_settings.TargetFPS);

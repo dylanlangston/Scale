@@ -20,7 +20,11 @@ pub const TextureManager = struct {
             Textures.Brick => {
                 const bytes = @embedFile("./Images/brick.png");
                 const i = raylib.loadImageFromMemory(".png", bytes);
-                const t = i.toTexture();
+                const t = raylib.loadTextureFromImage(i);
+                raylib.setTextureFilter(
+                    t,
+                    @intFromEnum(raylib.TextureFilter.texture_filter_trilinear),
+                );
                 LoadedTextures.?.put(Textures.Brick, t) catch return TextureManagerErrors.FailedToAppend;
                 return t;
             },

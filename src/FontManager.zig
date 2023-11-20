@@ -30,18 +30,30 @@ pub const FontManager = struct {
             Fonts.EightBitDragon => {
                 const bytes = @embedFile("./Fonts/EightBitDragon.ttf");
                 const f = raylib.loadFontFromMemory(".ttf", bytes, 100, undefined);
+                raylib.setTextureFilter(
+                    f.texture,
+                    @intFromEnum(raylib.TextureFilter.texture_filter_trilinear),
+                );
                 LoadedFonts.?.put(Fonts.EightBitDragon, f) catch return FontManagerErrors.FailedToAppend;
                 return f;
             },
             Fonts.TwoLines => {
                 const bytes = @embedFile("./Fonts/2Lines.ttf");
                 const f = raylib.loadFontFromMemory(".ttf", bytes, 100, undefined);
+                raylib.setTextureFilter(
+                    f.texture,
+                    @intFromEnum(raylib.TextureFilter.texture_filter_trilinear),
+                );
                 LoadedFonts.?.put(Fonts.TwoLines, f) catch return FontManagerErrors.FailedToAppend;
                 return f;
             },
             Fonts.EcBricksRegular => {
                 const bytes = @embedFile("./Fonts/EcBricksRegular.ttf");
                 const f = raylib.loadFontFromMemory(".ttf", bytes, 100, undefined);
+                raylib.setTextureFilter(
+                    f.texture,
+                    @intFromEnum(raylib.TextureFilter.texture_filter_trilinear),
+                );
                 LoadedFonts.?.put(Fonts.EcBricksRegular, f) catch return FontManagerErrors.FailedToAppend;
                 return f;
             },
