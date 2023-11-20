@@ -34,6 +34,7 @@ jobs:
       - name: "Build"
         run: |
           cd ${{ github.workspace }}
+          git submodule update --init --recursive
           zig build -Dtarget=wasm32-emscripten -Doptimize=ReleaseFast
           cd ${{ github.workspace }}/src/scale-website
           npm run build
