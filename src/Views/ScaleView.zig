@@ -24,8 +24,7 @@ pub fn DrawFunction() Views {
     raylib.clearBackground(Colors.Green.Dark);
 
     for (WorldModel.Platforms.items) |platform| {
-        _ = platform;
-        //platform.Draw();
+        platform.Draw();
     }
 
     // Draw Player

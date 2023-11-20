@@ -32,7 +32,7 @@ pub const World = struct {
         Platforms = std.ArrayList(PlatformModel).init(Shared.GetAllocator());
         try Platforms.append(PlatformModel{
             .Position = raylib.Rectangle.init(
-                screenWidth / 2,
+                screenWidth / 4,
                 screenHeight / 2,
                 screenWidth,
                 screenHeight,

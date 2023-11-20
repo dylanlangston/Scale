@@ -10,13 +10,13 @@ pub const Platform = struct {
     Size: PlatformSize,
 
     fn GetSizeX(self: Platform, current_screen: raylib.Rectangle) f32 {
-        const new_position_x: f32 = current_screen.width / 100 * self.Size.width;
-        return new_position_x;
+        const new_size_x: f32 = self.Size.width / 100 * current_screen.width;
+        return new_size_x;
     }
 
     fn GetSizeY(self: Platform, current_screen: raylib.Rectangle) f32 {
-        const new_position_y: f32 = current_screen.height / 100 * self.Size.height;
-        return new_position_y;
+        const new_size_y: f32 = self.Size.height / 100 * current_screen.height;
+        return new_size_y;
     }
 
     pub fn GetSize(self: Platform) PlatformSize {
@@ -56,7 +56,7 @@ pub const Platform = struct {
         const current_screen = World.GetCurrentScreenSize();
         return Platform{
             .Position = self.GetPosition(current_screen),
-            .Size = self.GetSize(),
+            .Size = self.Size,
         };
     }
 
@@ -66,7 +66,7 @@ pub const Platform = struct {
         raylib.drawRectangle(
             @intFromFloat(platformPosition.x),
             @intFromFloat(platformPosition.y),
-            100,
+            @intFromFloat(platformSize.width),
             @intFromFloat(platformSize.height),
             Colors.Purple.Light,
         );
