@@ -9,6 +9,7 @@ This is a submission to the 2023 *Game Off* event hosted by [GitHub](https://git
 - [Zig](https://ziglang.org/)
 - [Raylib](https://www.raylib.com/) via [Raylib-Zig](https://github.com/Not-Nik/raylib-zig/tree/devel)
 - [Raygui](https://github.com/raysan5/raygui) via [Raygui.zig](https://github.com/ryupold/raygui.zig)
+- [Emscripten](https://emscripten.org/)
 - [Svelte](https://svelte.dev/)
 - [Typescript](https://www.typescriptlang.org/)
 - [TailwindCSS](https://tailwindcss.com/)
