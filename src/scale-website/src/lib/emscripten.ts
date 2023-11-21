@@ -8,6 +8,18 @@ export class Module {
         mod.arguments.splice(1, 0, Module.getSettings()!);
     }
 
+    private _Initialized: boolean = false; 
+    public get Initialized(): boolean {
+        return this._Initialized;
+    }
+
+    public onRuntimeInitialized(): void {
+        this._Initialized = true;
+
+        // Trigger a resize on load to ensure the correct canvas size
+        window.dispatchEvent(new Event('resize'));
+    }
+
     public arguments: string[] = [
         "./this.program"
     ];
@@ -67,7 +79,6 @@ export class Module {
         console.log('instantiateWasm: instantiating asynchronously');
         fetch("scale.wasm", { 
             cache: "default",
-            mode: "same-origin",
         })
         .then((response) => response.arrayBuffer())
         .then((bytes) => {
@@ -77,10 +88,8 @@ export class Module {
         .then((output) => {
             console.log('wasm instantiation succeeded');
             successCallback(output.instance);
-            // Trigger a resize on load to ensure the correct canvas size
-            window.dispatchEvent(new Event('resize'));
         }).catch((e) => {
-            console.log('wasm instantiation failed! ' + e);
+            Module.setStatus('wasm instantiation failed! ' + e);
         });
         return {}; // Compiling asynchronously, no exports.
       }

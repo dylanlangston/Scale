@@ -31,101 +31,87 @@
       })
       
     }
-    // const lockPointer = false;
-    // const resizeCanvas = false;
-    // const requestFullscreen = window.Module.requestFullscreen;
-    // if (requestFullscreen)
-    // {
-    //   requestFullscreen(lockPointer, resizeCanvas);
-    //   const updateWasmResolution = window.Module._updateWasmResolution;
-    //   if (updateWasmResolution)
-    //   {
-    //     const resolution = fitInto16x9AspectRatio(window.screen.width, window.screen.height);
-    //     updateWasmResolution(resolution.width, resolution.height);
-    //   }
-    // }
   }
 
-function loadScript(name: string): HTMLScriptElement {
+  const padding_horizontal = 0;
+  let updateSizeTimeout: number|undefined = undefined;
+  function UpdateSize(e: Event): void {
+    clearTimeout(updateSizeTimeout);
+
+    if (document.fullscreenElement) {
+      return;
+    }
+    if (!window.Module.Initialized) {
+      console.log("not init");
+      return;
+    }
+
+    const updateSize = () => {
+      const updateWasmResolution = window.Module._updateWasmResolution;
+      if (updateWasmResolution)
+      {
+        const resolution = fitInto16x9AspectRatio(window.innerWidth, (window.innerHeight - padding_horizontal));
+        try {
+          updateWasmResolution(resolution.width, resolution.height);
+        }
+        catch {
+        }
+      }
+    };
+
+    updateSizeTimeout = setTimeout(updateSize, 10);
+  }
+
+  function fitInto16x9AspectRatio(originalWidth: number, originalHeight: number): { width: number; height: number } {
+      const targetAspectRatio = 16 / 9;
+      const currentAspectRatio = originalWidth / originalHeight;
+
+      if (currentAspectRatio > targetAspectRatio) {
+          const newWidth = originalHeight * targetAspectRatio;
+          return { width: newWidth, height: originalHeight };
+      } else {
+          const newHeight = originalWidth / targetAspectRatio;
+          return { width: originalWidth, height: newHeight };
+      }
+  }
+
+  let isMobile = () => {
+    const detector = new BrowserDetector();
+    return detector.parseUserAgent().isMobile;
+  };
+
+  function loadScript(name: string): HTMLScriptElement {
     const script = document.createElement("script");
     script.setAttribute("type", "text/javascript");
     script.setAttribute("src", name);
     document.head.append(script);
     return script;
-}
-
-const padding_horizontal = 0;
-let updateSizeTimeout: number|undefined = undefined;
-function UpdateSize(e: Event): void {
-  if (document.fullscreenElement) {
-    return;
   }
-  clearTimeout(updateSizeTimeout);
 
-  const updateSize = () => {
-    const updateWasmResolution = window.Module._updateWasmResolution;
-    if (updateWasmResolution)
-    {
-      const resolution = fitInto16x9AspectRatio(window.innerWidth, (window.innerHeight - padding_horizontal));
-      try {
-        updateWasmResolution(resolution.width, resolution.height);
+  onMount(() => {
+    window.onerror = (e: any) => {
+      document.getElementById("canvas")!.style.display = 'none';
+
+      Module.setStatus("Exception thrown, see JavaScript console.\nReload page to try again.");
+      window.Module.setStatus = (e: any) => {
+        e && console.error("[post-exception status] " + e);
       }
-      catch {
-      }
-    }
-  };
-
-  updateSizeTimeout = setTimeout(updateSize, 10);
-}
-
-function fitInto16x9AspectRatio(originalWidth: number, originalHeight: number): { width: number; height: number } {
-    const targetAspectRatio = 16 / 9;
-    const currentAspectRatio = originalWidth / originalHeight;
-
-    if (currentAspectRatio > targetAspectRatio) {
-        const newWidth = originalHeight * targetAspectRatio;
-        return { width: newWidth, height: originalHeight };
-    } else {
-        const newHeight = originalWidth / targetAspectRatio;
-        return { width: originalWidth, height: newHeight };
-    }
-}
-
-function loadEmscripten(): HTMLScriptElement {
-  const script = loadScript("emscripten.js");
-
-  window.Module = new Module();
-  window.Module.setStatus("Downloading...");
-  window.onerror = (e: any) => {
-    document.getElementById("canvas")!.style.display = 'none';
-
-    window.Module.setStatus("Exception thrown, see JavaScript console.\nReload page to try again.");
-    window.Module.setStatus = (e: any) => {
-      e && console.error("[post-exception status] " + e);
-    }
-  };
-
-  return script;
-}
-
-let isMobile = () => {
-  const detector = new BrowserDetector();
-  return detector.parseUserAgent().isMobile;
-};
-
-onMount(() => {
-  if (Module.updateSettingsFromQueryString())
-  {
-    window.location.search = "";
-  }
-  else {
-    const emscripten = loadEmscripten();
-    emscripten.onload = (e) => {
-      window.addEventListener('resize', UpdateSize);
-      window.addEventListener("deviceorientationabsolute", UpdateSize, true);
     };
-  }
-})
+
+    if (Module.updateSettingsFromQueryString())
+    {
+      window.location.search = "";
+    }
+    else {
+      window.Module = new Module();
+      const script = loadScript("emscripten.js");
+      script.onload = (e) => {
+        window.Module.setStatus("Downloading...");
+        window.addEventListener('resize', UpdateSize);
+        window.addEventListener("deviceorientationabsolute", UpdateSize, true);
+      };
+    }
+  })
 </script>
 
 <style lang="postcss">
