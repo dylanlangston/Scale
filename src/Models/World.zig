@@ -20,7 +20,7 @@ pub const World = struct {
         Player = PlayerModel{
             .Position = raylib.Rectangle.init(
                 (screenWidth - PlayerSize.width) / 2,
-                (screenHeight - PlayerSize.height) / 2,
+                screenHeight - PlayerSize.height,
                 screenWidth,
                 screenHeight,
             ),
@@ -42,6 +42,15 @@ pub const World = struct {
                 .width = 50,
             },
         });
+    }
+
+    pub fn CheckForPlatformCollisions(item: raylib.Rectangle, current_screen: raylib.Rectangle) bool {
+        for (Platforms.items) |platform| {
+            const collision = platform.GetCollision(current_screen, item);
+            if (collision.width > 0) return true;
+            if (collision.height > 0) return true;
+        }
+        return false;
     }
 
     pub fn UpdatePlatforms() std.ArrayList(PlatformModel) {

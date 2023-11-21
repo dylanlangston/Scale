@@ -27,6 +27,11 @@ pub const Platform = struct {
         };
     }
 
+    pub fn GetCollision(self: Platform, current_screen: raylib.Rectangle, otherItem: raylib.Rectangle) raylib.Rectangle {
+        const position = self.GetPositionAbsolute(current_screen);
+        return raylib.getCollisionRec(position, otherItem);
+    }
+
     fn GetPositionX(self: Platform, current_screen: raylib.Rectangle) f32 {
         if (current_screen.width != self.Position.width) {
             const new_position_x: f32 = self.Position.x / self.Position.width * current_screen.width;
@@ -49,6 +54,15 @@ pub const Platform = struct {
             self.GetPositionY(current_screen),
             current_screen.width,
             current_screen.height,
+        );
+    }
+
+    pub fn GetPositionAbsolute(self: Platform, current_screen: raylib.Rectangle) raylib.Rectangle {
+        return raylib.Rectangle.init(
+            self.GetPositionX(current_screen),
+            self.GetPositionY(current_screen),
+            self.GetSizeX(current_screen),
+            self.GetSizeY(current_screen),
         );
     }
 
