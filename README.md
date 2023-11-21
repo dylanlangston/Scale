@@ -2,7 +2,7 @@
 [![Codespaces Prebuilds](https://github.com/dylanlangston/Scale/actions/workflows/codespaces/create_codespaces_prebuilds/badge.svg)](https://github.com/dylanlangston/Scale/actions/workflows/codespaces/create_codespaces_prebuilds)
 [![Deploy Pages GitHub Workflow](https://img.shields.io/github/actions/workflow/status/dylanlangston/Scale/DeployPages.yml?label=Deploy%20Pages)](https://github.com/dylanlangston/Scale/actions/workflows/DeployPages.yml)
 [![GitHub License](https://img.shields.io/github/license/dylanlangston/Scale)](https://github.com/dylanlangston/Scale/blob/main/LICENSE)
-[![GitHub repo size](https://img.shields.io/github/repo-size/dylanlangston/Scale)]()
+[![GitHub repo size](https://img.shields.io/github/repo-size/dylanlangston/Scale)](https://api.github.com/repos/dylanlangston/scale)
 
 # Scale Game 🧗‍♂️
 This is a submission to the 2023 *Game Off* event hosted by [GitHub](https://github.com/) on [itch.io](https://itch.io/), It was created by [@dylanlangston](https://github.com/dylanlangston) using the following:
