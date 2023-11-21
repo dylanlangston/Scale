@@ -37,16 +37,16 @@ pub const RaylibSplashScreenViewModel = ViewModel.Create(
                     }
                 },
                 States.ExpandTopLeft => {
-                    topSideRecWidth += 4 * raylib.getFrameTime() * 60;
-                    leftSideRecHeight += 4 * raylib.getFrameTime() * 60;
+                    topSideRecWidth = @min(topSideRecWidth + (4 * raylib.getFrameTime() * 60), 256);
+                    leftSideRecHeight = @min(leftSideRecHeight + (4 * raylib.getFrameTime() * 60), 256);
 
-                    if (topSideRecWidth >= 256) state = States.ExpandBottomRight;
+                    if (topSideRecWidth == 256) state = States.ExpandBottomRight;
                 },
                 States.ExpandBottomRight => {
-                    bottomSideRecWidth += 4 * raylib.getFrameTime() * 60;
-                    rightSideRecHeight += 4 * raylib.getFrameTime() * 60;
+                    bottomSideRecWidth = @min(bottomSideRecWidth + (4 * raylib.getFrameTime() * 60), 256);
+                    rightSideRecHeight = @min(rightSideRecHeight + (4 * raylib.getFrameTime() * 60), 256);
 
-                    if (bottomSideRecWidth >= 256) state = States.Letters;
+                    if (bottomSideRecWidth == 256) state = States.Letters;
                 },
                 States.Letters => {
                     framesCounter += raylib.getFrameTime() * 60;
