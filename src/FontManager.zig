@@ -28,7 +28,7 @@ pub const FontManager = struct {
         // https://www.fontspace.com/
         switch (font) {
             Fonts.EightBitDragon => {
-                const bytes = @embedFile("./Fonts/EightBitDragon.ttf");
+                const bytes = EightBitDragon;
                 const f = raylib.loadFontFromMemory(".ttf", bytes, 100, undefined);
                 raylib.setTextureFilter(
                     f.texture,
@@ -38,7 +38,7 @@ pub const FontManager = struct {
                 return f;
             },
             Fonts.TwoLines => {
-                const bytes = @embedFile("./Fonts/2Lines.ttf");
+                const bytes = _2Lines;
                 const f = raylib.loadFontFromMemory(".ttf", bytes, 100, undefined);
                 raylib.setTextureFilter(
                     f.texture,
@@ -48,16 +48,19 @@ pub const FontManager = struct {
                 return f;
             },
             Fonts.EcBricksRegular => {
-                const bytes = @embedFile("./Fonts/EcBricksRegular.ttf");
-                const f = raylib.loadFontFromMemory(".ttf", bytes, 100, undefined);
-                raylib.setTextureFilter(
-                    f.texture,
-                    @intFromEnum(raylib.TextureFilter.texture_filter_trilinear),
-                );
-                LoadedFonts.?.put(Fonts.EcBricksRegular, f) catch return FontManagerErrors.FailedToAppend;
-                return f;
+                return SaveFontToCache(Fonts.EcBricksRegular, bricks);
             },
         }
+    }
+
+    fn SaveFontToCache(key: Fonts, bytes: [:0]u8) raylib.Font {
+        const f = raylib.loadFontFromMemory(".ttf", bytes, 100, undefined);
+        raylib.setTextureFilter(
+            f.texture,
+            @intFromEnum(raylib.TextureFilter.texture_filter_trilinear),
+        );
+        LoadedFonts.?.put(key, f) catch return FontManagerErrors.FailedToAppend;
+        return f;
     }
 
     pub fn deinit() void {
@@ -66,6 +69,11 @@ pub const FontManager = struct {
         }
     }
 };
+
+// Fonts
+const EightBitDragon: [:0]u8 = @embedFile("./Fonts/EightBitDragon.ttf");
+const _2Lines = @embedFile("./Fonts/2Lines.ttf");
+const bricks = @embedFile("./Fonts/EcBricksRegular.ttf");
 
 pub const Fonts = enum {
     EightBitDragon,
