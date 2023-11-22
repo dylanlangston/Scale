@@ -9,31 +9,57 @@
         console.log("Button Released: " + button);
     };
 
-    function touchStart(e: TouchEvent): void {
-        console.log("TouchStart-: " + e);
-    }
-    function touchMove(e: TouchEvent): void {
-        console.log(e);
-    }
-    function touchEnd(e: TouchEvent): void {
-        console.log("TouchEnd-: " + e);
-    }
-    function touchCancel(e: TouchEvent): void {
-        console.log("TouchCancel-: " + e);
+    function touchUp(e: PointerEvent) {
+      if (e.target instanceof HTMLButtonElement && e.target.tagName == "BUTTON")
+      {
+        e.target.classList.remove("down");
+        if (Object.values(Button).includes(e.target.value))
+        {
+          handleButtonReleased(<any>e.target.value);
+        }
+      }
+      e.preventDefault();
     }
 
+    function touchMove(e: PointerEvent) {
+      e.preventDefault();
+      
+      const buttonsDown = document.querySelectorAll("button.down");
+      const elem = <HTMLButtonElement>document.elementFromPoint(e.clientX, e.clientY);
+      if (buttonsDown.length == 1 && buttonsDown[0] == elem) return;
+      
+      document.querySelectorAll("button.down").forEach(n => {
+        n.classList.remove("down");
+        if (Object.values(Button).includes((<HTMLButtonElement>n).value))
+        {
+          handleButtonReleased(<any>(<HTMLButtonElement>n).value);
+        }
+      });
+      
+      if (elem?.tagName == "BUTTON")
+      {
+        elem.classList.add("down");
+        navigator.vibrate(10);
+        if (Object.values(Button).includes(elem.value))
+        {
+          handleButtonPressed(<any>elem.value);
+        }
+      }
+    }
     const touchElement = globalThis.document;
     onMount(() => {
-        touchElement?.addEventListener("touchstart", touchStart);
-        touchElement?.addEventListener("touchmove", touchMove);
-        touchElement?.addEventListener("touchend", touchEnd);
-        touchElement?.addEventListener("touchcancel", touchCancel);
+      touchElement?.addEventListener("pointermove", touchMove);
+      touchElement?.addEventListener("pointerup", touchUp);
+      touchElement?.addEventListener("pointerleave", touchUp);
+      touchElement?.addEventListener("pointercancel", touchUp);
+      touchElement?.addEventListener("lostpointercapture", touchUp);
     });
     onDestroy(() => {
-        touchElement?.removeEventListener("touchstart", touchStart);
-        touchElement?.removeEventListener("touchmove", touchMove);
-        touchElement?.removeEventListener("touchend", touchEnd);
-        touchElement?.removeEventListener("touchcancel", touchCancel);
+      touchElement?.removeEventListener("pointermove", touchMove);
+      touchElement?.removeEventListener("pointerup", touchUp);
+      touchElement?.removeEventListener("pointerleave", touchUp);
+      touchElement?.removeEventListener("pointercancel", touchUp);
+      touchElement?.removeEventListener("lostpointercapture", touchUp);
     });
 </script>
 
@@ -94,28 +120,29 @@
         padding: 3px;
       }
 
-      .right {
+      .arrow.right {
         transform: rotate(-45deg);
         -webkit-transform: rotate(-45deg);
       }
 
-      .left {
+      .arrow.left {
         transform: rotate(135deg);
         -webkit-transform: rotate(135deg);
       }
 
-      .up {
+      .arrow.up {
         transform: rotate(-135deg);
         -webkit-transform: rotate(-135deg);
       }
 
-      .down {
+      .arrow.down {
         transform: rotate(45deg);
         -webkit-transform: rotate(45deg);
       }
 </style>
 
-<div id="dpad" class="absolute top-0 bottom-0 left-4 z-10 m-auto p-1 grid grid-cols-3 grid-rows-3 w-fit h-fit items-center justify-items-center bg-slate-50/[.5] rounded-full select-none">
+<div id="gamepad">
+  <div id="dpad" class="absolute top-0 bottom-0 left-4 z-10 m-auto p-1 grid grid-cols-3 grid-rows-3 w-fit h-fit items-center justify-items-center bg-slate-50/[.5] rounded-full select-none touch-none">
     <button id="up" title="Up" class="row-start-1 col-start-2 bg-black/[.5] rounded-t-lg text-black" value={Button.Up}><i class="arrow up"></button>
     <button id="left" title="Left" class="row-start-2 col-start-1 bg-black/[.5] rounded-l-lg text-black" value={Button.Left}><i class="arrow left"></button>
     <button id="down" title="Down" class="row-start-3 col-start-2 bg-black/[.5] rounded-b-lg text-black" value={Button.Down}><i class="arrow down"></button>
@@ -125,12 +152,13 @@
     <button id="up-right" class="corner row-start-1 col-start-3 rounded-lg bg-transparent" value={Button.Up_Right}></button>
     <button id="down-left" class="corner row-start-3 col-start-1 rounded-lg bg-transparent" value={Button.Down_Left}></button>
     <button id="down-right" class="corner row-start-3 col-start-3 rounded-lg bg-transparent" value={Button.Down_Right}></button>
-</div>
+  </div>
 
-<div class="absolute top-0 bottom-0 right-4 z-10 bg-slate-50/[.5] rounded-full p-1 w-fit h-fit m-auto select-none">
-    <button id="jump" title="Jump" class="bg-black/[.5] rounded-full w-16 h-16 p-0 font-bold text-black" value={Button.Jump}>A</button>
-</div>
+  <div class="absolute top-0 bottom-0 right-4 z-10 bg-slate-50/[.5] rounded-full p-1 w-fit h-fit m-auto select-none">
+      <button id="jump" title="Jump" class="bg-black/[.5] rounded-full w-16 h-16 p-0 font-bold text-black" value={Button.Jump}>A</button>
+  </div>
 
-<div class="absolute top-4 left-4 z-10 bg-slate-50/[.5] rounded-full p-1 w-fit h-fit select-none">
-    <button id="start" title="start" class="bg-black/[.5] rounded-full w-14 h-8 p-0 font-bold text-black" value={Button.Start}>Start</button>
+  <div class="absolute top-4 left-4 z-10 bg-slate-50/[.5] rounded-full p-1 w-fit h-fit select-none">
+      <button id="start" title="start" class="bg-black/[.5] rounded-full w-14 h-8 p-0 font-bold text-black" value={Button.Start}>Start</button>
+  </div>
 </div>
