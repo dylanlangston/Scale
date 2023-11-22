@@ -3,7 +3,7 @@
   import { onMount} from "svelte";
   import { BrowserDetector } from "browser-dtector";
   import GameController from "./controls.svelte";
-  import { Button } from "$lib/gameController";
+	import type { Button } from "$lib/gameController";
 
   const repoUrl: string = "https://github.com/dylanlangston/Scale";
   function openRepo(): void {
@@ -14,15 +14,15 @@
   function toggleFullScreen(): void {
     const elem = document.documentElement;
     if (!document.fullscreenElement) {
-      const resolution = fitInto16x9AspectRatio(window.screen.width, window.screen.height - 0.1);
-      const updateWasmResolution = window.Module._updateWasmResolution;
+      const resolution = fitInto16x9AspectRatio(window.screen.width, window.screen.height - 1);
+      const updateWasmResolution = emscripten._updateWasmResolution;
       if (updateWasmResolution)
       {
         updateWasmResolution(resolution.width, resolution.height);
-        window.Module.canvas.style.width = resolution.width + "px !important";
-        window.Module.canvas.style.height = resolution.height + "px !important";
+        emscripten.canvas.style.width = resolution.width + "px !important";
+        emscripten.canvas.style.height = resolution.height + "px !important";
       }
-      const timeoutAmount = isMobile ? 100 : 50;
+      const timeout = isMobile ? 100 : 10;
       setTimeout(() => {
         elem.requestFullscreen({ navigationUI: "show" }).then(() => {
 
@@ -32,7 +32,7 @@
             );
           UpdateSize(<any>null);
         });
-      }, timeoutAmount);
+      }, timeout);
       fullscreen_title_text = "Exit";
     } else {
       document.exitFullscreen().then(() => {
@@ -41,10 +41,9 @@
       fullscreen_title_text = "Fullscreen";
     }
 
-    window.Module.canvas.focus();
+    emscripten.canvas.focus();
   }
 
-  const padding_horizontal = 0;
   let updateSizeTimeout: number|undefined = undefined;
   function UpdateSize(e: Event): void {
     clearTimeout(updateSizeTimeout);
@@ -52,21 +51,20 @@
     if (document.fullscreenElement) {
       return;
     }
-    if (!window.Module.Initialized) {
+    if (!emscripten.Initialized) {
       return;
     }
 
     const updateSize = (): void => {
-      const updateWasmResolution = window.Module._updateWasmResolution;
+      const updateWasmResolution = emscripten._updateWasmResolution;
       if (updateWasmResolution)
       {
-        const resolution = fitInto16x9AspectRatio(window.innerWidth, (window.innerHeight - padding_horizontal));
+        const resolution = fitInto16x9AspectRatio(window.innerWidth, (window.innerHeight));
         updateWasmResolution(resolution.width, resolution.height);
       }
     };
 
-    const timeoutAmount = isMobile ? 100 : 10;
-    updateSizeTimeout = setTimeout(updateSize, timeoutAmount);
+    updateSizeTimeout = setTimeout(updateSize, 10);
   }
 
   function fitInto16x9AspectRatio(originalWidth: number, originalHeight: number): { width: number; height: number } {
@@ -82,11 +80,27 @@
       }
   }
 
-  const isMobile: boolean = (function(){
-    return true;
+  function handleButtonPressed(b: Button): void {
+    const js_key_pressed = emscripten._js_key_pressed;
+    if (js_key_pressed)
+    {
+      js_key_pressed(b);
+    }
+  }
+
+  function handleButtonReleased(b: Button): void {
+    const js_key_released = emscripten._js_key_released;
+    if (js_key_released)
+    {
+      js_key_released(b);
+    }
+  }
+
+  const isMobile: boolean = (() => {
+    return true
     const detector = new BrowserDetector();
     return detector.parseUserAgent().isMobile;
-  }());
+  })();
 
   function loadScript(name: string): HTMLScriptElement {
     const script = document.createElement("script");
@@ -96,12 +110,15 @@
     return script;
   }
 
+  let emscripten: Module;
   onMount(() => {
+    emscripten = new Module();
+
     window.onerror = (e: any) => {
       document.getElementById("canvas")!.style.display = 'none';
 
       Module.setStatus("Exception thrown, see JavaScript console.\nReload page to try again.");
-      window.Module.setStatus = (e: any) => {
+      emscripten.setStatus = (e: any) => {
         e && console.error("[post-exception status] " + e);
       }
     };
@@ -111,10 +128,10 @@
       window.location.search = "";
     }
     else {
-      window.Module = new Module();
+      window.Module = emscripten;
       const script = loadScript("emscripten.js");
       script.onload = (e) => {
-        window.Module.setStatus("Downloading...");
+        emscripten.setStatus("Downloading...");
         window.addEventListener('resize', UpdateSize);
         window.addEventListener("deviceorientationabsolute", UpdateSize, true);
       };
@@ -146,7 +163,7 @@
   <span id="controls" class="hidden">
     {#if isMobile}
       <div id="gamepad" class="absolute z-50 top-0 left-0 right-0 bottom-0">
-        <GameController handleButtonPressed={(button) => { console.log(button); }} handleButtonReleased={(button) => { console.log(button); }}></GameController>
+        <GameController handleButtonPressed={b => handleButtonPressed(b) } handleButtonReleased={ b => handleButtonReleased(b) }></GameController>
       </div>
     {/if}
     <button type="button" title={fullscreen_title_text} class="absolute right-0 z-50 rounded-lg bg-slate-50/[.5] p-2 m-2" on:click={() => toggleFullScreen()}>

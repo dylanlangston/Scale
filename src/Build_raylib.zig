@@ -228,7 +228,7 @@ pub fn linkWithEmscripten(
         "-O3",
         "--emrun",
         "--no-entry",
-        "-sEXPORTED_FUNCTIONS=['_malloc','_free','_main','_getSettingsVal','_getSettingsSize', '_updateWasmResolution']",
+        "-sEXPORTED_FUNCTIONS=['_malloc','_free','_main','_getSettingsVal','_getSettingsSize','_updateWasmResolution','_js_key_pressed','_js_key_released']",
         "-sEXPORTED_RUNTIME_METHODS=ccall,cwrap",
         "-sWASM=1",
         "-sASSERTIONS",

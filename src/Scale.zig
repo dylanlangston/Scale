@@ -9,6 +9,7 @@ const Logger = @import("Logger.zig").Logger;
 const Views = @import("ViewLocator.zig").Views;
 const Inputs = @import("Inputs.zig").Inputs;
 const FontManager = @import("FontManager.zig").FontManager;
+const JSController = @import("JSGameController.zig");
 
 pub fn main() void {
     // Check that we can allocate memory
@@ -44,6 +45,8 @@ pub fn main() void {
     defer raylib.closeWindow();
 
     FontManager.Init();
+
+    _ = JSController.GetKeyPressed();
 
     // Default View on startup is the Splash Screen
     var current_view: vl.Views = vl.Views.Raylib_Splash_Screen;

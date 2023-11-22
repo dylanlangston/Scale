@@ -2,6 +2,10 @@ export class Module {
 
     public requestFullscreen?: (lockPointer: boolean, resizeCanvas: boolean) => void;
     public _updateWasmResolution?: (width: number, height: number) => void;
+    public _getSettingsSize?: () => number;
+    public _getSettingsVal?: (location: number) => number;
+    public _js_key_pressed?: (location: number) => void;
+    public _js_key_released?: (location: number) => void;
 
     public preRun(mod: Module): void {
         mod.arguments.forEach(arg => console.log("arg: " + arg));

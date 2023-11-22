@@ -1,6 +1,5 @@
 <script lang="ts">
     import { Button } from "$lib/gameController";
-    import { onMount, onDestroy } from "svelte";
 
     export let handleButtonPressed = (button: Button) => {
         console.log("Button Pressed: " + button);
@@ -10,60 +9,45 @@
     };
 
     function touchUp(e: PointerEvent) {
-      if (e.target instanceof HTMLButtonElement && e.target.tagName == "BUTTON")
+      if (e.target instanceof HTMLButtonElement && e.target.tagName == "BUTTON" && e.target.classList.contains("down"))
       {
         e.target.classList.remove("down");
-        if (Object.values(Button).includes(e.target.value))
-        {
-          handleButtonReleased(<any>e.target.value);
-        }
+        handleButtonReleased(<any>e.target.value);
       }
       e.preventDefault();
+    }
+
+    function touchDown(e: PointerEvent) {
+      if (e.target instanceof HTMLButtonElement && e.target.tagName == "BUTTON" && !e.target.classList.contains("down"))
+      {
+        e.target.classList.add("down");
+        navigator.vibrate(10);
+        handleButtonPressed(<any>e.target.value);
+      }
     }
 
     function touchMove(e: PointerEvent) {
       e.preventDefault();
       
-      const buttonsDown = document.querySelectorAll("button.down");
+      const buttonsDown = document.querySelectorAll("#dpad > button.down");
       const elem = <HTMLButtonElement>document.elementFromPoint(e.clientX, e.clientY);
       if (buttonsDown.length == 1 && buttonsDown[0] == elem) return;
       
-      document.querySelectorAll("button.down").forEach(n => {
+      buttonsDown.forEach(n => {
         n.classList.remove("down");
-        if (Object.values(Button).includes((<HTMLButtonElement>n).value))
-        {
-          handleButtonReleased(<any>(<HTMLButtonElement>n).value);
-        }
+        handleButtonReleased(<any>(<HTMLButtonElement>n).value);
       });
       
       if (elem?.tagName == "BUTTON")
       {
         elem.classList.add("down");
         navigator.vibrate(10);
-        if (Object.values(Button).includes(elem.value))
-        {
-          handleButtonPressed(<any>elem.value);
-        }
+        handleButtonPressed(<any>elem.value);
       }
     }
-    const touchElement = globalThis.document;
-    onMount(() => {
-      touchElement?.addEventListener("pointermove", touchMove);
-      touchElement?.addEventListener("pointerup", touchUp);
-      touchElement?.addEventListener("pointerleave", touchUp);
-      touchElement?.addEventListener("pointercancel", touchUp);
-      touchElement?.addEventListener("lostpointercapture", touchUp);
-    });
-    onDestroy(() => {
-      touchElement?.removeEventListener("pointermove", touchMove);
-      touchElement?.removeEventListener("pointerup", touchUp);
-      touchElement?.removeEventListener("pointerleave", touchUp);
-      touchElement?.removeEventListener("pointercancel", touchUp);
-      touchElement?.removeEventListener("lostpointercapture", touchUp);
-    });
 </script>
 
-<style lang="postcss">
+<style global lang="postcss">
       #dpad {
         --button-size: 3rem;
       }
@@ -101,16 +85,16 @@
         border-top: var(--button-size) solid transparent;
       }
       
-      #dpad > button.down:not(.corner), #jump.down {
-        background-color: #f0f0f0;
+      #dpad > button.down:not(.corner), #jump.down, #start.down {
+        background-color: theme(colors.neutral.300);
       }
       
-      #dpad > #up-left.corner.down, #up-right.corner.down {
-        border-bottom: var(--button-size) solid #f0f0f0;
+      #dpad > #up-left.corner.down, #dpad > #up-right.corner.down {
+        border-bottom: var(--button-size) solid theme(colors.neutral.300);
       }
       
-      #dpad > #down-left.corner.down, #down-right.corner.down {
-        border-top: var(--button-size) solid #f0f0f0;
+      #dpad > #down-left.corner.down, #dpad > #down-right.corner.down {
+        border-top: var(--button-size) solid theme(colors.neutral.300);
       }
 
       .arrow {
@@ -142,7 +126,14 @@
 </style>
 
 <div id="gamepad">
-  <div id="dpad" class="absolute top-0 bottom-0 left-4 z-10 m-auto p-1 grid grid-cols-3 grid-rows-3 w-fit h-fit items-center justify-items-center bg-slate-50/[.5] rounded-full select-none touch-none">
+  <div id="dpad" 
+  on:pointermove={e => touchMove(e)}
+  on:pointerdown={e => touchMove(e)}
+  on:pointerup={e => touchUp(e)}
+  on:pointerleave={e => touchUp(e)}
+  on:pointercancel={e => touchUp(e)}
+  on:lostpointercapture={e => touchUp(e)}
+  class="absolute bottom-10 left-4 z-10 m-auto p-1 grid grid-cols-3 grid-rows-3 w-fit h-fit items-center justify-items-center bg-slate-50/[.5] rounded-full select-none touch-none">
     <button id="up" title="Up" class="row-start-1 col-start-2 bg-black/[.5] rounded-t-lg text-black" value={Button.Up}><i class="arrow up"></button>
     <button id="left" title="Left" class="row-start-2 col-start-1 bg-black/[.5] rounded-l-lg text-black" value={Button.Left}><i class="arrow left"></button>
     <button id="down" title="Down" class="row-start-3 col-start-2 bg-black/[.5] rounded-b-lg text-black" value={Button.Down}><i class="arrow down"></button>
@@ -154,11 +145,25 @@
     <button id="down-right" class="corner row-start-3 col-start-3 rounded-lg bg-transparent" value={Button.Down_Right}></button>
   </div>
 
-  <div class="absolute top-0 bottom-0 right-4 z-10 bg-slate-50/[.5] rounded-full p-1 w-fit h-fit m-auto select-none">
-      <button id="jump" title="Jump" class="bg-black/[.5] rounded-full w-16 h-16 p-0 font-bold text-black" value={Button.Jump}>A</button>
+  <div class="absolute bottom-20 right-4 z-10 bg-slate-50/[.5] rounded-full p-1 w-fit h-fit m-auto select-none">
+      <button id="jump" title="Jump" class="bg-black/[.5] rounded-full w-16 h-16 p-0 font-bold text-black" 
+        value={Button.Jump}
+        on:pointerdown={e => touchDown(e)}
+        on:pointerup={e => touchUp(e)}
+        on:pointerleave={e => touchUp(e)}
+        on:pointercancel={e => touchUp(e)}
+        on:lostpointercapture={e => touchUp(e)}
+      >A</button>
   </div>
 
   <div class="absolute top-4 left-4 z-10 bg-slate-50/[.5] rounded-full p-1 w-fit h-fit select-none">
-      <button id="start" title="start" class="bg-black/[.5] rounded-full w-14 h-8 p-0 font-bold text-black" value={Button.Start}>Start</button>
+      <button id="start" title="start" class="bg-black/[.5] rounded-full w-14 h-8 p-0 font-bold text-black" 
+        value={Button.Start}
+        on:pointerdown={e => touchDown(e)}
+        on:pointerup={e => touchUp(e)}
+        on:pointerleave={e => touchUp(e)}
+        on:pointercancel={e => touchUp(e)}
+        on:lostpointercapture={e => touchUp(e)}
+      >Start</button>
   </div>
 </div>
