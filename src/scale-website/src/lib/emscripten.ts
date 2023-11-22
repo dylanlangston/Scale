@@ -15,6 +15,8 @@ export class Module {
 
     public onRuntimeInitialized(): void {
         this._Initialized = true;
+        
+        document.getElementById("gamepad")?.classList.remove("hidden");
 
         // Trigger a resize on load to ensure the correct canvas size
         window.dispatchEvent(new Event('resize'));
