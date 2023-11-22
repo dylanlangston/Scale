@@ -29,21 +29,26 @@
     function touchMove(e: PointerEvent) {
       e.preventDefault();
       
-      const buttonsDown = document.querySelectorAll("#dpad > button.down");
       const elem = <HTMLButtonElement>document.elementFromPoint(e.clientX, e.clientY);
-      if (buttonsDown.length == 1 && buttonsDown[0] == elem) return;
-      
-      buttonsDown.forEach(n => {
-        n.classList.remove("down");
-        handleButtonReleased(<any>(<HTMLButtonElement>n).value);
-      });
-      
-      if (elem?.tagName == "BUTTON")
+      if (elem?.tagName == "BUTTON" && !elem.classList.contains("down"))
       {
         elem.classList.add("down");
         navigator.vibrate(10);
         handleButtonPressed(<any>elem.value);
       }
+
+      document.querySelectorAll("#dpad > button.down").forEach(n => {
+        if (n == elem) return;
+        n.classList.remove("down");
+        handleButtonReleased(<any>(<HTMLButtonElement>n).value);
+      });
+    }
+
+    function deselectDpad():void {
+      document.querySelectorAll("#dpad > button.down").forEach(n => {
+        n.classList.remove("down");
+        handleButtonReleased(<any>(<HTMLButtonElement>n).value);
+      });
     }
 </script>
 
@@ -129,10 +134,10 @@
   <div id="dpad" 
   on:pointermove={e => touchMove(e)}
   on:pointerdown={e => touchMove(e)}
-  on:pointerup={e => touchUp(e)}
-  on:pointerleave={e => touchUp(e)}
-  on:pointercancel={e => touchUp(e)}
-  on:lostpointercapture={e => touchUp(e)}
+  on:pointerup={e => deselectDpad()}
+  on:pointerleave={e => deselectDpad()}
+  on:pointercancel={e => deselectDpad()}
+  on:lostpointercapture={e => deselectDpad()}
   class="absolute bottom-10 left-4 z-10 m-auto p-1 grid grid-cols-3 grid-rows-3 w-fit h-fit items-center justify-items-center bg-slate-50/[.5] rounded-full select-none touch-none">
     <button id="up" title="Up" class="row-start-1 col-start-2 bg-black/[.5] rounded-t-lg text-black" value={Button.Up}><i class="arrow up"></button>
     <button id="left" title="Left" class="row-start-2 col-start-1 bg-black/[.5] rounded-l-lg text-black" value={Button.Left}><i class="arrow left"></button>
