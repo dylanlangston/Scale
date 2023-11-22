@@ -43,7 +43,9 @@ pub const FontManager = struct {
     }
 
     fn SaveFontToCache(key: Fonts, fileType: [:0]const u8, bytes: [:0]const u8) FontManagerErrors!raylib.Font {
-        const f = raylib.loadFontFromMemory(fileType, bytes, 100, undefined);
+        var fontChars: [95]i32 = .{};
+        for (0..fontChars.len) |i| fontChars[i] = @as(i32, @intCast(i)) + 32;
+        const f = raylib.loadFontFromMemory(fileType, bytes, 100, &fontChars);
         raylib.setTextureFilter(
             f.texture,
             @intFromEnum(raylib.TextureFilter.texture_filter_trilinear),
