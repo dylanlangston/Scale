@@ -22,18 +22,18 @@
         console.log("TouchCancel-: " + e);
     }
 
-    const touchElement = document.documentElement;
+    const touchElement = globalThis.document;
     onMount(() => {
-        touchElement.addEventListener("touchstart", touchStart);
-        touchElement.addEventListener("touchmove", touchMove);
-        touchElement.addEventListener("touchend", touchEnd);
-        touchElement.addEventListener("touchcancel", touchCancel);
+        touchElement?.addEventListener("touchstart", touchStart);
+        touchElement?.addEventListener("touchmove", touchMove);
+        touchElement?.addEventListener("touchend", touchEnd);
+        touchElement?.addEventListener("touchcancel", touchCancel);
     });
     onDestroy(() => {
-        touchElement.removeEventListener("touchstart", touchStart);
-        touchElement.removeEventListener("touchmove", touchMove);
-        touchElement.removeEventListener("touchend", touchEnd);
-        touchElement.removeEventListener("touchcancel", touchCancel);
+        touchElement?.removeEventListener("touchstart", touchStart);
+        touchElement?.removeEventListener("touchmove", touchMove);
+        touchElement?.removeEventListener("touchend", touchEnd);
+        touchElement?.removeEventListener("touchcancel", touchCancel);
     });
 </script>
 
@@ -108,12 +108,12 @@
       }
 </style>
 
-<div id="dpad" class="bg-red-500 rounded-full">
-    <button id="up" class="row-start-1 col-start-2 bg-red-700 rounded-t-lg" value={Button.Up}></button>
-    <button id="left" class="row-start-2 col-start-1 bg-red-700 rounded-l-lg" value={Button.Left}></button>
-    <button id="down" class="row-start-3 col-start-2 bg-red-700 rounded-b-lg" value={Button.Down}></button>
-    <button id="right" class="row-start-2 col-start-3 bg-red-700 rounded-r-lg" value={Button.Right}></button>
-    <div class="row-start-2 col-start-2 w-full h-full bg-red-700"></div>
+<div id="dpad" class="bg-slate-50/[.5] rounded-full">
+    <button id="up" class="row-start-1 col-start-2 bg-black/[.5] rounded-t-lg" value={Button.Up}></button>
+    <button id="left" class="row-start-2 col-start-1 bg-black/[.5] rounded-l-lg" value={Button.Left}></button>
+    <button id="down" class="row-start-3 col-start-2 bg-black/[.5] rounded-b-lg" value={Button.Down}></button>
+    <button id="right" class="row-start-2 col-start-3 bg-black/[.5] rounded-r-lg" value={Button.Right}></button>
+    <div class="row-start-2 col-start-2 w-full h-full bg-black/[.5]"></div>
     <button id="up-left" class="corner row-start-1 col-start-1 rounded-lg" value={Button.Up_Left}></button>
     <button id="up-right" class="corner row-start-1 col-start-3 rounded-lg" value={Button.Up_Right}></button>
     <button id="down-left" class="corner row-start-3 col-start-1 rounded-lg" value={Button.Down_Left}></button>
