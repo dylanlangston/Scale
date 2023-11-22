@@ -6,7 +6,7 @@ const Logger = @import("Logger.zig").Logger;
 pub const FontManager = struct {
     var LoadedFonts: ?std.AutoHashMap(Fonts, raylib.Font) = null;
 
-    const FontManagerErrors = error{FailedToAppend};
+    const FontManagerErrors = error{ FailedToAppend, NotFound };
 
     pub fn Init() void {
         for (std.enums.values(Fonts)) |font| {
@@ -25,36 +25,25 @@ pub const FontManager = struct {
             return LoadedFonts.?.get(font).?;
         }
 
-        // https://www.fontspace.com/
+        // Source - https://www.fontspace.com/
         switch (font) {
             Fonts.EightBitDragon => {
-                const bytes = EightBitDragon;
-                const f = raylib.loadFontFromMemory(".ttf", bytes, 100, undefined);
-                raylib.setTextureFilter(
-                    f.texture,
-                    @intFromEnum(raylib.TextureFilter.texture_filter_trilinear),
-                );
-                LoadedFonts.?.put(Fonts.EightBitDragon, f) catch return FontManagerErrors.FailedToAppend;
-                return f;
+                return SaveFontToCache(Fonts.EightBitDragon, ".ttf", EightBitDragon);
             },
             Fonts.TwoLines => {
-                const bytes = _2Lines;
-                const f = raylib.loadFontFromMemory(".ttf", bytes, 100, undefined);
-                raylib.setTextureFilter(
-                    f.texture,
-                    @intFromEnum(raylib.TextureFilter.texture_filter_trilinear),
-                );
-                LoadedFonts.?.put(Fonts.TwoLines, f) catch return FontManagerErrors.FailedToAppend;
-                return f;
+                return SaveFontToCache(Fonts.TwoLines, ".ttf", _2Lines);
             },
             Fonts.EcBricksRegular => {
-                return SaveFontToCache(Fonts.EcBricksRegular, bricks);
+                return SaveFontToCache(Fonts.EcBricksRegular, ".ttf", bricks);
+            },
+            else => {
+                return FontManagerErrors.NotFound;
             },
         }
     }
 
-    fn SaveFontToCache(key: Fonts, bytes: [:0]u8) raylib.Font {
-        const f = raylib.loadFontFromMemory(".ttf", bytes, 100, undefined);
+    fn SaveFontToCache(key: Fonts, fileType: [:0]const u8, bytes: [:0]const u8) FontManagerErrors!raylib.Font {
+        const f = raylib.loadFontFromMemory(fileType, bytes, 100, undefined);
         raylib.setTextureFilter(
             f.texture,
             @intFromEnum(raylib.TextureFilter.texture_filter_trilinear),
@@ -71,12 +60,13 @@ pub const FontManager = struct {
 };
 
 // Fonts
-const EightBitDragon: [:0]u8 = @embedFile("./Fonts/EightBitDragon.ttf");
-const _2Lines = @embedFile("./Fonts/2Lines.ttf");
-const bricks = @embedFile("./Fonts/EcBricksRegular.ttf");
+const EightBitDragon: [:0]const u8 = @embedFile("./Fonts/EightBitDragon.ttf");
+const _2Lines: [:0]const u8 = @embedFile("./Fonts/2Lines.ttf");
+const bricks: [:0]const u8 = @embedFile("./Fonts/EcBricksRegular.ttf");
 
 pub const Fonts = enum {
     EightBitDragon,
     TwoLines,
     EcBricksRegular,
+    Unknown,
 };
