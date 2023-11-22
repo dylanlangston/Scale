@@ -82,7 +82,6 @@
   }
 
   function isMobile(): boolean {
-    return true;
     const detector = new BrowserDetector();
     return detector.parseUserAgent().isMobile;
   };
