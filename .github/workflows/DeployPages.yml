@@ -94,8 +94,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag: v${{ steps.set_datetime.outputs.datetime }}
-        name: Release v${{ steps.set_datetime.outputs.datetime }}
+        tag_name: v${{ steps.set_datetime.outputs.datetime }}
+        release_name: Release v${{ steps.set_datetime.outputs.datetime }}
         body: Scale Game - Prerelease v${{ steps.set_datetime.outputs.datetime }}
         draft: false
         prerelease: true
