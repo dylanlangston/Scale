@@ -43,6 +43,8 @@ jobs:
           working-directory: "${{ github.workspace }}/src/scale-website"
       - name: Zig Cache
         uses: Hanaasagi/zig-action-cache@v1.1.5
+        with:
+          cache-directories: "${{ github.workspace }}/src/emscripten/upstream/"
       - name: Build Zig
         run: |
           cd ${{ github.workspace }}
