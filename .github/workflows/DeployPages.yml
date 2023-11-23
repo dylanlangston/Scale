@@ -35,10 +35,12 @@ jobs:
         with:
           node-version: "16"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
+          cache-dependency-path: "${{ github.workspace }}/src/scale-website"
       - name: Install Node Modules
-        uses: dudeofawesome/npm-install@v1.0.0
+        uses: bahmutov/npm-install@v1.6.0
         with:
-          package-dir-path: "${{ github.workspace }}/src/scale-website"
+          # Working directory to specify subfolder in which dependencies are defined
+          working-directory: "${{ github.workspace }}/src/scale-website"
       - name: Build Zig
         run: |
           cd ${{ github.workspace }}
