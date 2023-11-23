@@ -105,6 +105,6 @@ jobs:
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./scale/github-pages
+        asset_path: "${{ github.workspace }}/scale/github-pages"
         asset_name: scale.tar
         asset_content_type: application/x-tar
