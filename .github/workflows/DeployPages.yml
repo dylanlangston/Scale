@@ -101,7 +101,7 @@ jobs:
       run: |
         cd ./scale
         mkdir ./scale
-        tar -xvf ./artifact.tar ./scale
+        tar -xvf ./artifact.tar -C ./scale
         zip -r ../scale.zip ./scale/
     - name: Upload Release Asset
       id: upload-release-asset
