@@ -78,6 +78,11 @@ jobs:
     permissions:
       contents: write
     steps:
+    - name: Download artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: github-pages
+        path: scale
     - name: Set current datetime
       id: set_datetime
       run: echo "::set-output name=datetime::$(date +"%Y%m%d%H%M%S")"
@@ -90,7 +95,13 @@ jobs:
         tag_name: v${{ steps.set_datetime.outputs.datetime }}
         release_name: Release v${{ steps.set_datetime.outputs.datetime }}
         body: Scale Game - Prerelease v${{ steps.set_datetime.outputs.datetime }}
-        artifacts: "github-pages.zip"
         draft: false
         prerelease: true
-        makeLatest: true
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: '${{ github.workspace }}/scale'
+        asset_name: scale.zip
+        asset_content_type: application/zip
