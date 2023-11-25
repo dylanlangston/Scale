@@ -15,7 +15,7 @@ pub const World = struct {
 
         const screenWidth: f32 = @floatFromInt(raylib.getScreenWidth());
         const screenHeight: f32 = @floatFromInt(raylib.getScreenHeight());
-        const PlayerSize = PlayerModel.GetSize();
+        const PlayerSize = PlayerModel.GetSize(raylib.Rectangle.init(0, 0, screenHeight, screenWidth));
 
         Player = PlayerModel{
             .Position = raylib.Rectangle.init(
@@ -33,7 +33,7 @@ pub const World = struct {
         try Platforms.append(PlatformModel{
             .Position = raylib.Rectangle.init(
                 screenWidth / 4,
-                screenHeight / 2,
+                screenHeight / 3 * 2,
                 screenWidth,
                 screenHeight,
             ),
@@ -44,22 +44,26 @@ pub const World = struct {
         });
     }
 
-    pub fn CheckForPlatformCollisions(item: raylib.Rectangle, current_screen: raylib.Rectangle) bool {
+    pub fn CheckForPlatformCollision(item: raylib.Rectangle, current_screen: raylib.Rectangle) ?raylib.Rectangle {
         for (Platforms.items) |platform| {
             const collision = platform.GetCollision(current_screen, item);
-            if (collision.width > 0) return true;
-            if (collision.height > 0) return true;
+            if (collision.width > 1) {
+                return collision;
+            }
+            if (collision.height > 1) {
+                return collision;
+            }
         }
-        return false;
+        return null;
     }
 
-    pub fn UpdatePlatforms() std.ArrayList(PlatformModel) {
+    pub fn UpdatePlatforms(current_screen: raylib.Rectangle) std.ArrayList(PlatformModel) {
         for (Platforms.items, 0..) |platform, index| {
             Platforms.replaceRange(
                 index,
                 1,
                 &[1]PlatformModel{
-                    platform.UpdatePosition(),
+                    platform.UpdatePosition(current_screen),
                 },
             ) catch {
                 Logger.Info("Failed to update platform!");

@@ -38,7 +38,8 @@ pub fn main() void {
     Logger.Info("Creating Window");
     raylib.setConfigFlags(
         @enumFromInt( //@intFromEnum(raylib.ConfigFlags.flag_window_always_run) +
-            @intFromEnum(raylib.ConfigFlags.flag_msaa_4x_hint)),
+            @intFromEnum(raylib.ConfigFlags.flag_msaa_4x_hint) +
+            @intFromEnum(raylib.ConfigFlags.flag_window_resizable)),
     );
     raylib.initWindow(_settings.CurrentResolution.Width, _settings.CurrentResolution.Height, "Scale Game!");
     raylib.setExitKey(.key_null);

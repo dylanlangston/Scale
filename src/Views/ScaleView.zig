@@ -17,18 +17,19 @@ const WorldModel = @import("../Models/World.zig").World;
 const moveModifier: f32 = 32;
 
 pub fn DrawFunction() Views {
-    WorldModel.Platforms = WorldModel.UpdatePlatforms();
+    const current_screen = WorldModel.GetCurrentScreenSize();
+    WorldModel.Platforms = WorldModel.UpdatePlatforms(current_screen);
 
-    WorldModel.Player = WorldModel.Player.UpdatePosition();
+    WorldModel.Player = WorldModel.Player.UpdatePosition(current_screen);
 
     raylib.clearBackground(Colors.Green.Dark);
 
     for (WorldModel.Platforms.items) |platform| {
-        platform.Draw();
+        platform.Draw(current_screen);
     }
 
     // Draw Player
-    WorldModel.Player.Draw();
+    WorldModel.Player.Draw(current_screen);
 
     const up = Inputs.Up_Held();
     const down = Inputs.Up_Held();

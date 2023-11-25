@@ -29,32 +29,30 @@ pub const Player = struct {
         return new_position_y;
     }
 
-    pub fn GetSize() PlayerSize {
-        const current_screen = World.GetCurrentScreenSize();
+    pub fn GetSize(current_screen: raylib.Rectangle) PlayerSize {
         return PlayerSize{
             .width = GetSizeX(current_screen),
             .height = GetSizeY(current_screen),
         };
     }
 
-    fn GetPositionX(self: Player, current_screen: raylib.Rectangle) f32 {
+    fn GetPositionX(self: Player, current_screen: raylib.Rectangle, size: PlayerSize) f32 {
         if (current_screen.width != self.Position.width) {
             const new_position_x: f32 = (self.Position.x) / self.Position.width * current_screen.width;
             return self.EnsureWithinBounnds(
                 directions.horizontal,
                 new_position_x,
-                Player.GetSize(),
+                size,
             );
         }
         return self.EnsureWithinBounnds(
             directions.horizontal,
             self.Position.x,
-            Player.GetSize(),
+            size,
         );
     }
 
-    fn GetPositionY(self: Player, current_screen: raylib.Rectangle) f32 {
-        const size = Player.GetSize();
+    fn GetPositionY(self: Player, current_screen: raylib.Rectangle, size: PlayerSize) f32 {
         if (current_screen.height != self.Position.height) {
             const new_position_y: f32 = (self.Position.y) / self.Position.height * current_screen.height;
             return self.EnsureWithinBounnds(
@@ -70,21 +68,21 @@ pub const Player = struct {
         );
     }
 
-    fn GetPosition(self: Player, current_screen: raylib.Rectangle) raylib.Rectangle {
+    fn GetPosition(self: Player, current_screen: raylib.Rectangle, size: PlayerSize) raylib.Rectangle {
         return raylib.Rectangle.init(
-            self.GetPositionX(current_screen),
-            self.GetPositionY(current_screen),
+            self.GetPositionX(current_screen, size),
+            self.GetPositionY(current_screen, size),
             current_screen.width,
             current_screen.height,
         );
     }
 
-    pub fn GetPositionAbsolute(self: Player, current_screen: raylib.Rectangle) raylib.Rectangle {
+    pub fn GetPositionAbsolute(self: Player, current_screen: raylib.Rectangle, size: PlayerSize) raylib.Rectangle {
         return raylib.Rectangle.init(
-            self.GetPositionX(current_screen),
-            self.GetPositionY(current_screen),
-            GetSizeX(current_screen),
-            GetSizeY(current_screen),
+            self.GetPositionX(current_screen, size),
+            self.GetPositionY(current_screen, size),
+            size.width,
+            size.height,
         );
     }
 
@@ -123,7 +121,7 @@ pub const Player = struct {
         return f;
     }
 
-    fn IsCollidingX(self: Player, position: raylib.Rectangle, current_screen: raylib.Rectangle, size: PlayerSize) bool {
+    fn IsCollidingX(position: raylib.Rectangle, current_screen: raylib.Rectangle, size: PlayerSize) bool {
         if (position.x == 0) {
             Logger.Debug_Formatted("Collide: {}", .{std.time.nanoTimestamp()});
             return true;
@@ -132,31 +130,54 @@ pub const Player = struct {
             return true;
         }
 
-        const absolutePosition = GetPositionAbsolute(self, current_screen);
-        if (World.CheckForPlatformCollisions(absolutePosition, current_screen)) {
-            Logger.Debug_Formatted("Collide: {}", .{std.time.nanoTimestamp()});
-            return true;
-        }
         return false;
     }
 
-    fn IsCollidingY(self: Player, position: raylib.Rectangle, current_screen: raylib.Rectangle, size: PlayerSize) bool {
+    fn IsCollidingYTop(
+        position: raylib.Rectangle,
+        current_screen: raylib.Rectangle,
+        size: PlayerSize,
+        platformCollision: ?raylib.Rectangle,
+    ) bool {
+        _ = current_screen;
+        _ = size;
+        if (position.y <= 0) {
+            Logger.Debug_Formatted("Collide: {}", .{std.time.nanoTimestamp()});
+            return true;
+        }
+
+        if (platformCollision != null) {
+            if (platformCollision.?.height > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    fn IsCollidingYBottom(
+        position: raylib.Rectangle,
+        current_screen: raylib.Rectangle,
+        size: PlayerSize,
+        platformCollision: ?raylib.Rectangle,
+    ) bool {
         if (position.y + size.height >= current_screen.height) {
             Logger.Debug_Formatted("Collide: {}", .{std.time.nanoTimestamp()});
             return true;
         }
 
-        const absolutePosition = GetPositionAbsolute(self, current_screen);
-        if (World.CheckForPlatformCollisions(absolutePosition, current_screen)) {
-            Logger.Debug_Formatted("Collide: {}", .{std.time.nanoTimestamp()});
-            return true;
+        if (platformCollision != null) {
+            if (platformCollision.?.height > 0) {
+                Logger.Info_Formatted("{?}", .{platformCollision});
+                return true;
+            }
         }
+
         return false;
     }
 
-    pub fn UpdatePosition(self: Player) Player {
-        const current_screen = World.GetCurrentScreenSize();
-        const playerSize = Player.GetSize();
+    pub fn UpdatePosition(self: Player, current_screen: raylib.Rectangle) Player {
+        const playerSize = Player.GetSize(current_screen);
 
         const friction = if (self.IsJumping)
             (FRICTION_AIR * raylib.getFrameTime())
@@ -170,13 +191,16 @@ pub const Player = struct {
         else
             (@min(self.Velocity.x + friction, 0));
 
-        const newVelocity = raylib.Vector2.init(
+        var newVelocity = raylib.Vector2.init(
             new_VelocityX,
             new_VelocityY,
         );
-        var newPosition: raylib.Rectangle = self.Position;
+        var newPosition: raylib.Rectangle = self.GetPosition(current_screen, playerSize);
         var newIsJumping: bool = self.IsJumping;
         var newIsMoving: bool = self.IsMoving;
+
+        const absolutePosition = self.GetPositionAbsolute(current_screen, playerSize);
+        const playformCollision = World.CheckForPlatformCollision(absolutePosition, current_screen);
 
         if (self.IsMoving) {
             const new_x = self.EnsureWithinBounnds(
@@ -195,7 +219,7 @@ pub const Player = struct {
             if (new_VelocityX == 0) {
                 Logger.Debug_Formatted("Stop Moving: {}", .{std.time.nanoTimestamp()});
                 newIsMoving = false;
-            } else if (self.IsCollidingX(newPosition, current_screen, playerSize)) {
+            } else if (IsCollidingX(newPosition, current_screen, playerSize)) {
                 Logger.Debug_Formatted("Stop Moving: {}", .{std.time.nanoTimestamp()});
                 newIsMoving = false;
             }
@@ -215,15 +239,39 @@ pub const Player = struct {
                 newPosition.height,
             );
 
-            newIsJumping = !self.IsCollidingY(newPosition, current_screen, playerSize);
+            if (IsCollidingYBottom(newPosition, current_screen, playerSize, playformCollision)) {
+                newIsJumping = false;
+                const yMod = if (playformCollision == null) 0 else playformCollision.?.height;
+                if (yMod > 0) {
+                    Logger.Info_Formatted("YMod: {}", .{yMod});
+                }
+                newPosition = raylib.Rectangle.init(
+                    newPosition.x,
+                    newPosition.y - (yMod * 2),
+                    newPosition.width,
+                    newPosition.height,
+                );
+                newVelocity = raylib.Vector2.init(
+                    new_VelocityX,
+                    0,
+                );
+            } else if (IsCollidingYTop(newPosition, current_screen, playerSize, playformCollision)) {
+                newVelocity = raylib.Vector2.init(
+                    new_VelocityX,
+                    -1,
+                );
+            }
+
+            newIsJumping = !IsCollidingYBottom(newPosition, current_screen, playerSize, playformCollision);
         }
 
-        return Player{
+        const p = Player{
             .Position = newPosition,
             .Velocity = newVelocity,
             .IsJumping = newIsJumping,
             .IsMoving = newIsMoving,
         };
+        return p;
     }
 
     const GRAVITY: f32 = 50;
@@ -234,8 +282,8 @@ pub const Player = struct {
             return self;
         } else if (self.IsJumping) {
             const current_screen = World.GetCurrentScreenSize();
-            const playerSize = Player.GetSize();
-            if (self.IsCollidingX(self.Position, current_screen, playerSize)) {
+            const playerSize = Player.GetSize(current_screen);
+            if (IsCollidingX(self.Position, current_screen, playerSize)) {
                 return Player{
                     .Position = self.Position,
                     .Velocity = raylib.Vector2.init(
@@ -332,9 +380,9 @@ pub const Player = struct {
         };
     }
 
-    pub fn Draw(self: Player) void {
-        const playerPosition = self.Position;
-        const playerSize = GetSize();
+    pub fn Draw(self: Player, current_screen: raylib.Rectangle) void {
+        const playerSize = GetSize(current_screen);
+        const playerPosition = self.GetPosition(current_screen, playerSize);
         raylib.drawRectangle(
             @intFromFloat(playerPosition.x),
             @intFromFloat(playerPosition.y),

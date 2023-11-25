@@ -19,8 +19,7 @@ pub const Platform = struct {
         return new_size_y;
     }
 
-    pub fn GetSize(self: Platform) PlatformSize {
-        const current_screen = World.GetCurrentScreenSize();
+    pub fn GetSize(self: Platform, current_screen: raylib.Rectangle) PlatformSize {
         return PlatformSize{
             .width = self.GetSizeX(current_screen),
             .height = self.GetSizeY(current_screen),
@@ -66,17 +65,16 @@ pub const Platform = struct {
         );
     }
 
-    pub fn UpdatePosition(self: Platform) Platform {
-        const current_screen = World.GetCurrentScreenSize();
+    pub fn UpdatePosition(self: Platform, current_screen: raylib.Rectangle) Platform {
         return Platform{
             .Position = self.GetPosition(current_screen),
             .Size = self.Size,
         };
     }
 
-    pub fn Draw(self: Platform) void {
+    pub fn Draw(self: Platform, current_screen: raylib.Rectangle) void {
         const platformPosition = self.Position;
-        const platformSize = self.GetSize();
+        const platformSize = self.GetSize(current_screen);
         raylib.drawRectangle(
             @intFromFloat(platformPosition.x),
             @intFromFloat(platformPosition.y),
