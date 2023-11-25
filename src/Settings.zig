@@ -18,7 +18,7 @@ pub const Settings = struct {
         defer settings.deinit();
 
         std.json.stringify(self, .{}, settings.writer()) catch |err| {
-            std.debug.print("Unable to serialize settings: {}\n", .{err});
+            Logger.Error_Formatted("Unable to serialize settings: {}\n", .{err});
             return false;
         };
 
@@ -28,13 +28,13 @@ pub const Settings = struct {
         }
 
         var settings_file = std.fs.cwd().createFile(settingsFile, .{ .read = true }) catch |err| {
-            std.debug.print("Unable to create settings file: {}\n", .{err});
+            Logger.Error_Formatted("Unable to create settings file: {}\n", .{err});
             return false;
         };
         defer settings_file.close();
 
         _ = settings_file.write(settings.items) catch |err| {
-            std.debug.print("Unable to save settings: {}\n", .{err});
+            Logger.Error_Formatted("Unable to save settings: {}\n", .{err});
             return false;
         };
 
@@ -44,23 +44,35 @@ pub const Settings = struct {
         Logger.Info("Load settings");
         if (builtin.target.os.tag == .wasi) {
             const wasm_settings = GetWasmSettings();
-            var settings = std.json.parseFromSlice(Settings, allocator, wasm_settings.?, .{}) catch return default_settings;
+            var settings = std.json.parseFromSlice(Settings, allocator, wasm_settings.?, .{}) catch |er| {
+                Logger.Error_Formatted("Failed to deserialize settings: {}", .{er});
+                return default_settings;
+            };
             defer settings.deinit();
 
             return NormalizeSettings(settings.value);
         }
 
         // Open file
-        var settings_file = std.fs.cwd().openFile(settingsFile, .{}) catch return default_settings;
+        var settings_file = std.fs.cwd().openFile(settingsFile, .{}) catch |er| {
+            Logger.Error_Formatted("Failed to open settings file: {}", .{er});
+            return default_settings;
+        };
         defer settings_file.close();
 
         // Read the contents
         const max_bytes = 10000;
-        const file_buffer = settings_file.readToEndAlloc(allocator, max_bytes) catch return default_settings;
+        const file_buffer = settings_file.readToEndAlloc(allocator, max_bytes) catch |er| {
+            Logger.Error_Formatted("Failed to read settings file: {}", .{er});
+            return default_settings;
+        };
         defer allocator.free(file_buffer);
 
         // Parse JSON
-        var settings = std.json.parseFromSlice(Settings, allocator, file_buffer, .{}) catch return default_settings;
+        var settings = std.json.parseFromSlice(Settings, allocator, file_buffer, .{}) catch |er| {
+            Logger.Error_Formatted("Failed to deserialize settings: {}", .{er});
+            return default_settings;
+        };
         defer settings.deinit();
 
         return NormalizeSettings(settings.value);
@@ -159,7 +171,6 @@ fn SaveWasmSettings(settings: []u8) void {
         Logger.Error("Failed to save settings");
     };
 
-    // This is a bit of a hack, we just post a message saying "save-settings" right now to trigger the save
-    // We should call a JS function from ZIG but I've failed to get that to work for too long and need to move on...
-    std.log.default.info("{s}", .{"save-settings"});
+    WASMSave();
 }
+extern fn WASMSave() void;

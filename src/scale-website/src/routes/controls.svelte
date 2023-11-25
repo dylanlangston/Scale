@@ -90,7 +90,7 @@
         border-top: var(--button-size) solid transparent;
       }
       
-      #dpad > button.down:not(.corner), #jump.down, #start.down {
+      #dpad > button.down:not(.corner), #a.down, #start.down {
         background-color: theme(colors.neutral.300);
       }
       
@@ -151,8 +151,8 @@
   </div>
 
   <div class="absolute bottom-20 right-4 z-10 bg-slate-50/[.5] rounded-full p-1 w-fit h-fit m-auto select-none">
-      <button id="jump" title="Jump" class="bg-black/[.5] rounded-full w-16 h-16 p-0 font-bold text-black" 
-        value={Button.Jump}
+      <button id="a" title="A" class="bg-black/[.5] rounded-full w-16 h-16 p-0 font-bold text-black" 
+        value={Button.A}
         on:pointerdown={e => touchDown(e)}
         on:pointerup={e => touchUp(e)}
         on:pointerleave={e => touchUp(e)}

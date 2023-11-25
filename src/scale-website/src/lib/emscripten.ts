@@ -4,8 +4,8 @@ export class Module {
     public _updateWasmResolution?: (width: number, height: number) => void;
     public _getSettingsSize?: () => number;
     public _getSettingsVal?: (location: number) => number;
-    public _js_key_pressed?: (location: number) => void;
-    public _js_key_released?: (location: number) => void;
+    public _set_js_key?: (location: number, down: boolean) => void;
+    public _requestPause?: () => void;
 
     public preRun(mod: Module): void {
         mod.arguments.forEach(arg => console.log("arg: " + arg));
@@ -30,17 +30,8 @@ export class Module {
         "./this.program"
     ];
 
-    private static settingsName: string = "settings";
     private static getSettings(): string {
-        return window.localStorage.getItem(Module.settingsName) ?? "{}";
-    }
-    private static saveSettings() {
-        let u8array = [];
-        for (let i = 0; i < (<any>window).Module._getSettingsSize(); i++) {
-            u8array.push((<any>window).Module._getSettingsVal(i));
-        }
-        const settings = new TextDecoder().decode(new Uint8Array(u8array))
-        window.localStorage.setItem(Module.settingsName, settings);
+        return window.localStorage.getItem("settings") ?? "{}";
     }
 
     public static updateSettingsFromQueryString(): boolean {
@@ -106,11 +97,7 @@ export class Module {
 
     public printErr(text: string): void {
         text = Array.prototype.slice.call(arguments).join(' ');
-        if (text == "info: save-settings") {
-            Module.saveSettings();
-            return;
-        }
-        console.error(text);
+        globalThis.console.error(text);
     }
     
     public canvas: HTMLCanvasElement = (() => {

@@ -8,14 +8,6 @@ pub const FontManager = struct {
 
     const FontManagerErrors = error{ FailedToAppend, NotFound };
 
-    pub fn Init() void {
-        for (std.enums.values(Fonts)) |font| {
-            _ = GetFont(font) catch {
-                Logger.Error("Failed to init font");
-            };
-        }
-    }
-
     pub fn GetFont(font: Fonts) FontManagerErrors!raylib.Font {
         if (LoadedFonts == null) {
             LoadedFonts = std.AutoHashMap(Fonts, raylib.Font).init(Shared.GetAllocator());

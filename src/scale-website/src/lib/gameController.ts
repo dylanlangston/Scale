@@ -1,5 +1,5 @@
 export enum Button {
-    Up,
+    Up = 0,
     Down,
     Left,
     Right,
@@ -7,6 +7,6 @@ export enum Button {
     Up_Right,
     Down_Left,
     Down_Right,
-    Jump,
+    A,
     Start,
 }

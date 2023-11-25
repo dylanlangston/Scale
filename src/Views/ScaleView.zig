@@ -47,7 +47,7 @@ pub fn DrawFunction() Views {
         numberButtonsPressed += 1;
     }
 
-    if (Inputs.B_Pressed()) {
+    if (Inputs.A_Pressed()) {
         WorldModel.Player = WorldModel.Player.Jump();
     }
 

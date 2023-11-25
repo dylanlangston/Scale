@@ -3,7 +3,7 @@
   import { onMount} from "svelte";
   import { BrowserDetector } from "browser-dtector";
   import GameController from "./controls.svelte";
-	import type { Button } from "$lib/gameController";
+	import { Button } from "$lib/gameController";
 
   const repoUrl: string = "https://github.com/dylanlangston/Scale";
   function openRepo(): void {
@@ -81,19 +81,24 @@
   }
 
   function handleButtonPressed(b: Button): void {
-    const js_key_pressed = emscripten._js_key_pressed;
+    const js_key_pressed = emscripten._set_js_key;
     if (js_key_pressed)
     {
-      js_key_pressed(b);
+      js_key_pressed(b, true);
     }
   }
 
   function handleButtonReleased(b: Button): void {
-    const js_key_released = emscripten._js_key_released;
+    const js_key_released = emscripten._set_js_key;
     if (js_key_released)
     {
-      js_key_released(b);
+      js_key_released(b, false);
     }
+  }
+
+  function requestPause(): void {
+    handleButtonPressed(Button.Start);
+    setTimeout(() => handleButtonReleased(Button.Start), 500);
   }
 
   const isMobile: boolean = (() => {
@@ -157,6 +162,8 @@
     transform: scale(1.1);
   }
 </style>
+
+<svelte:window on:blur={(e) => requestPause()} />
 
 <div class="portrait:hidden">
   <span id="controls" class="hidden">

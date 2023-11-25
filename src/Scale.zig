@@ -3,6 +3,7 @@ const std = @import("std");
 const raylib = @import("raylib");
 const vl = @import("./ViewLocator.zig");
 const Shared = @import("Helpers.zig").Shared;
+const Helpers = @import("Helpers.zig");
 const Locale = @import("Localelizer.zig").Locale;
 const Locales = @import("Localelizer.zig").Locales;
 const Logger = @import("Logger.zig").Logger;
@@ -43,10 +44,6 @@ pub fn main() void {
     raylib.setExitKey(.key_null);
     raylib.setTargetFPS(_settings.TargetFPS);
     defer raylib.closeWindow();
-
-    FontManager.Init();
-
-    _ = JSController.GetKeyPressed();
 
     // Default View on startup is the Splash Screen
     var current_view: vl.Views = vl.Views.Raylib_Splash_Screen;
