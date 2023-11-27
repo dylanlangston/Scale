@@ -20,13 +20,14 @@ pub const World = struct {
         Player = PlayerModel{
             .Position = raylib.Rectangle.init(
                 (screenWidth - PlayerSize.width) / 2,
-                screenHeight - PlayerSize.height,
+                (screenHeight - PlayerSize.height) / 2,
                 screenWidth,
                 screenHeight,
             ),
             .Velocity = raylib.Vector2.init(0, 20),
             .IsAirborne = true,
             .IsMoving = false,
+            .Dead = false,
         };
 
         Platforms = std.ArrayList(PlatformModel).init(Shared.GetAllocator());
@@ -40,6 +41,30 @@ pub const World = struct {
             .Size = .{
                 .height = 2,
                 .width = 50,
+            },
+        });
+        try Platforms.append(PlatformModel{
+            .Position = raylib.Rectangle.init(
+                0,
+                screenHeight / 3,
+                screenWidth,
+                screenHeight,
+            ),
+            .Size = .{
+                .height = 2,
+                .width = 25,
+            },
+        });
+        try Platforms.append(PlatformModel{
+            .Position = raylib.Rectangle.init(
+                screenWidth / 4 * 3,
+                screenHeight / 3,
+                screenWidth,
+                screenHeight,
+            ),
+            .Size = .{
+                .height = 2,
+                .width = 25,
             },
         });
     }

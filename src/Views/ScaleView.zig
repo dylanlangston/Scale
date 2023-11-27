@@ -24,6 +24,8 @@ pub fn DrawFunction() Views {
 
     raylib.clearBackground(Colors.Green.Dark);
 
+    if (WorldModel.Player.Dead) return Views.Menu;
+
     for (WorldModel.Platforms.items) |platform| {
         platform.Draw(current_screen);
     }

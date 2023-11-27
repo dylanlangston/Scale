@@ -10,6 +10,7 @@ pub const Player = struct {
     Velocity: raylib.Vector2,
     IsAirborne: bool,
     IsMoving: bool,
+    Dead: bool,
 
     const Size = PlayerSize{
         .width = 5,
@@ -38,7 +39,7 @@ pub const Player = struct {
 
     fn GetPositionX(self: Player, current_screen: raylib.Rectangle, size: PlayerSize) f32 {
         if (current_screen.width != self.Position.width) {
-            const new_position_x: f32 = (self.Position.x) / self.Position.width * current_screen.width;
+            const new_position_x: f32 = self.Position.x / self.Position.width * current_screen.width;
             return self.EnsureWithinBounnds(
                 directions.horizontal,
                 new_position_x,
@@ -54,7 +55,7 @@ pub const Player = struct {
 
     fn GetPositionY(self: Player, current_screen: raylib.Rectangle, size: PlayerSize) f32 {
         if (current_screen.height != self.Position.height) {
-            const new_position_y: f32 = (self.Position.y) / self.Position.height * current_screen.height;
+            const new_position_y: f32 = self.Position.y / self.Position.height * current_screen.height;
             return self.EnsureWithinBounnds(
                 directions.vertical,
                 new_position_y,
@@ -186,9 +187,11 @@ pub const Player = struct {
         size: PlayerSize,
         platformCollision: ?raylib.Rectangle,
     ) bool {
-        if (newPosition.y + size.height >= current_screen.height) {
-            return true;
-        }
+        _ = size;
+        _ = current_screen;
+        // if (newPosition.y + size.height >= current_screen.height) {
+        //     return true;
+        // }
 
         if (platformCollision != null and platformCollision.?.height > 0 and originalPosition.y < newPosition.y) {
             return true;
@@ -220,6 +223,7 @@ pub const Player = struct {
         var newPosition: raylib.Rectangle = originalPosition;
         var newIsAirborne: bool = self.IsAirborne;
         var newIsMoving: bool = self.IsMoving;
+        const newDead: bool = newPosition.y + playerSize.height >= current_screen.height;
 
         if (self.IsMoving) {
             const new_x = self.EnsureWithinBounnds(
@@ -350,6 +354,7 @@ pub const Player = struct {
             .Velocity = newVelocity,
             .IsAirborne = newIsAirborne,
             .IsMoving = newIsMoving,
+            .Dead = newDead,
         };
         return p;
     }
@@ -371,6 +376,7 @@ pub const Player = struct {
                     ),
                     .IsAirborne = true,
                     .IsMoving = true,
+                    .Dead = self.Dead,
                 };
             } else if (IsCollidingXRight(undefined, self.Position, current_screen, playerSize, null)) {
                 return Player{
@@ -381,6 +387,7 @@ pub const Player = struct {
                     ),
                     .IsAirborne = true,
                     .IsMoving = true,
+                    .Dead = self.Dead,
                 };
             } else {
                 return self;
@@ -400,6 +407,7 @@ pub const Player = struct {
             ),
             .IsAirborne = true,
             .IsMoving = self.IsMoving,
+            .Dead = self.Dead,
         };
     }
 
@@ -428,6 +436,7 @@ pub const Player = struct {
                 ),
                 .IsAirborne = self.IsAirborne,
                 .IsMoving = true,
+                .Dead = self.Dead,
             };
         }
 
@@ -439,6 +448,7 @@ pub const Player = struct {
             ),
             .IsAirborne = self.IsAirborne,
             .IsMoving = true,
+            .Dead = self.Dead,
         };
     }
 
@@ -452,6 +462,7 @@ pub const Player = struct {
                 ),
                 .IsAirborne = self.IsAirborne,
                 .IsMoving = true,
+                .Dead = self.Dead,
             };
         }
 
@@ -463,6 +474,7 @@ pub const Player = struct {
             ),
             .IsAirborne = self.IsAirborne,
             .IsMoving = true,
+            .Dead = self.Dead,
         };
     }
 
