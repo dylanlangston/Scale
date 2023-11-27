@@ -56,6 +56,7 @@
     }
 
     const updateSize = (): void => {
+      requestPause();
       const updateWasmResolution = emscripten._updateWasmResolution;
       if (updateWasmResolution)
       {
