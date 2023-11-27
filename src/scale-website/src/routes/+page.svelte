@@ -171,8 +171,6 @@
   }
 </style>
 
-<svelte:window on:blur={(e) => requestPause()} />
-
 <div class="portrait:hidden">
   <span id="controls" class="hidden">
     {#if isMobile}
@@ -192,7 +190,7 @@
     </button>
   </span>
   <div class="emscripten z-0 jsonly">
-    <canvas class="emscripten bg-black absolute top-0 bottom-0 left-0 right-0 m-auto rounded-lg" width="1" height="1" id="canvas" on:contextmenu={(e) => e.preventDefault()} tabindex=-1></canvas>
+    <canvas class="emscripten bg-black absolute top-0 bottom-0 left-0 right-0 m-auto rounded-lg" width="1" height="1" id="canvas" on:blur={(e) => requestPause()} on:contextmenu={(e) => e.preventDefault()} tabindex=-1></canvas>
   </div>
   <div class="absolute flex top-0 bottom-0 left-0 right-0 items-center justify-center pointer-events-none -z-50">
     <div id="status-container" class="rounded-lg bg-slate-50 shadow-xl p-8 m-8">
