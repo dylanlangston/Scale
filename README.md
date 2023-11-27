@@ -22,6 +22,8 @@ This is a submission to the 2023 *Game Off* event hosted by [GitHub](https://git
 
 My interpretion of the theme is a vertical platformer that is procedurally generated. 
 
+------
+
 ### Getting Started
 *This repository includes a [devcontainer.json](https://github.com/dylanlangston/Scale/blob/main/.devcontainer/devcontainer.json) and prebuilt [Codespace](https://docs.github.com/en/codespaces/getting-started/quickstart) images to get up and running quickly with a full-featured development environment in the cloud! For local development check out [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) and [DevPod](https://devpod.sh/).*
 
@@ -40,6 +42,8 @@ My interpretion of the theme is a vertical platformer that is procedurally gener
 3. If you haven't already, install NodeJS LTS from [here](https://nodejs.org/en/download) (or your preferred source).
 4. Change directories into the `./Scale/src/scale-website` folder. Then install the required node packages using `npm install`.
 5. Build the web version by running the command `npm run build`. You can find the generated static site in the `./Scale/src/scale-website/build` folder.
+
+------
 
 ### Credits
 | Font | Source | License |
