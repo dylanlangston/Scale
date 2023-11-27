@@ -62,7 +62,7 @@ export class Module {
             });
     
             const newSettings = JSON.stringify(settings);
-            window.localStorage.setItem(Module.settingsName, newSettings);
+            window.localStorage.setItem("settings", newSettings);
             return true;
         }
         catch 
