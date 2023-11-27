@@ -96,7 +96,7 @@ pub const Settings = struct {
     fn NormalizeSettings(settings: Settings) Settings {
         return Settings{
             .CurrentResolution = Resolution{ .Width = @max(Resolutions[0].Width, settings.CurrentResolution.Width), .Height = @max(Resolutions[0].Height, settings.CurrentResolution.Height) },
-            .TargetFPS = settings.TargetFPS,
+            .TargetFPS = if (settings.TargetFPS == 0) 0 else @max(settings.TargetFPS, 30),
             .Debug = settings.Debug,
             .DebugView = settings.DebugView,
             .UserLocale = settings.UserLocale,
