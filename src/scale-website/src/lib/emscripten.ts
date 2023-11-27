@@ -31,7 +31,8 @@ export class Module {
     ];
 
     private static getSettings(): string {
-        return window.localStorage.getItem("settings") ?? "{}";
+        return window.localStorage.getItem("settings") ?? 
+            '{"CurrentResolution":{"Width":0,"Height":0},"TargetFPS":120,"Debug":false,"UserLocale":"english"}';
     }
 
     public static updateSettingsFromQueryString(): boolean {
@@ -42,24 +43,23 @@ export class Module {
         {
             Module.setStatus("Updating Settings...");
             const settings = JSON.parse(oldSettings);
-
+            const settingsKeys = Object.keys(settings);
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
-    
             const getValue = (v: string) => {
-                try 
-                {
+                try {
                     return JSON.parse(v);
-                }
-                catch 
-                {
+                } catch {
                     return v;
                 }
             };
     
-            urlParams.forEach((value, key) => {
-              settings[key] = getValue(value);
-            });
+            Array.from(urlParams)
+                .map(e => { return { key: e[0], value: e[1] } })
+                .filter((e) => settingsKeys.includes(e.key))
+                .forEach((e) => {
+                    settings[e.key] = getValue(e.value);
+                });
     
             const newSettings = JSON.stringify(settings);
             window.localStorage.setItem("settings", newSettings);
