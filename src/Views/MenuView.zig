@@ -66,7 +66,7 @@ pub fn DrawFunction() Views {
     // Title
     const titleFont = Shared.GetFont(Fonts.EcBricksRegular);
     const TitleTextSize = raylib.measureTextEx(
-        font,
+        titleFont,
         title,
         @as(f32, @floatFromInt(fontSize)) * 4,
         @floatFromInt(font.glyphPadding),
@@ -76,7 +76,7 @@ pub fn DrawFunction() Views {
         titleFont,
         title,
         raylib.Vector2.init(
-            ((@as(f32, @floatFromInt(screenWidth)) - TitleTextSize.x - titleFontsizeF) / 2) + 10,
+            ((@as(f32, @floatFromInt(screenWidth)) - TitleTextSize.x) / 2),
             @as(f32, @floatFromInt(startY)) - (titleFontsizeF / 2),
         ),
         titleFontsizeF,
