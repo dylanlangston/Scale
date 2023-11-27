@@ -25,16 +25,16 @@ My interpretion of the theme is a vertical platformer that is procedurally gener
 ### Getting Started
 *This repository includes a [devcontainer.json](https://github.com/dylanlangston/Scale/blob/main/.devcontainer/devcontainer.json) and prebuilt [Codespace](https://docs.github.com/en/codespaces/getting-started/quickstart) images to get up and running quickly with a full-featured development environment in the cloud! For local development check out [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) and [DevPod](https://devpod.sh/).*
 
-#### Clone
+### Clone
 1. Clone this repository: `git clone https://github.com/dylanlangston/Scale.git`
 2. Change directories into the newly created `./Scale` folder. Then initialize the submodules: `git submodule update --init --recursive`
 
-#### Debug Locally:
+### Debug Locally:
 1. If you haven't already, install Zig version 0.11.0 using the [instructions here](https://ziglang.org/learn/getting-started/#installing-zig).
 2. Configure you build environment for Raylib using the appropriate [instructions](https://github.com/raysan5/raylib/wiki#development-platforms) for you platform.
 3. Finally, to start the game run the command `zig build run`. Alternatively run the **_Debug_** task in VSCode.
 
-#### Build for Web:
+### Build for Web:
 1. Complete steps to __Clone__ and __Debug Locally__ above first.
 2. Change directories into the `./Scale` folder. Build the zig portion of the game using command `zig build -Dtarget=wasm32-emscripten`. Alternatively run the **_Build Web_** task in VSCode.
 3. If you haven't already, install NodeJS LTS from [here](https://nodejs.org/en/download) (or your preferred source).
@@ -42,5 +42,10 @@ My interpretion of the theme is a vertical platformer that is procedurally gener
 5. Build the web version by running the command `npm run build`. You can find the generated static site in the `./Scale/src/scale-website/build` folder.
 
 ### Credits
-  ```Todo```
+| Font | Source | License |
+|:---- |:------:| -------:|
+| _Eight Bit Dragon_ | https://www.fontspace.com/eight-bit-dragon-font-f30428 | Freeware, Non-Commercial |
+| _Two Lines_ | https://www.fontspace.com/2-lines-font-f14541 | Freeware, Non-Commercial |
+| _Ec Bricks Regular_ | https://www.fontspace.com/ec-bricks-font-f30951 | Creative Commons (by-nc-nd) Attribution <br/>Non-commercial No Derivatives |
+
 [^1]: Game Off 2023 on [Itch.io](https://itch.io/jam/game-off-2023)
