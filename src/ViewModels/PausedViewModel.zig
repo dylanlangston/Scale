@@ -29,6 +29,10 @@ pub const PausedViewModel = ViewModel.Create(
             const img = raylib.loadImageFromScreen();
             defer img.unload();
             BackgroundTexture = img.toTexture();
+            raylib.setTextureFilter(
+                BackgroundTexture.?,
+                @intFromEnum(raylib.TextureFilter.texture_filter_trilinear),
+            );
             View = v;
             selection = PauseOptions.Continue;
         }
