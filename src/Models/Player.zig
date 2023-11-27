@@ -121,12 +121,38 @@ pub const Player = struct {
         return f;
     }
 
-    fn IsCollidingX(position: raylib.Rectangle, current_screen: raylib.Rectangle, size: PlayerSize) bool {
-        if (position.x == 0) {
-            Logger.Debug_Formatted("Collide: {}", .{std.time.nanoTimestamp()});
+    fn IsCollidingXLeft(
+        originalPosition: raylib.Rectangle,
+        newPosition: raylib.Rectangle,
+        current_screen: raylib.Rectangle,
+        size: PlayerSize,
+        platformCollision: ?raylib.Rectangle,
+    ) bool {
+        _ = size;
+        _ = current_screen;
+        if (newPosition.x == 0) {
             return true;
-        } else if (position.x + size.width >= current_screen.width) {
-            Logger.Debug_Formatted("Collide: {}", .{std.time.nanoTimestamp()});
+        }
+
+        if (platformCollision != null and platformCollision.?.width > 0 and originalPosition.x > newPosition.x) {
+            return true;
+        }
+
+        return false;
+    }
+
+    fn IsCollidingXRight(
+        originalPosition: raylib.Rectangle,
+        newPosition: raylib.Rectangle,
+        current_screen: raylib.Rectangle,
+        size: PlayerSize,
+        platformCollision: ?raylib.Rectangle,
+    ) bool {
+        if (newPosition.x + size.width >= current_screen.width) {
+            return true;
+        }
+
+        if (platformCollision != null and platformCollision.?.width > 0 and originalPosition.x < newPosition.x) {
             return true;
         }
 
@@ -134,43 +160,38 @@ pub const Player = struct {
     }
 
     fn IsCollidingYTop(
-        position: raylib.Rectangle,
+        originalPosition: raylib.Rectangle,
+        newPosition: raylib.Rectangle,
         current_screen: raylib.Rectangle,
         size: PlayerSize,
         platformCollision: ?raylib.Rectangle,
     ) bool {
         _ = current_screen;
         _ = size;
-        if (position.y <= 0) {
-            Logger.Debug_Formatted("Collide: {}", .{std.time.nanoTimestamp()});
+        if (newPosition.y <= 0) {
             return true;
         }
 
-        if (platformCollision != null) {
-            if (platformCollision.?.height > 0) {
-                return true;
-            }
+        if (platformCollision != null and platformCollision.?.height > 0 and originalPosition.y > newPosition.y) {
+            return true;
         }
 
         return false;
     }
 
     fn IsCollidingYBottom(
-        position: raylib.Rectangle,
+        originalPosition: raylib.Rectangle,
+        newPosition: raylib.Rectangle,
         current_screen: raylib.Rectangle,
         size: PlayerSize,
         platformCollision: ?raylib.Rectangle,
     ) bool {
-        if (position.y + size.height >= current_screen.height) {
-            Logger.Debug_Formatted("Collide: {}", .{std.time.nanoTimestamp()});
+        if (newPosition.y + size.height >= current_screen.height) {
             return true;
         }
 
-        if (platformCollision != null) {
-            if (platformCollision.?.height > 0) {
-                Logger.Info_Formatted("{?}", .{platformCollision});
-                return true;
-            }
+        if (platformCollision != null and platformCollision.?.height > 0 and originalPosition.y < newPosition.y) {
+            return true;
         }
 
         return false;
@@ -195,12 +216,10 @@ pub const Player = struct {
             new_VelocityX,
             new_VelocityY,
         );
-        var newPosition: raylib.Rectangle = self.GetPosition(current_screen, playerSize);
+        const originalPosition: raylib.Rectangle = self.GetPosition(current_screen, playerSize);
+        var newPosition: raylib.Rectangle = originalPosition;
         var newIsJumping: bool = self.IsJumping;
         var newIsMoving: bool = self.IsMoving;
-
-        const absolutePosition = self.GetPositionAbsolute(current_screen, playerSize);
-        const playformCollision = World.CheckForPlatformCollision(absolutePosition, current_screen);
 
         if (self.IsMoving) {
             const new_x = self.EnsureWithinBounnds(
@@ -216,12 +235,44 @@ pub const Player = struct {
                 newPosition.height,
             );
 
-            if (new_VelocityX == 0) {
-                Logger.Debug_Formatted("Stop Moving: {}", .{std.time.nanoTimestamp()});
+            const absolutePosition = raylib.Rectangle.init(
+                newPosition.x,
+                newPosition.y,
+                playerSize.width,
+                playerSize.height,
+            );
+            const platformCollision = World.CheckForPlatformCollision(absolutePosition, current_screen);
+
+            if (newVelocity.x == 0) {
                 newIsMoving = false;
-            } else if (IsCollidingX(newPosition, current_screen, playerSize)) {
-                Logger.Debug_Formatted("Stop Moving: {}", .{std.time.nanoTimestamp()});
+            } else if (IsCollidingXLeft(originalPosition, newPosition, current_screen, playerSize, platformCollision)) {
                 newIsMoving = false;
+
+                newVelocity = raylib.Vector2.init(
+                    0,
+                    newVelocity.y,
+                );
+
+                newPosition = raylib.Rectangle.init(
+                    if (platformCollision == null) (newPosition.x) else (platformCollision.?.x + 2),
+                    newPosition.y,
+                    newPosition.width,
+                    newPosition.height,
+                );
+            } else if (IsCollidingXRight(originalPosition, newPosition, current_screen, playerSize, platformCollision)) {
+                newIsMoving = false;
+
+                newVelocity = raylib.Vector2.init(
+                    0,
+                    newVelocity.y,
+                );
+
+                newPosition = raylib.Rectangle.init(
+                    if (platformCollision == null) (newPosition.x) else (platformCollision.?.x - playerSize.width - 2),
+                    newPosition.y,
+                    newPosition.width,
+                    newPosition.height,
+                );
             }
         }
 
@@ -239,30 +290,66 @@ pub const Player = struct {
                 newPosition.height,
             );
 
-            if (IsCollidingYBottom(newPosition, current_screen, playerSize, playformCollision)) {
-                newIsJumping = false;
-                const yMod = if (playformCollision == null) 0 else playformCollision.?.height;
-                if (yMod > 0) {
-                    Logger.Info_Formatted("YMod: {}", .{yMod});
-                }
+            const absolutePosition = raylib.Rectangle.init(
+                newPosition.x,
+                newPosition.y,
+                playerSize.width,
+                playerSize.height,
+            );
+            const platformCollision = World.CheckForPlatformCollision(absolutePosition, current_screen);
+
+            if (IsCollidingYTop(originalPosition, newPosition, current_screen, playerSize, platformCollision)) {
+                newVelocity = raylib.Vector2.init(
+                    newVelocity.x,
+                    -1,
+                );
+
                 newPosition = raylib.Rectangle.init(
                     newPosition.x,
-                    newPosition.y - (yMod * 2),
+                    if (platformCollision == null) (newPosition.y) else (platformCollision.?.y + platformCollision.?.height),
                     newPosition.width,
                     newPosition.height,
                 );
+            } else if (IsCollidingYBottom(originalPosition, newPosition, current_screen, playerSize, platformCollision)) {
+                newIsJumping = false;
+
                 newVelocity = raylib.Vector2.init(
-                    new_VelocityX,
+                    newVelocity.x,
                     0,
                 );
-            } else if (IsCollidingYTop(newPosition, current_screen, playerSize, playformCollision)) {
-                newVelocity = raylib.Vector2.init(
-                    new_VelocityX,
-                    -1,
+
+                newPosition = raylib.Rectangle.init(
+                    newPosition.x,
+                    if (platformCollision == null) (newPosition.y) else (platformCollision.?.y - playerSize.height),
+                    newPosition.width,
+                    newPosition.height,
                 );
             }
+        }
+        //Falling
+        else if (!self.IsJumping and self.IsMoving) {
+            const absolutePosition = raylib.Rectangle.init(
+                newPosition.x,
+                newPosition.y,
+                playerSize.width,
+                playerSize.height,
+            );
+            const platformCollision = World.CheckForPlatformCollision(absolutePosition, current_screen);
 
-            newIsJumping = !IsCollidingYBottom(newPosition, current_screen, playerSize, playformCollision);
+            if (!IsCollidingYBottom(originalPosition, newPosition, current_screen, playerSize, platformCollision)) {
+                newIsJumping = true;
+                newVelocity = raylib.Vector2.init(
+                    newVelocity.x,
+                    -1,
+                );
+
+                newPosition = raylib.Rectangle.init(
+                    newPosition.x,
+                    if (platformCollision == null) (newPosition.y) else (platformCollision.?.y - playerSize.height),
+                    newPosition.width,
+                    newPosition.height,
+                );
+            }
         }
 
         const p = Player{
@@ -277,31 +364,46 @@ pub const Player = struct {
     const GRAVITY: f32 = 50;
     const JUMP_FORCE: f32 = 25.0;
 
-    pub fn Jump(self: Player) Player {
+    pub fn Jump(self: Player, current_screen: raylib.Rectangle) Player {
+        _ = current_screen;
         if (self.IsJumping and self.IsMoving) {
             return self;
         } else if (self.IsJumping) {
-            const current_screen = World.GetCurrentScreenSize();
-            const playerSize = Player.GetSize(current_screen);
-            if (IsCollidingX(self.Position, current_screen, playerSize)) {
-                return Player{
-                    .Position = self.Position,
-                    .Velocity = raylib.Vector2.init(
-                        if (self.Position.x == 0) -MOVE_MAX else MOVE_MAX,
-                        self.Velocity.y,
-                    ),
-                    .IsJumping = true,
-                    .IsMoving = true,
-                };
-            } else {
-                return self;
-            }
+            return self;
+            // const playerSize = Player.GetSize(current_screen);
+            // if (IsCollidingXLeft(self.Position, self.Position, current_screen, playerSize, null)) {
+            //     return Player{
+            //         .Position = self.Position,
+            //         .Velocity = raylib.Vector2.init(
+            //             MOVE_MAX,
+            //             self.Velocity.y,
+            //         ),
+            //         .IsJumping = true,
+            //         .IsMoving = true,
+            //     };
+            // }
+            // else if (IsCollidingXRight(self.Position, self.Position, current_screen, playerSize, null)) {
+            //     return Player{
+            //         .Position = self.Position,
+            //         .Velocity = raylib.Vector2.init(
+            //             -MOVE_MAX,
+            //             self.Velocity.y,
+            //         ),
+            //         .IsJumping = true,
+            //         .IsMoving = true,
+            //     };
+            // } else {
+            //     return self;
+            // }
         }
 
-        Logger.Debug_Formatted("Jump: {}", .{std.time.nanoTimestamp()});
-
         return Player{
-            .Position = self.Position,
+            .Position = raylib.Rectangle.init(
+                self.Position.x + 1,
+                self.Position.y,
+                self.Position.width,
+                self.Position.height,
+            ),
             .Velocity = raylib.Vector2.init(
                 self.Velocity.x,
                 JUMP_FORCE,
@@ -317,8 +419,6 @@ pub const Player = struct {
 
     pub fn MoveDown(self: Player) Player {
         if (self.IsJumping) return self;
-
-        Logger.Debug_Formatted("Move Down: {}", .{std.time.nanoTimestamp()});
 
         return Player{
             .Position = self.Position,
@@ -340,8 +440,6 @@ pub const Player = struct {
                 .IsMoving = true,
             };
         }
-
-        Logger.Debug_Formatted("Move Left: {}", .{std.time.nanoTimestamp()});
 
         return Player{
             .Position = self.Position,
@@ -366,8 +464,6 @@ pub const Player = struct {
                 .IsMoving = true,
             };
         }
-
-        Logger.Debug_Formatted("Move Right: {}", .{std.time.nanoTimestamp()});
 
         return Player{
             .Position = self.Position,

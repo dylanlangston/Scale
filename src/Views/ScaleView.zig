@@ -49,7 +49,7 @@ pub fn DrawFunction() Views {
     }
 
     if (Inputs.A_Pressed()) {
-        WorldModel.Player = WorldModel.Player.Jump();
+        WorldModel.Player = WorldModel.Player.Jump(current_screen);
     }
 
     // if (Inputs.Down_Held()) {
