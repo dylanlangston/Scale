@@ -200,7 +200,7 @@ pub const Player = struct {
         return false;
     }
 
-    pub fn UpdatePosition(self: Player, current_screen: raylib.Rectangle) Player {
+    pub fn UpdatePosition(self: Player, yOffset: f32, current_screen: raylib.Rectangle) Player {
         const playerSize = Player.GetSize(current_screen);
 
         const friction = if (self.IsAirborne)
@@ -220,7 +220,12 @@ pub const Player = struct {
             new_VelocityY,
         );
         const originalPosition: raylib.Rectangle = self.GetPosition(current_screen, playerSize);
-        var newPosition: raylib.Rectangle = originalPosition;
+        var newPosition: raylib.Rectangle = raylib.Rectangle.init(
+            originalPosition.x,
+            originalPosition.y + yOffset,
+            originalPosition.width,
+            originalPosition.height,
+        );
         var newIsAirborne: bool = self.IsAirborne;
         var newIsMoving: bool = self.IsMoving;
         const newDead: bool = newPosition.y + playerSize.height >= current_screen.height;

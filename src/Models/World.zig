@@ -67,6 +67,18 @@ pub const World = struct {
                 .width = 25,
             },
         });
+        try Platforms.append(PlatformModel{
+            .Position = raylib.Rectangle.init(
+                screenWidth / 4,
+                0,
+                screenWidth,
+                screenHeight,
+            ),
+            .Size = .{
+                .height = 2,
+                .width = 50,
+            },
+        });
     }
 
     pub fn CheckForPlatformCollision(item: raylib.Rectangle, current_screen: raylib.Rectangle) ?raylib.Rectangle {
@@ -82,13 +94,13 @@ pub const World = struct {
         return null;
     }
 
-    pub fn UpdatePlatforms(current_screen: raylib.Rectangle) std.ArrayList(PlatformModel) {
+    pub fn UpdatePlatforms(yOffset: f32, current_screen: raylib.Rectangle) std.ArrayList(PlatformModel) {
         for (Platforms.items, 0..) |platform, index| {
             Platforms.replaceRange(
                 index,
                 1,
                 &[1]PlatformModel{
-                    platform.UpdatePosition(current_screen),
+                    platform.UpdatePosition(yOffset, current_screen),
                 },
             ) catch {
                 Logger.Info("Failed to update platform!");

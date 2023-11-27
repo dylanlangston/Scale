@@ -47,10 +47,10 @@ pub const Platform = struct {
         return self.Position.y;
     }
 
-    fn GetPosition(self: Platform, current_screen: raylib.Rectangle) raylib.Rectangle {
+    fn GetPosition(self: Platform, yOffset: f32, current_screen: raylib.Rectangle) raylib.Rectangle {
         return raylib.Rectangle.init(
             self.GetPositionX(current_screen),
-            self.GetPositionY(current_screen),
+            self.GetPositionY(current_screen) + yOffset,
             current_screen.width,
             current_screen.height,
         );
@@ -65,9 +65,9 @@ pub const Platform = struct {
         );
     }
 
-    pub fn UpdatePosition(self: Platform, current_screen: raylib.Rectangle) Platform {
+    pub fn UpdatePosition(self: Platform, yOffset: f32, current_screen: raylib.Rectangle) Platform {
         return Platform{
-            .Position = self.GetPosition(current_screen),
+            .Position = self.GetPosition(yOffset, current_screen),
             .Size = self.Size,
         };
     }

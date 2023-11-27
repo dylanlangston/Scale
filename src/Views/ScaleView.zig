@@ -18,9 +18,11 @@ const moveModifier: f32 = 32;
 
 pub fn DrawFunction() Views {
     const current_screen = WorldModel.GetCurrentScreenSize();
-    WorldModel.Platforms = WorldModel.UpdatePlatforms(current_screen);
 
-    WorldModel.Player = WorldModel.Player.UpdatePosition(current_screen);
+    const scroll_speed: f32 = 20 * raylib.getFrameTime();
+
+    WorldModel.Platforms = WorldModel.UpdatePlatforms(scroll_speed, current_screen);
+    WorldModel.Player = WorldModel.Player.UpdatePosition(scroll_speed - 0.001, current_screen);
 
     raylib.clearBackground(Colors.Green.Dark);
 
