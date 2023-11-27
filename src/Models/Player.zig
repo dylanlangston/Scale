@@ -8,7 +8,7 @@ const Colors = @import("../Colors.zig").Colors;
 pub const Player = struct {
     Position: raylib.Rectangle,
     Velocity: raylib.Vector2,
-    IsJumping: bool,
+    IsAirborne: bool,
     IsMoving: bool,
 
     const Size = PlayerSize{
@@ -200,12 +200,12 @@ pub const Player = struct {
     pub fn UpdatePosition(self: Player, current_screen: raylib.Rectangle) Player {
         const playerSize = Player.GetSize(current_screen);
 
-        const friction = if (self.IsJumping)
+        const friction = if (self.IsAirborne)
             (FRICTION_AIR * raylib.getFrameTime())
         else
             (FRICTION_GROUND * raylib.getFrameTime());
 
-        const new_VelocityY = if (!self.IsJumping) 0 else (self.Velocity.y - (GRAVITY * raylib.getFrameTime()));
+        const new_VelocityY = if (!self.IsAirborne) 0 else (self.Velocity.y - (GRAVITY * raylib.getFrameTime()));
 
         const new_VelocityX: f32 = if (self.Velocity.x > 0)
             (@max(self.Velocity.x - friction, 0))
@@ -218,7 +218,7 @@ pub const Player = struct {
         );
         const originalPosition: raylib.Rectangle = self.GetPosition(current_screen, playerSize);
         var newPosition: raylib.Rectangle = originalPosition;
-        var newIsJumping: bool = self.IsJumping;
+        var newIsAirborne: bool = self.IsAirborne;
         var newIsMoving: bool = self.IsMoving;
 
         if (self.IsMoving) {
@@ -276,7 +276,7 @@ pub const Player = struct {
             }
         }
 
-        if (self.IsJumping) {
+        if (self.IsAirborne) {
             const new_y = self.EnsureWithinBounnds(
                 directions.vertical,
                 (newPosition.y - (playerSize.height * newVelocity.y * raylib.getFrameTime())),
@@ -311,7 +311,7 @@ pub const Player = struct {
                     newPosition.height,
                 );
             } else if (IsCollidingYBottom(originalPosition, newPosition, current_screen, playerSize, platformCollision)) {
-                newIsJumping = false;
+                newIsAirborne = false;
 
                 newVelocity = raylib.Vector2.init(
                     newVelocity.x,
@@ -327,27 +327,20 @@ pub const Player = struct {
             }
         }
         //Falling
-        else if (!self.IsJumping and self.IsMoving) {
+        else if (!self.IsAirborne and self.IsMoving) {
             const absolutePosition = raylib.Rectangle.init(
                 newPosition.x,
-                newPosition.y,
+                newPosition.y + MOVE_MAX,
                 playerSize.width,
                 playerSize.height,
             );
             const platformCollision = World.CheckForPlatformCollision(absolutePosition, current_screen);
 
-            if (!IsCollidingYBottom(originalPosition, newPosition, current_screen, playerSize, platformCollision)) {
-                newIsJumping = true;
+            if (platformCollision == null and (newPosition.y + playerSize.height) < current_screen.height) {
+                newIsAirborne = true;
                 newVelocity = raylib.Vector2.init(
                     newVelocity.x,
                     -1,
-                );
-
-                newPosition = raylib.Rectangle.init(
-                    newPosition.x,
-                    if (platformCollision == null) (newPosition.y) else (platformCollision.?.y - playerSize.height),
-                    newPosition.width,
-                    newPosition.height,
                 );
             }
         }
@@ -355,7 +348,7 @@ pub const Player = struct {
         const p = Player{
             .Position = newPosition,
             .Velocity = newVelocity,
-            .IsJumping = newIsJumping,
+            .IsAirborne = newIsAirborne,
             .IsMoving = newIsMoving,
         };
         return p;
@@ -365,36 +358,33 @@ pub const Player = struct {
     const JUMP_FORCE: f32 = 25.0;
 
     pub fn Jump(self: Player, current_screen: raylib.Rectangle) Player {
-        _ = current_screen;
-        if (self.IsJumping and self.IsMoving) {
+        if (self.IsAirborne and self.IsMoving) {
             return self;
-        } else if (self.IsJumping) {
-            return self;
-            // const playerSize = Player.GetSize(current_screen);
-            // if (IsCollidingXLeft(self.Position, self.Position, current_screen, playerSize, null)) {
-            //     return Player{
-            //         .Position = self.Position,
-            //         .Velocity = raylib.Vector2.init(
-            //             MOVE_MAX,
-            //             self.Velocity.y,
-            //         ),
-            //         .IsJumping = true,
-            //         .IsMoving = true,
-            //     };
-            // }
-            // else if (IsCollidingXRight(self.Position, self.Position, current_screen, playerSize, null)) {
-            //     return Player{
-            //         .Position = self.Position,
-            //         .Velocity = raylib.Vector2.init(
-            //             -MOVE_MAX,
-            //             self.Velocity.y,
-            //         ),
-            //         .IsJumping = true,
-            //         .IsMoving = true,
-            //     };
-            // } else {
-            //     return self;
-            // }
+        } else if (self.IsAirborne) {
+            const playerSize = Player.GetSize(current_screen);
+            if (IsCollidingXLeft(undefined, self.Position, current_screen, playerSize, null)) {
+                return Player{
+                    .Position = self.Position,
+                    .Velocity = raylib.Vector2.init(
+                        -MOVE_MAX,
+                        self.Velocity.y,
+                    ),
+                    .IsAirborne = true,
+                    .IsMoving = true,
+                };
+            } else if (IsCollidingXRight(undefined, self.Position, current_screen, playerSize, null)) {
+                return Player{
+                    .Position = self.Position,
+                    .Velocity = raylib.Vector2.init(
+                        MOVE_MAX,
+                        self.Velocity.y,
+                    ),
+                    .IsAirborne = true,
+                    .IsMoving = true,
+                };
+            } else {
+                return self;
+            }
         }
 
         return Player{
@@ -408,7 +398,7 @@ pub const Player = struct {
                 self.Velocity.x,
                 JUMP_FORCE,
             ),
-            .IsJumping = true,
+            .IsAirborne = true,
             .IsMoving = self.IsMoving,
         };
     }
@@ -418,25 +408,25 @@ pub const Player = struct {
     const MOVE_MAX: f32 = 10;
 
     pub fn MoveDown(self: Player) Player {
-        if (self.IsJumping) return self;
+        if (self.IsAirborne) return self;
 
         return Player{
             .Position = self.Position,
             .Velocity = self.Velocity,
-            .IsJumping = self.IsJumping,
+            .IsAirborne = self.IsAirborne,
             .IsMoving = true,
         };
     }
 
     pub fn MoveLeft(self: Player) Player {
-        if (self.IsJumping) {
+        if (self.IsAirborne) {
             return Player{
                 .Position = self.Position,
                 .Velocity = raylib.Vector2.init(
                     @max(self.Velocity.x + raylib.getFrameTime(), 0),
                     self.Velocity.y,
                 ),
-                .IsJumping = self.IsJumping,
+                .IsAirborne = self.IsAirborne,
                 .IsMoving = true,
             };
         }
@@ -447,20 +437,20 @@ pub const Player = struct {
                 MOVE_MAX,
                 self.Velocity.y,
             ),
-            .IsJumping = self.IsJumping,
+            .IsAirborne = self.IsAirborne,
             .IsMoving = true,
         };
     }
 
     pub fn MoveRight(self: Player) Player {
-        if (self.IsJumping) {
+        if (self.IsAirborne) {
             return Player{
                 .Position = self.Position,
                 .Velocity = raylib.Vector2.init(
                     @min(self.Velocity.x - raylib.getFrameTime(), 0),
                     self.Velocity.y,
                 ),
-                .IsJumping = self.IsJumping,
+                .IsAirborne = self.IsAirborne,
                 .IsMoving = true,
             };
         }
@@ -471,7 +461,7 @@ pub const Player = struct {
                 -MOVE_MAX,
                 self.Velocity.y,
             ),
-            .IsJumping = self.IsJumping,
+            .IsAirborne = self.IsAirborne,
             .IsMoving = true,
         };
     }

@@ -25,7 +25,7 @@ pub const World = struct {
                 screenHeight,
             ),
             .Velocity = raylib.Vector2.init(0, 20),
-            .IsJumping = true,
+            .IsAirborne = true,
             .IsMoving = false,
         };
 
