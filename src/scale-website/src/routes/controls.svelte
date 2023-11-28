@@ -55,6 +55,7 @@
 <style global lang="postcss">
       #dpad {
         --button-size: 3rem;
+        height: min-content;
       }
 
       #dpad > button {
