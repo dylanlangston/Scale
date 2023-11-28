@@ -131,7 +131,7 @@
     window.onerror = (e: any) => {
       document.getElementById("canvas")!.style.display = 'none';
 
-      Module.setStatus("Exception thrown, see JavaScript console.\nReload page to try again.");
+      Module.setStatus("Exception thrown, see JavaScript console.\nReload page to try again.\n" + e);
       emscripten.setStatus = (e: any) => {
         e && console.error("[post-exception status] " + e);
       }
