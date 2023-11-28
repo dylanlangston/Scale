@@ -505,7 +505,7 @@ pub const Player = struct {
             @intFromFloat(playerPosition.y),
             @intFromFloat(playerSize.width),
             @intFromFloat(playerSize.height),
-            Colors.Red.Base,
+            Colors.Miyazaki.Red,
         );
     }
 };

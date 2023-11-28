@@ -80,7 +80,7 @@ pub const Platform = struct {
             @intFromFloat(platformPosition.y),
             @intFromFloat(platformSize.width),
             @intFromFloat(platformSize.height),
-            Colors.Purple.Light,
+            Colors.Miyazaki.Yellow,
         );
     }
 };

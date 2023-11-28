@@ -24,7 +24,7 @@ pub fn DrawFunction() Views {
     WorldModel.Platforms = WorldModel.UpdatePlatforms(scroll_speed, current_screen);
     WorldModel.Player = WorldModel.Player.UpdatePosition(scroll_speed - 0.001, current_screen);
 
-    raylib.clearBackground(Colors.Green.Dark);
+    raylib.clearBackground(Colors.Miyazaki.LightGreen);
 
     if (WorldModel.Player.Dead) return Views.Menu;
 
