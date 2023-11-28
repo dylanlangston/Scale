@@ -1,0 +1,20 @@
+{
+    "name": "Scale",
+    "short_name": "Scale",
+    "theme_color": "#2485a6",
+    "background_color": "#754d45",
+    "display_override": ["standalone", "window-controls-overlay", "fullscreen"],
+    "display": "minimal-ui",
+    "orientation": "landscape",
+    "scope": "/",
+    "start_url": "/",
+    "icons": [
+      {
+        "src": "brick.png",
+        "type": "image/png",
+        "sizes": "144x144"
+      }
+    ],
+    "description": "2D platformer created for Game Off 2023",
+    "categories": [ "games", "2D", "platformer", "raylib", "zig"]
+}

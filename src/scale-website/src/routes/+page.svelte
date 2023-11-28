@@ -99,6 +99,10 @@
   }
 
   function requestPause(): void {
+    if (!emscripten.Initialized) {
+      return;
+    }
+
     handleButtonPressed(Button.Start);
     setTimeout(() => handleButtonReleased(Button.Start), 500);
   }
