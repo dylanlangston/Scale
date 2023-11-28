@@ -151,8 +151,6 @@ pub const Player = struct {
         }
 
         if (platformCollision != null and originalPosition.x <= newPosition.x) {
-            Logger.Debug_Formatted("Collide Right: {?}", .{platformCollision});
-            Logger.Debug_Formatted("Position: {?}", .{newPosition});
             return true;
         }
 
@@ -230,12 +228,7 @@ pub const Player = struct {
         const newDead: bool = newPosition.y + playerSize.height >= current_screen.height;
 
         if (self.IsMoving) {
-            const new_x = EnsureWithinBounnds(
-                current_screen,
-                directions.horizontal,
-                (newPosition.x - (playerSize.width * newVelocity.x * raylib.getFrameTime())),
-                playerSize,
-            );
+            const new_x = newPosition.x - (playerSize.width * newVelocity.x * raylib.getFrameTime());
 
             newPosition = raylib.Rectangle.init(
                 new_x,
@@ -249,13 +242,10 @@ pub const Player = struct {
             }
         }
 
+        var collideY: bool = false;
+
         if (self.IsAirborne) {
-            const new_y = EnsureWithinBounnds(
-                current_screen,
-                directions.vertical,
-                (newPosition.y - (playerSize.height * newVelocity.y * raylib.getFrameTime())),
-                playerSize,
-            );
+            const new_y = newPosition.y - (playerSize.height * newVelocity.y * raylib.getFrameTime());
 
             newPosition = raylib.Rectangle.init(
                 newPosition.x,
@@ -273,6 +263,7 @@ pub const Player = struct {
             const platformCollision = World.CheckForPlatformCollision(absolutePosition, current_screen);
 
             if (IsCollidingYTop(originalPosition, newPosition, current_screen, playerSize, platformCollision)) {
+                collideY = true;
                 newVelocity = raylib.Vector2.init(
                     newVelocity.x,
                     -1,
@@ -319,46 +310,63 @@ pub const Player = struct {
             }
         }
 
-        const absolutePosition = raylib.Rectangle.init(
-            newPosition.x,
-            newPosition.y,
-            playerSize.width,
-            playerSize.height,
-        );
-        const platformCollision = World.CheckForPlatformCollision(absolutePosition, current_screen);
-
-        if (IsCollidingXLeft(originalPosition, newPosition, current_screen, playerSize, platformCollision)) {
-            newIsMoving = false;
-
-            newVelocity = raylib.Vector2.init(
-                0,
-                newVelocity.y,
-            );
-
-            newPosition = raylib.Rectangle.init(
-                if (platformCollision == null) (newPosition.x) else (platformCollision.?.x + platformCollision.?.width),
+        if (!collideY) {
+            const absolutePosition = raylib.Rectangle.init(
+                newPosition.x,
                 newPosition.y,
-                newPosition.width,
-                newPosition.height,
+                playerSize.width,
+                playerSize.height,
             );
-        } else if (IsCollidingXRight(originalPosition, newPosition, current_screen, playerSize, platformCollision)) {
-            newIsMoving = false;
+            const platformCollision = World.CheckForPlatformCollision(absolutePosition, current_screen);
 
-            newVelocity = raylib.Vector2.init(
-                0,
-                newVelocity.y,
-            );
+            if (IsCollidingXLeft(originalPosition, newPosition, current_screen, playerSize, platformCollision)) {
+                newIsMoving = false;
 
-            newPosition = raylib.Rectangle.init(
-                if (platformCollision == null) (newPosition.x) else (platformCollision.?.x - platformCollision.?.width),
-                newPosition.y,
-                newPosition.width,
-                newPosition.height,
-            );
+                newVelocity = raylib.Vector2.init(
+                    0,
+                    newVelocity.y,
+                );
+
+                newPosition = raylib.Rectangle.init(
+                    if (platformCollision == null) (newPosition.x) else (platformCollision.?.x + platformCollision.?.width + MOVE_MAX),
+                    newPosition.y,
+                    newPosition.width,
+                    newPosition.height,
+                );
+            } else if (IsCollidingXRight(originalPosition, newPosition, current_screen, playerSize, platformCollision)) {
+                newIsMoving = false;
+
+                newVelocity = raylib.Vector2.init(
+                    0,
+                    newVelocity.y,
+                );
+
+                newPosition = raylib.Rectangle.init(
+                    if (platformCollision == null) (newPosition.x) else (platformCollision.?.x - platformCollision.?.width + MOVE_MAX),
+                    newPosition.y,
+                    newPosition.width,
+                    newPosition.height,
+                );
+            }
         }
 
         const p = Player{
-            .Position = newPosition,
+            .Position = raylib.Rectangle.init(
+                EnsureWithinBounnds(
+                    current_screen,
+                    directions.horizontal,
+                    newPosition.x,
+                    playerSize,
+                ),
+                EnsureWithinBounnds(
+                    current_screen,
+                    directions.vertical,
+                    newPosition.y,
+                    playerSize,
+                ),
+                newPosition.width,
+                newPosition.height,
+            ),
             .Velocity = newVelocity,
             .IsAirborne = newIsAirborne,
             .IsMoving = newIsMoving,
