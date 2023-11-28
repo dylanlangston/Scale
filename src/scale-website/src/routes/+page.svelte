@@ -48,6 +48,8 @@
   function UpdateSize(e: Event): void {
     clearTimeout(updateSizeTimeout);
 
+    requestPause();
+
     if (document.fullscreenElement) {
       return;
     }
@@ -56,7 +58,6 @@
     }
 
     const updateSize = (): void => {
-      requestPause();
       const updateWasmResolution = emscripten._updateWasmResolution;
       if (updateWasmResolution)
       {
@@ -170,7 +171,7 @@
   }
 </style>
 
-<svelte:window 
+<svelte:window
   on:orientationchange={(e) => UpdateSize(e)} 
   on:resize={(e) => UpdateSize(e)} 
   on:blur={(e) => requestPause()} />
