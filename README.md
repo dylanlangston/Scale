@@ -5,7 +5,7 @@
 [![GitHub repo size](https://img.shields.io/github/repo-size/dylanlangston/Scale)](https://api.github.com/repos/dylanlangston/scale)
 
 <p align="center">
-  <img src="banner.png" alt="Scale Game 🧗‍♂️" align="center"></img>
+  <img src="./src/scale-website/static/banner.png" alt="Scale Game 🧗‍♂️" align="center"></img>
 </p>
 
 This is a submission to the 2023 *Game Off* event hosted by [GitHub](https://github.com/) on [itch.io](https://itch.io/), It was created by [@dylanlangston](https://github.com/dylanlangston) using the following:
