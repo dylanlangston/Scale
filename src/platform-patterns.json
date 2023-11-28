@@ -1,0 +1,31 @@
+[
+    {
+        "number": 2,
+        "sizes": [
+            {
+                "width": 50,
+                "height": 2
+            },
+            {
+                "width": 50,
+                "height": 2
+            }
+        ],
+        "padding": [
+            -25,
+            75
+        ]
+    },
+    {
+        "number": 1,
+        "sizes": [
+            {
+                "width": 50,
+                "height": 2
+            }
+        ],
+        "padding": [
+            25
+        ]
+    }
+]

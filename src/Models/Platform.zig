@@ -4,6 +4,7 @@ const raylib = @import("raylib");
 const World = @import("World.zig").World;
 const Logger = @import("../Logger.zig").Logger;
 const Colors = @import("../Colors.zig").Colors;
+const Shared = @import("../Helpers.zig").Shared;
 
 pub const Platform = struct {
     Position: raylib.Rectangle,
@@ -83,9 +84,53 @@ pub const Platform = struct {
             Colors.Miyazaki.Yellow,
         );
     }
+
+    pub fn GetNewPlatformsFromPattern(pattern: PlatformPattern, current_screen: raylib.Rectangle) std.ArrayList(Platform) {
+        var platforms = std.ArrayList(Platform).init(Shared.GetAllocator());
+
+        for (0..pattern.number) |i| {
+            const padding = pattern.padding[i] / 100 * current_screen.width;
+            const height = pattern.sizes[i].height / 100 * current_screen.height;
+            platforms.append(Platform{
+                .Position = raylib.Rectangle.init(
+                    padding,
+                    -(height * 2),
+                    current_screen.width,
+                    current_screen.height,
+                ),
+                .Size = pattern.sizes[i],
+            }) catch {
+                Logger.Error("Failed to create new platform");
+            };
+        }
+
+        return platforms;
+    }
 };
 
 pub const PlatformSize = struct {
     width: f32,
     height: f32,
+};
+
+pub const PlatformPattern = struct {
+    number: usize,
+    sizes: []const PlatformSize,
+    padding: []const f32,
+
+    // pub fn Init(number: usize, sizes: []const PlatformSize, padding: []const f32) PlatformPattern {
+    //     return PlatformPattern{
+    //         .number = number,
+    //         .sizes = sizes,
+    //         .padding = padding,
+    //     };
+    // }
+
+    pub fn LoadPatternsFromFile(file: [:0]const u8) []PlatformPattern {
+        const platformPatterns = std.json.parseFromSlice([]PlatformPattern, Shared.GetAllocator(), file, .{}) catch {
+            Logger.Error("Failed to load platform patterns!");
+            return undefined;
+        };
+        return platformPatterns.value;
+    }
 };
