@@ -232,6 +232,10 @@ pub fn linkWithEmscripten(
         "-sEXPORTED_RUNTIME_METHODS=ccall,cwrap",
         "--js-library=src/Zig-JS_Bridge.js",
         "-sWASM=1",
+        "-sALLOW_MEMORY_GROWTH=1",
+        "-sWASM_MEM_MAX=512MB",
+        "-sTOTAL_MEMORY=512MB",
+        "-sABORTING_MALLOC=0",
         "-sASSERTIONS",
         "-sALLOW_MEMORY_GROWTH",
     });
