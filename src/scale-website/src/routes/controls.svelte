@@ -21,7 +21,9 @@
       if (e.target instanceof HTMLButtonElement && e.target.tagName == "BUTTON" && !e.target.classList.contains("down"))
       {
         e.target.classList.add("down");
-        navigator.vibrate(10);
+        if (navigator.vibrate) {
+          navigator.vibrate(10);
+        }
         handleButtonPressed(<any>e.target.value);
       }
     }
@@ -33,7 +35,9 @@
       if (elem?.tagName == "BUTTON" && !elem.classList.contains("down"))
       {
         elem.classList.add("down");
-        navigator.vibrate(10);
+        if (navigator.vibrate) {
+          navigator.vibrate(10);
+        }
         handleButtonPressed(<any>elem.value);
       }
 
@@ -55,8 +59,8 @@
 <style global lang="postcss">
       #dpad {
         --button-size: 3rem;
-        height: calc(var(--button-size) * 3 + 0.25rem);
-        width: calc(var(--button-size) * 3 + 0.25rem);
+        height: calc(var(--button-size) * 3 + 0.5rem);
+        width: calc(var(--button-size) * 3 + 0.5rem);
       }
 
       #dpad > button {
