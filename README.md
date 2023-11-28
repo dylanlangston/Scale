@@ -4,7 +4,10 @@
 [![GitHub License](https://img.shields.io/github/license/dylanlangston/Scale)](https://github.com/dylanlangston/Scale/blob/main/LICENSE)
 [![GitHub repo size](https://img.shields.io/github/repo-size/dylanlangston/Scale)](https://api.github.com/repos/dylanlangston/scale)
 
-# Scale Game 🧗‍♂️
+<p align="center">
+  <img src="banner.png" alt="Scale Game 🧗‍♂️" align="center"></img>
+</p>
+
 This is a submission to the 2023 *Game Off* event hosted by [GitHub](https://github.com/) on [itch.io](https://itch.io/), It was created by [@dylanlangston](https://github.com/dylanlangston) using the following:
 - [Zig](https://ziglang.org/)
 - [Raylib](https://www.raylib.com/) via [Raylib-Zig](https://github.com/Not-Nik/raylib-zig/tree/devel)
