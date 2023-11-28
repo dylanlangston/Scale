@@ -43,8 +43,14 @@ pub const Localelizer = struct {
 
     pub fn getDisplayName(locale: Locales) [:0]const u8 {
         switch (locale) {
-            Locales.en_us => {
+            Locales.english => {
                 return "English (US)";
+            },
+            Locales.spanish => {
+                return "Spanish";
+            },
+            Locales.french => {
+                return "French";
             },
             else => {
                 return "Unknown";
