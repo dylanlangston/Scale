@@ -12,20 +12,20 @@
       {
         "src": "brick.png",
         "type": "image/png",
-        "sizes": "144x144"
+        "sizes": "320x320"
       }
     ],
     "screenshots" : [
       {
         "src": "banner.png",
-        "sizes": "1917x519",
+        "sizes": "1000x500",
         "type": "image/png",
         "form_factor": "wide",
         "label": "Scale Game Banner"
       },
       {
         "src": "brick.png",
-        "sizes": "144x144",
+        "sizes": "320x320",
         "type": "image/png",
         "label": "Scale Game Logo"
       }
