@@ -15,6 +15,21 @@
         "sizes": "144x144"
       }
     ],
+    "screenshots" : [
+      {
+        "src": "banner.png",
+        "sizes": "1917x519",
+        "type": "image/png",
+        "form_factor": "wide",
+        "label": "Scale Game Banner"
+      },
+      {
+        "src": "brick.png",
+        "sizes": "144x144",
+        "type": "image/png",
+        "label": "Scale Game Logo"
+      }
+    ],
     "description": "2D platformer created for Game Off 2023",
     "categories": [ "games", "2D", "platformer", "raylib", "zig"]
 }
