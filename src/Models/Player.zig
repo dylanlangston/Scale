@@ -166,7 +166,7 @@ pub const Player = struct {
     ) bool {
         _ = current_screen;
         _ = size;
-        if (newPosition.y <= 0) {
+        if (newPosition.y < 0) {
             return true;
         }
 
@@ -276,6 +276,7 @@ pub const Player = struct {
                     newPosition.height,
                 );
             } else if (IsCollidingYBottom(originalPosition, newPosition, current_screen, playerSize, platformCollision)) {
+                collideY = true;
                 newIsAirborne = false;
 
                 newVelocity = raylib.Vector2.init(
@@ -321,6 +322,7 @@ pub const Player = struct {
 
             if (IsCollidingXLeft(originalPosition, newPosition, current_screen, playerSize, platformCollision)) {
                 newIsMoving = false;
+                newIsAirborne = true;
 
                 newVelocity = raylib.Vector2.init(
                     0,
@@ -335,6 +337,7 @@ pub const Player = struct {
                 );
             } else if (IsCollidingXRight(originalPosition, newPosition, current_screen, playerSize, platformCollision)) {
                 newIsMoving = false;
+                newIsAirborne = true;
 
                 newVelocity = raylib.Vector2.init(
                     0,
@@ -342,7 +345,7 @@ pub const Player = struct {
                 );
 
                 newPosition = raylib.Rectangle.init(
-                    if (platformCollision == null) (newPosition.x) else (platformCollision.?.x - platformCollision.?.width + MOVE_MAX),
+                    if (platformCollision == null) (newPosition.x) else (platformCollision.?.x - playerSize.width - MOVE_MAX),
                     newPosition.y,
                     newPosition.width,
                     newPosition.height,
