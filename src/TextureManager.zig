@@ -7,7 +7,7 @@ pub const TextureManager = struct {
 
     const TextureManagerErrors = error{ FailedToAppend, NotFound };
 
-    pub fn GetTexture(texture: Textures) TextureManagerErrors!raylib.Texture {
+    pub inline fn GetTexture(texture: Textures) TextureManagerErrors!raylib.Texture {
         if (LoadedTextures == null) {
             LoadedTextures = std.AutoHashMap(Textures, raylib.Texture).init(Shared.GetAllocator());
         }
@@ -26,7 +26,7 @@ pub const TextureManager = struct {
         }
     }
 
-    fn SaveTextureToCache(key: Textures, fileType: [:0]const u8, bytes: [:0]const u8) TextureManagerErrors!raylib.Texture {
+    inline fn SaveTextureToCache(key: Textures, fileType: [:0]const u8, bytes: [:0]const u8) TextureManagerErrors!raylib.Texture {
         const i = raylib.loadImageFromMemory(fileType, bytes);
         const t = raylib.loadTextureFromImage(i);
         raylib.setTextureFilter(
@@ -37,7 +37,7 @@ pub const TextureManager = struct {
         return t;
     }
 
-    pub fn deinit() void {
+    pub inline fn deinit() void {
         if (LoadedTextures != null) {
             LoadedTextures.?.deinit();
         }

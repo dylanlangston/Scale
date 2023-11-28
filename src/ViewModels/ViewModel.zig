@@ -5,7 +5,7 @@ pub const ViewModel = struct {
     DeInit: *const fn () void = undefined,
     Get: *const fn () void,
 
-    pub fn Create(comptime view_model: type, options: ?VMCreationOptions) ViewModel {
+    pub inline fn Create(comptime view_model: type, options: ?VMCreationOptions) ViewModel {
         const Inner = struct {
             fn func() type {
                 return view_model;
@@ -27,7 +27,7 @@ pub const ViewModel = struct {
         };
     }
 
-    pub fn GetVM(comptime self: ViewModel) type {
+    pub inline fn GetVM(comptime self: ViewModel) type {
         const vm: *const fn () type = @ptrCast(self.Get);
         return vm.*();
     }

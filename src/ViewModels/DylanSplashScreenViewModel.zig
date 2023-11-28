@@ -10,7 +10,7 @@ const RndGen = std.rand.DefaultPrng;
 pub const DylanSplashScreenViewModel = ViewModel.Create(
     struct {
         var lastRandom: raylib.Color = Colors.Green.Dark;
-        pub fn GetRandomColor(seed: f32) raylib.Color {
+        pub inline fn GetRandomColor(seed: f32) raylib.Color {
             var rnd = RndGen.init(@as(u64, @intFromFloat(seed)));
             const random = rnd.random().intRangeAtMost(u8, 0, 4);
             switch (random) {

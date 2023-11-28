@@ -7,7 +7,7 @@ pub const SoundManager = struct {
 
     const SoundManagerErrors = error{FailedToAppend};
 
-    pub fn GetSound(sound: Sounds) SoundManagerErrors!raylib.Sound {
+    pub inline fn GetSound(sound: Sounds) SoundManagerErrors!raylib.Sound {
         if (LoadedSounds == null) {
             LoadedSounds = std.AutoHashMap(Sounds, raylib.Font).init(Shared.GetAllocator());
         }
@@ -23,7 +23,7 @@ pub const SoundManager = struct {
         }
     }
 
-    pub fn deinit() void {
+    pub inline fn deinit() void {
         if (LoadedSounds != null) {
             LoadedSounds.?.deinit();
         }

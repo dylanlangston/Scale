@@ -9,7 +9,7 @@ const SplashScreenViewModel = @import("../ViewModels/RaylibSplashScreenViewModel
 
 const logo_color = raylib.Color.orange;
 
-fn DrawSplashScreen() Views {
+inline fn DrawSplashScreen() Views {
     const vm = SplashScreenViewModel.GetVM();
 
     // Update View Model

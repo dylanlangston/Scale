@@ -73,7 +73,7 @@ pub const Shared = struct {
 
     pub const Locale = struct {
         var locale: ?LocalelizerLocale = null;
-        fn GetLocale_Internal() ?LocalelizerLocale {
+        inline fn GetLocale_Internal() ?LocalelizerLocale {
             const user_locale = Shared.Settings.GetSettings().UserLocale;
             if (user_locale == Locales.unknown) return null;
 
@@ -102,7 +102,7 @@ pub const Shared = struct {
         return Views.Paused;
     }
 
-    pub fn deinit() void {
+    pub inline fn deinit() void {
         // GeneralPurposeAllocator
         defer _ = gp.deinit();
 

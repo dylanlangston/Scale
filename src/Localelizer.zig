@@ -3,7 +3,7 @@ const Allocator = std.mem.Allocator;
 const Logger = @import("Logger.zig").Logger;
 
 pub const Localelizer = struct {
-    fn get_locale_file(locale: Locales) [:0]const u8 {
+    inline fn get_locale_file(locale: Locales) [:0]const u8 {
         switch (locale) {
             Locales.english => {
                 return @embedFile("./Locales/english.json");
@@ -24,7 +24,7 @@ pub const Localelizer = struct {
     const LocalelizerError = error{ FileNotFound, FileReadError, InvalidFileFormat };
 
     var loaded_locale: ?std.json.Parsed(Locale) = null;
-    pub fn get(locale: Locales, allocator: Allocator) LocalelizerError!Locale {
+    pub inline fn get(locale: Locales, allocator: Allocator) LocalelizerError!Locale {
         const locale_file = get_locale_file(locale);
         // Deinit old locale if needed
         deinit();
@@ -35,13 +35,13 @@ pub const Localelizer = struct {
         return loaded_locale.?.value;
     }
 
-    pub fn deinit() void {
+    pub inline fn deinit() void {
         if (loaded_locale != null) {
             defer loaded_locale.?.deinit();
         }
     }
 
-    pub fn getDisplayName(locale: Locales) [:0]const u8 {
+    pub inline fn getDisplayName(locale: Locales) [:0]const u8 {
         switch (locale) {
             Locales.english => {
                 return "English (US)";

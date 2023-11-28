@@ -13,7 +13,7 @@ pub const Settings = struct {
     UserLocale: Locales,
     Updated: bool = false,
 
-    pub fn save(self: Settings, allocator: Allocator) bool {
+    pub inline fn save(self: Settings, allocator: Allocator) bool {
         var settings = std.ArrayList(u8).init(allocator);
         defer settings.deinit();
 
@@ -40,7 +40,7 @@ pub const Settings = struct {
 
         return true;
     }
-    pub fn load(allocator: Allocator) Settings {
+    pub inline fn load(allocator: Allocator) Settings {
         Logger.Info("Load settings");
         if (builtin.target.os.tag == .wasi) {
             const wasm_settings = GetWasmSettings();
@@ -78,7 +78,7 @@ pub const Settings = struct {
         return NormalizeSettings(settings.value);
     }
 
-    pub fn update(base: Settings, diff: anytype) Settings {
+    pub inline fn update(base: Settings, diff: anytype) Settings {
         var updated = base;
         inline for (std.meta.fields(@TypeOf(diff))) |f| {
             @field(updated, f.name) = @field(diff, f.name);
@@ -87,13 +87,13 @@ pub const Settings = struct {
         return updated;
     }
 
-    pub fn UpdatesProcessed(base: Settings) Settings {
+    pub inline fn UpdatesProcessed(base: Settings) Settings {
         var updated = base;
         @field(updated, "Updated") = false;
         return updated;
     }
 
-    fn NormalizeSettings(settings: Settings) Settings {
+    inline fn NormalizeSettings(settings: Settings) Settings {
         return Settings{
             .CurrentResolution = Resolution{ .Width = @max(Resolutions[0].Width, settings.CurrentResolution.Width), .Height = @max(Resolutions[0].Height, settings.CurrentResolution.Height) },
             .TargetFPS = if (settings.TargetFPS == 0) 0 else @max(settings.TargetFPS, 30),
@@ -139,7 +139,7 @@ pub const Resolutions = [_]Resolution{
     Resolution{ .Width = 3840, .Height = 2160 },
 };
 
-fn GetWasmSettings() ?([:0]const u8) {
+inline fn GetWasmSettings() ?([:0]const u8) {
     // We load the settings via arguments passed emscripten on startup
     var args = std.process.ArgIterator.initWithAllocator(Shared.GetAllocator()) catch {
         return null;
@@ -163,7 +163,7 @@ export fn getSettingsVal(int: usize) u8 {
 export fn getSettingsSize() u32 {
     return @intCast(wasm_settings_buf.items.len);
 }
-fn SaveWasmSettings(settings: []u8) void {
+inline fn SaveWasmSettings(settings: []u8) void {
     wasm_settings_buf.deinit();
     wasm_settings_buf = std.ArrayList(u8).init(Shared.GetAllocator());
 

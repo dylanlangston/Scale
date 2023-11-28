@@ -10,13 +10,13 @@ pub const View = struct {
 
     // Initialize View Model if needed
     var isInitialized = false;
-    pub fn init(self: View) void {
+    pub inline fn init(self: View) void {
         if (isInitialized == false and @intFromPtr(self.VM) != 0 and @intFromPtr(self.VM.*.Init) != 0) {
             self.VM.*.Init();
             isInitialized = true;
         }
     }
-    pub fn deinit(self: View) void {
+    pub inline fn deinit(self: View) void {
         if (@intFromPtr(self.VM) != 0 and @intFromPtr(self.VM.*.DeInit) != 0) {
             self.VM.*.DeInit();
             isInitialized = false;

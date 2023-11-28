@@ -16,7 +16,7 @@ pub const MenuViewModel = ViewModel.Create(
         pub var selection = Selection.Start;
         pub var Rectangles: [std.enums.directEnumArrayLen(Selection, 0) - 1]raylib.Rectangle = undefined;
 
-        pub fn GetSelectionText(select: Selection) [:0]const u8 {
+        pub inline fn GetSelectionText(select: Selection) [:0]const u8 {
             const locale = Shared.Locale.GetLocale().?;
 
             switch (select) {

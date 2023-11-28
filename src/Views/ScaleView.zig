@@ -47,7 +47,7 @@ pub fn DrawFunction() Views {
         right,
     };
     var numberButtonsPressed: f32 = 0;
-    for (0..buttonsPressed.len) |i| {
+    inline for (0..buttonsPressed.len) |i| {
         _ = i;
         numberButtonsPressed += 1;
     }

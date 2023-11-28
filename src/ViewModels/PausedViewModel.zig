@@ -20,7 +20,7 @@ pub const PausedViewModel = ViewModel.Create(
         pub var View: Views = undefined;
         pub var BackgroundTexture: ?raylib.Texture = null;
 
-        pub fn PauseView(v: Views) void {
+        pub inline fn PauseView(v: Views) void {
             if (BackgroundTexture != null) {
                 BackgroundTexture.?.unload();
             }

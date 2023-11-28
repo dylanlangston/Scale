@@ -14,7 +14,7 @@ pub const World = struct {
     var PlatformPatterns: []PlatformPattern = undefined;
 
     var c: usize = 0;
-    pub fn GetPattern() PlatformPattern {
+    inline fn GetPattern() PlatformPattern {
         const pattern = PlatformPatterns[c];
         if (c + 1 >= PlatformPatterns.len) {
             c = 0;
@@ -24,7 +24,7 @@ pub const World = struct {
         return pattern;
     }
 
-    pub fn Init() !void {
+    pub inline fn Init() !void {
         Deinit();
 
         PlatformPatterns = PlatformPattern.LoadPatternsFromFile(@embedFile("../platform-patterns.json"));
@@ -99,7 +99,7 @@ pub const World = struct {
         });
     }
 
-    pub fn CheckForPlatformCollision(item: raylib.Rectangle, current_screen: raylib.Rectangle) ?raylib.Rectangle {
+    pub inline fn CheckForPlatformCollision(item: raylib.Rectangle, current_screen: raylib.Rectangle) ?raylib.Rectangle {
         for (Platforms.items) |platform| {
             const collision = platform.GetCollision(current_screen, item);
             if (collision.width > 1) {
@@ -113,7 +113,7 @@ pub const World = struct {
     }
 
     //var rnd: RndGen = undefined;
-    pub fn UpdatePlatforms(yOffset: f32, current_screen: raylib.Rectangle) std.ArrayList(PlatformModel) {
+    pub inline fn UpdatePlatforms(yOffset: f32, current_screen: raylib.Rectangle) std.ArrayList(PlatformModel) {
         // Iterate through the platforms in reverse to safely remove elements while iterating
         var index: usize = Platforms.items.len;
         var topmostPlatform: ?PlatformModel = null;
@@ -183,7 +183,6 @@ pub const World = struct {
             const newPlatforms = PlatformModel.GetNewPlatformsFromPattern(pattern, current_screen);
             defer newPlatforms.deinit();
             for (newPlatforms.items) |newPlatform| {
-                Logger.Info_Formatted("Append Platform: {}", .{newPlatform});
                 Platforms.append(newPlatform) catch {
                     Logger.Error("Failed to update platform!");
                 };
@@ -212,11 +211,11 @@ pub const World = struct {
         return Platforms;
     }
 
-    pub fn Deinit() void {
+    pub inline fn Deinit() void {
         Platforms.clearAndFree();
     }
 
-    pub fn GetCurrentScreenSize() raylib.Rectangle {
+    pub inline fn GetCurrentScreenSize() raylib.Rectangle {
         const current_screen = raylib.Rectangle.init(
             0,
             0,

@@ -40,8 +40,8 @@ pub fn DrawFunction() Views {
         @floatFromInt(brick.width),
         @floatFromInt(brick.height),
     );
-    for (0..bricks_x) |x| {
-        for (0..bricks_y) |y| {
+    inline for (0..bricks_x) |x| {
+        inline for (0..bricks_y) |y| {
             const dest = raylib.Rectangle.init(
                 @as(f32, @floatFromInt(x)) * brick_size_x,
                 @as(f32, @floatFromInt(y)) * brick_size_y,
@@ -170,7 +170,7 @@ pub fn DrawFunction() Views {
     return Views.Menu;
 }
 
-fn GetSelection() Views {
+inline fn GetSelection() Views {
     switch (vm.selection) {
         Selection.Start => {
             return Views.GameplayIntro;

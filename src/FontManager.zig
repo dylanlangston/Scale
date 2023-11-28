@@ -8,7 +8,7 @@ pub const FontManager = struct {
 
     const FontManagerErrors = error{ FailedToAppend, NotFound };
 
-    pub fn GetFont(font: Fonts) FontManagerErrors!raylib.Font {
+    pub inline fn GetFont(font: Fonts) FontManagerErrors!raylib.Font {
         if (LoadedFonts == null) {
             LoadedFonts = std.AutoHashMap(Fonts, raylib.Font).init(Shared.GetAllocator());
         }
@@ -34,9 +34,9 @@ pub const FontManager = struct {
         }
     }
 
-    fn SaveFontToCache(key: Fonts, fileType: [:0]const u8, bytes: [:0]const u8) FontManagerErrors!raylib.Font {
+    inline fn SaveFontToCache(key: Fonts, fileType: [:0]const u8, bytes: [:0]const u8) FontManagerErrors!raylib.Font {
         var fontChars: [95]i32 = .{};
-        for (0..fontChars.len) |i| fontChars[i] = @as(i32, @intCast(i)) + 32;
+        inline for (0..fontChars.len) |i| fontChars[i] = @as(i32, @intCast(i)) + 32;
         const f = raylib.loadFontFromMemory(fileType, bytes, 100, &fontChars);
         raylib.setTextureFilter(
             f.texture,
@@ -46,7 +46,7 @@ pub const FontManager = struct {
         return f;
     }
 
-    pub fn deinit() void {
+    pub inline fn deinit() void {
         if (LoadedFonts != null) {
             LoadedFonts.?.deinit();
         }

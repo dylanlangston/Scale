@@ -80,7 +80,7 @@ pub const JSGameController = struct {
         Start,
     };
 
-    pub fn ButtonPressed(button: Buttons) bool {
+    pub inline fn ButtonPressed(button: Buttons) bool {
         switch (button) {
             Buttons.Up => {
                 if (Up_Pressed) {
@@ -127,7 +127,7 @@ pub const JSGameController = struct {
         }
     }
 
-    pub fn ButtonHeld(button: Buttons) bool {
+    pub inline fn ButtonHeld(button: Buttons) bool {
         switch (button) {
             Buttons.Up => {
                 return Up_Held;
@@ -150,7 +150,7 @@ pub const JSGameController = struct {
         }
     }
 
-    pub fn SetButton(button: Buttons, down: bool) void {
+    pub inline fn SetButton(button: Buttons, down: bool) void {
         switch (button) {
             Buttons.Up => {
                 Up_Held = down;

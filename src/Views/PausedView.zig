@@ -157,7 +157,7 @@ pub fn DrawFunction() Views {
     return Views.Paused;
 }
 
-fn GetSelection() Views {
+inline fn GetSelection() Views {
     switch (vm.selection) {
         PauseOptions.Continue => {
             return vm.View;

@@ -12,7 +12,7 @@ const Inputs = @import("Inputs.zig").Inputs;
 const FontManager = @import("FontManager.zig").FontManager;
 const JSController = @import("JSGameController.zig");
 
-pub fn main() void {
+pub inline fn main() void {
     // Check that we can allocate memory
     const alloc = Shared.GetAllocator();
     if (alloc.create(u1)) |f| {
@@ -125,7 +125,7 @@ pub fn main() void {
     }
 }
 
-fn DeinitViews() void {
+inline fn DeinitViews() void {
     for (std.enums.values(Views)) |v| {
         const view = vl.ViewLocator.Build(v);
         view.deinit();

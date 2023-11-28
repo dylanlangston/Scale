@@ -16,7 +16,7 @@ pub const RaylibSplashScreenViewModel = ViewModel.Create(
         pub var bottomSideRecWidth: f32 = 16;
         pub var rightSideRecHeight: f32 = 16;
 
-        pub fn Reset() void {
+        pub inline fn Reset() void {
             framesCounter = 0;
             lettersCount = 0;
             state = States.Blinking;
@@ -27,7 +27,7 @@ pub const RaylibSplashScreenViewModel = ViewModel.Create(
             rightSideRecHeight = 16;
         }
 
-        pub fn Update() void {
+        pub inline fn Update() void {
             switch (state) {
                 States.Blinking => {
                     framesCounter += raylib.getFrameTime() * 60;
