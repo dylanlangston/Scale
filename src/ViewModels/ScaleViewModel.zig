@@ -10,7 +10,9 @@ const WorldModel = @import("../Models/World.zig").World;
 const RndGen = std.rand.DefaultPrng;
 
 pub const ScaleViewModel = ViewModel.Create(
-    struct {},
+    struct {
+        pub var elapsedSeconds: f64 = undefined;
+    },
     .{
         .Init = init,
         .DeInit = deinit,
@@ -18,6 +20,8 @@ pub const ScaleViewModel = ViewModel.Create(
 );
 
 fn init() void {
+    ScaleViewModel.GetVM().elapsedSeconds = 0;
+
     WorldModel.Init() catch {
         Logger.Error("Failed to Init World!");
     };

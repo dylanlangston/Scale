@@ -14,12 +14,13 @@ const ScaleViewModel = @import("../ViewModels/ScaleViewModel.zig").ScaleViewMode
 const PlayerModel = @import("../Models/Player.zig").Player;
 const WorldModel = @import("../Models/World.zig").World;
 
+const vm: type = ScaleViewModel.GetVM();
 const moveModifier: f32 = 32;
 
 pub fn DrawFunction() Views {
     const current_screen = WorldModel.GetCurrentScreenSize();
-
     const scroll_speed: f32 = 20 * raylib.getFrameTime();
+    vm.elapsedSeconds += raylib.getFrameTime();
 
     WorldModel.Platforms = WorldModel.UpdatePlatforms(scroll_speed, current_screen);
     WorldModel.Player = WorldModel.Player.UpdatePosition(scroll_speed - 0.001, current_screen);
@@ -68,6 +69,13 @@ pub fn DrawFunction() Views {
         WorldModel.Player = WorldModel.Player.MoveRight();
     }
 
+    const duration = std.fmt.fmtDuration(@as(u64, @intFromFloat(vm.elapsedSeconds * 1000000000)));
+    var buf: [13]u8 = undefined;
+    const timestamp = std.fmt.bufPrintZ(&buf, "{s:^12}", .{duration}) catch "Unknown!!";
+    const timestampSize = raylib.measureText(timestamp, 15);
+    raylib.drawText(timestamp, @as(i32, @intFromFloat(current_screen.width)) - timestampSize - 5, 5, 15, Colors.Miyazaki.Black);
+
+    // Ensure this is last, otherwise the pause screen won't display all the content
     if (Inputs.Start_Pressed()) {
         return Shared.Pause(Views.Scale);
     }
