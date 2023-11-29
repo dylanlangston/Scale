@@ -1,6 +1,7 @@
 const std = @import("std");
 const Allocator = std.mem.Allocator;
 const Logger = @import("Logger.zig").Logger;
+const Shared = @import("Helpers.zig").Shared;
 
 pub const Localelizer = struct {
     inline fn get_locale_file(locale: Locales) [:0]const u8 {
@@ -74,9 +75,25 @@ pub const Locale = struct {
     Missing_Text: [:0]const u8,
 };
 
-pub const Locales = enum {
-    unknown,
+pub const Locales = enum(usize) {
+    unknown = 0,
     english,
     spanish,
     french,
 };
+
+export fn updateWasmLocale(locale: usize) void {
+    Logger.Info_Formatted("Setting Locale to: {}", .{locale});
+    switch (locale) {
+        @intFromEnum(Locales.spanish) => {
+            Shared.Settings.UpdateSettings(.{ .UserLocale = Locales.spanish });
+        },
+        @intFromEnum(Locales.french) => {
+            Shared.Settings.UpdateSettings(.{ .UserLocale = Locales.french });
+        },
+        // Default to English
+        else => {
+            Shared.Settings.UpdateSettings(.{ .UserLocale = Locales.english });
+        },
+    }
+}

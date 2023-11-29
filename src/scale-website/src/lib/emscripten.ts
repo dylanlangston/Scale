@@ -1,7 +1,10 @@
+import { Localizer } from "$lib/localizer"
+
 export class Module {
 
     public requestFullscreen?: (lockPointer: boolean, resizeCanvas: boolean) => void;
     public _updateWasmResolution?: (width: number, height: number) => void;
+    public _updateWasmLocale?: (locale: number) => void;
     public _getSettingsSize?: () => number;
     public _getSettingsVal?: (location: number) => number;
     public _set_js_key?: (location: number, down: boolean) => void;
@@ -22,6 +25,12 @@ export class Module {
         
         document.getElementById("controls")?.classList.remove("hidden");
 
+        // Set Locale
+        if (this._updateWasmLocale)
+        {
+            this._updateWasmLocale(Localizer.GetLocale());
+        }
+
         // Trigger a resize on load to ensure the correct canvas size
         window.dispatchEvent(new Event('resize'));
     }
@@ -29,6 +38,8 @@ export class Module {
     public arguments: string[] = [
         "./this.program"
     ];
+
+    public getSettings = (): string => Module.getSettings();
 
     private static getSettings(): string {
         return window.localStorage.getItem("settings") ?? 
