@@ -12,6 +12,7 @@ const TextureManager = @import("TextureManager.zig").TextureManager;
 const Textures = @import("TextureManager.zig").Textures;
 const Logger = @import("Logger.zig").Logger;
 const PausedViewModel = @import("./ViewModels/PausedViewModel.zig").PausedViewModel;
+const GameOverViewModel = @import("./ViewModels/GameOverViewModel.zig").GameOverViewModel;
 const Views = @import("ViewLocator.zig").Views;
 
 pub const Shared = struct {
@@ -108,6 +109,12 @@ pub const Shared = struct {
         const paused_vm = PausedViewModel.GetVM();
         paused_vm.PauseView(view);
         return Views.Paused;
+    }
+
+    pub fn GameOver() Views {
+        const gameover_vm = GameOverViewModel.GetVM();
+        gameover_vm.GameOver();
+        return Views.Game_Over;
     }
 
     pub inline fn deinit() void {

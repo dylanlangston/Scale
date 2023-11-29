@@ -27,8 +27,6 @@ pub fn DrawFunction() Views {
 
     raylib.clearBackground(Colors.Miyazaki.LightGreen);
 
-    if (WorldModel.Player.Dead) return Views.Menu;
-
     for (WorldModel.Platforms.items) |platform| {
         platform.Draw(current_screen);
     }
@@ -79,6 +77,7 @@ pub fn DrawFunction() Views {
     if (Inputs.Start_Pressed()) {
         return Shared.Pause(Views.Scale);
     }
+    if (WorldModel.Player.Dead) return Shared.GameOver();
 
     return Views.Scale;
 }

@@ -1,6 +1,7 @@
 const std = @import("std");
 const BaseViewModel = @import("./ViewModels/ViewModel.zig").ViewModel;
 const BaseView = @import("./Views/View.zig").View;
+const Logger = @import("./Logger.zig").Logger;
 
 pub const ViewLocator = struct {
     inline fn GetView(view: Views) BaseView {
@@ -25,6 +26,9 @@ pub const ViewLocator = struct {
             },
             Views.Settings => {
                 return @import("./Views/SettingsView.zig").SettingsView;
+            },
+            Views.Game_Over => {
+                return @import("./Views/GameOverView.zig").GameOverView;
             },
             else => {
                 return BaseView{ .DrawRoutine = DrawQuit };
@@ -51,5 +55,6 @@ pub const Views = enum {
     GameplayIntro,
     Scale,
     Settings,
+    Game_Over,
     Quit,
 };
