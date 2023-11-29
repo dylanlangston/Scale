@@ -233,11 +233,10 @@ pub fn linkWithEmscripten(
         "--js-library=src/Zig-JS_Bridge.js",
         "-sWASM=1",
         "-sALLOW_MEMORY_GROWTH=1",
-        "-sWASM_MEM_MAX=16MB",
-        "-sTOTAL_MEMORY=16MB",
+        "-sWASM_MEM_MAX=512MB",
+        "-sTOTAL_MEMORY=32MB",
         "-sABORTING_MALLOC=0",
         "-sASSERTIONS",
-        "-sALLOW_MEMORY_GROWTH",
     });
     return emcc_command;
 }
