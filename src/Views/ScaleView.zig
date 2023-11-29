@@ -97,7 +97,7 @@ pub fn DrawFunction() Views {
         ),
         fontSize,
         @floatFromInt(font.glyphPadding),
-        Colors.Miyazaki.Black,
+        Colors.Miyazaki.Light_Blue,
     );
 
     // Ensure these are last, otherwise the pause screen won't display all the content
