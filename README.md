@@ -4,11 +4,13 @@
 [![GitHub License](https://img.shields.io/github/license/dylanlangston/Scale)](https://github.com/dylanlangston/Scale/blob/main/LICENSE)
 [![GitHub repo size](https://img.shields.io/github/repo-size/dylanlangston/Scale)](https://api.github.com/repos/dylanlangston/scale)
 
-<p align="center">
-  <img src="./src/scale-website/static/banner.png" alt="Scale Game 🧗‍♂️" align="center"></img>
-</p>
+<a href="https://scale.dylanlangston.com/" title="Scale Game 🧗‍♂️">
+  <p align="center">
+    <img src="./src/scale-website/static/banner.png" alt="Scale Game 🧗‍♂️" align="center"></img>
+  </p>
+</a>
 
-This is a submission to the 2023 *Game Off* event hosted by [GitHub](https://github.com/) on [itch.io](https://itch.io/), It was created by [@dylanlangston](https://github.com/dylanlangston) using the following:
+This [Progressive Web App](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps) is a submission to the 2023 *Game Off* event hosted by [GitHub](https://github.com/) on [itch.io](https://itch.io/), It was created by [@dylanlangston](https://github.com/dylanlangston) using the following:
 - [Zig](https://ziglang.org/)
 - [Raylib](https://www.raylib.com/) via [Raylib-Zig](https://github.com/Not-Nik/raylib-zig/tree/devel)
 - [Raygui](https://github.com/raysan5/raygui) via [Raygui.zig](https://github.com/ryupold/raygui.zig)
@@ -55,5 +57,9 @@ My interpretion of the theme is a vertical platformer that is procedurally gener
 | _Eight Bit Dragon_ | https://www.fontspace.com/eight-bit-dragon-font-f30428 | Freeware, Non-Commercial |
 | _Two Lines_ | https://www.fontspace.com/2-lines-font-f14541 | Freeware, Non-Commercial |
 | _Ec Bricks Regular_ | https://www.fontspace.com/ec-bricks-font-f30951 | Creative Commons (by-nc-nd) Attribution <br/>Non-commercial No Derivatives |
+
+| Palette | Source |
+|:-------:|:------:|
+| _Miyazaki 16_ | https://lospec.com/palette-list/miyazaki-16 |
 
 [^1]: Game Off 2023 on [Itch.io](https://itch.io/jam/game-off-2023)
