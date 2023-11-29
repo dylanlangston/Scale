@@ -112,8 +112,8 @@ pub fn DrawFunction() Views {
         index += 1;
 
         if (builtin.target.os.tag == .wasi) {
-            // Disable quit in WASM
-            if (index == 2) break;
+            // Disable settings and quit options in WASM
+            if (index == 1) break;
         }
         if (index == 3) break;
     }
