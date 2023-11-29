@@ -13,6 +13,7 @@ const Logger = @import("../Logger.zig").Logger;
 const ScaleViewModel = @import("../ViewModels/ScaleViewModel.zig").ScaleViewModel;
 const PlayerModel = @import("../Models/Player.zig").Player;
 const WorldModel = @import("../Models/World.zig").World;
+const Bricks = @import("../Models/Bricks.zig").Bricks;
 
 const vm: type = ScaleViewModel.GetVM();
 const moveModifier: f32 = 32;
@@ -29,6 +30,8 @@ pub fn DrawFunction() Views {
     WorldModel.Player = WorldModel.Player.UpdatePosition(scroll_speed - 0.0001, current_screen);
 
     raylib.clearBackground(Colors.Miyazaki.LightGreen);
+
+    Bricks.Draw(current_screen.width, current_screen.height);
 
     for (WorldModel.Platforms.items) |platform| {
         platform.Draw(current_screen);

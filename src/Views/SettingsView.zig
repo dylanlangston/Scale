@@ -10,6 +10,7 @@ const Inputs = @import("../Inputs.zig").Inputs;
 const Shared = @import("../Helpers.zig").Shared;
 const Fonts = @import("../FontManager.zig").Fonts;
 const Colors = @import("../Colors.zig").Colors;
+const Bricks = @import("../Models/Bricks.zig").Bricks;
 
 pub fn DrawFunction() Views {
     raylib.clearBackground(Colors.Miyazaki.Yellow);
@@ -22,6 +23,8 @@ pub fn DrawFunction() Views {
     const screenHeight = raylib.getScreenHeight();
     const fontSize = @divFloor(screenWidth, 20);
     const startY = @divFloor(screenHeight, 4);
+
+    Bricks.Draw(@floatFromInt(screenWidth), @floatFromInt(screenHeight));
 
     const TitleTextSize = raylib.measureTextEx(
         font,
