@@ -44,6 +44,11 @@ pub const Settings = struct {
         Logger.Info("Load settings");
         if (builtin.target.os.tag == .wasi) {
             const wasm_settings = GetWasmSettings();
+            if (!(std.json.validate(allocator, wasm_settings.?) catch true)) {
+                Logger.Error_Formatted("Failed to validate settings: {?s}", .{wasm_settings});
+                return default_settings;
+            }
+
             var settings = std.json.parseFromSlice(Settings, allocator, wasm_settings.?, .{}) catch |er| {
                 Logger.Error_Formatted("Failed to deserialize settings: {}", .{er});
                 return default_settings;
@@ -67,6 +72,12 @@ pub const Settings = struct {
             return default_settings;
         };
         defer allocator.free(file_buffer);
+
+        // Validate JSON
+        if (!(std.json.validate(allocator, file_buffer) catch true)) {
+            Logger.Error_Formatted("Failed to validate settings: {s}", .{file_buffer});
+            return default_settings;
+        }
 
         // Parse JSON
         var settings = std.json.parseFromSlice(Settings, allocator, file_buffer, .{}) catch |er| {

@@ -15,20 +15,28 @@ const PausedViewModel = @import("./ViewModels/PausedViewModel.zig").PausedViewMo
 const Views = @import("ViewLocator.zig").Views;
 
 pub const Shared = struct {
-    var gp: std.heap.GeneralPurposeAllocator(.{}) = undefined;
-    var allocator: ?std.mem.Allocator = null;
-    pub fn GetAllocator() std.mem.Allocator {
-        if (allocator == null) {
-            if (builtin.os.tag == .wasi) {
-                allocator = std.heap.raw_c_allocator;
-            } else if (builtin.mode == .Debug) {
-                gp = std.heap.GeneralPurposeAllocator(.{ .safety = true }){};
-                allocator = gp.allocator();
-            } else {
-                allocator = std.heap.c_allocator;
-            }
+    var gp: std.heap.GeneralPurposeAllocator(.{}) = GetGPAllocator();
+    inline fn GetGPAllocator() std.heap.GeneralPurposeAllocator(.{}) {
+        if (builtin.mode == .Debug) {
+            return std.heap.GeneralPurposeAllocator(.{ .safety = true }){};
         }
-        return allocator.?;
+
+        return undefined;
+    }
+
+    const allocator: std.mem.Allocator = InitAllocator();
+    pub fn InitAllocator() std.mem.Allocator {
+        if (builtin.os.tag == .wasi) {
+            return std.heap.raw_c_allocator;
+        } else if (builtin.mode == .Debug) {
+            return gp.allocator();
+        } else {
+            return std.heap.c_allocator;
+        }
+    }
+
+    pub fn GetAllocator() std.mem.Allocator {
+        return allocator;
     }
 
     pub fn GetFont(font: Fonts) raylib.Font {

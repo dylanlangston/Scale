@@ -318,13 +318,13 @@ pub const Player = struct {
             const platformCollision = World.CheckForPlatformCollision(absolutePosition, current_screen);
 
             if (IsCollidingXLeft(originalPosition, newPosition, current_screen, playerSize, platformCollision)) {
-                //newIsMoving = false;
-                //newIsAirborne = true;
+                newIsMoving = false;
+                newIsAirborne = true;
 
-                // newVelocity = raylib.Vector2.init(
-                //     0,
-                //     newVelocity.y,
-                // );
+                newVelocity = raylib.Vector2.init(
+                    0,
+                    newVelocity.y,
+                );
 
                 newPosition = raylib.Rectangle.init(
                     if (platformCollision == null) (newPosition.x) else (platformCollision.?.x + platformCollision.?.width + MOVE_MAX),
@@ -333,13 +333,13 @@ pub const Player = struct {
                     newPosition.height,
                 );
             } else if (IsCollidingXRight(originalPosition, newPosition, current_screen, playerSize, platformCollision)) {
-                //newIsMoving = false;
-                //newIsAirborne = true;
+                newIsMoving = false;
+                newIsAirborne = true;
 
-                // newVelocity = raylib.Vector2.init(
-                //     0,
-                //     newVelocity.y,
-                // );
+                newVelocity = raylib.Vector2.init(
+                    0,
+                    newVelocity.y,
+                );
 
                 newPosition = raylib.Rectangle.init(
                     if (platformCollision == null) (newPosition.x) else (platformCollision.?.x - playerSize.width - MOVE_MAX),

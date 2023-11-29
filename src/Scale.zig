@@ -14,7 +14,7 @@ const JSController = @import("JSGameController.zig");
 
 pub inline fn main() void {
     // Check that we can allocate memory
-    const alloc = Shared.GetAllocator();
+    const alloc = comptime Shared.GetAllocator();
     if (alloc.create(u1)) |f| {
         defer alloc.destroy(f);
     } else |err| {

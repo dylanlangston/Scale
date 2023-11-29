@@ -11,12 +11,12 @@ const RndGen = std.rand.DefaultPrng;
 pub const World = struct {
     pub var Player: PlayerModel = undefined;
     pub var Platforms: std.ArrayList(PlatformModel) = undefined;
-    var PlatformPatterns: []PlatformPattern = undefined;
+    var PlatformPatterns: ?[]PlatformPattern = null;
 
     var c: usize = 0;
     inline fn GetPattern() PlatformPattern {
-        const pattern = PlatformPatterns[c];
-        if (c + 1 >= PlatformPatterns.len) {
+        const pattern = PlatformPatterns.?[c];
+        if (c + 1 >= PlatformPatterns.?.len) {
             c = 0;
         } else {
             c += 1;
@@ -27,7 +27,9 @@ pub const World = struct {
     pub inline fn Init() !void {
         Deinit();
 
-        PlatformPatterns = PlatformPattern.LoadPatternsFromFile(@embedFile("../platform-patterns.json"));
+        if (PlatformPatterns == null) {
+            PlatformPatterns = PlatformPattern.LoadPatternsFromFile(@embedFile("../platform-patterns.json"));
+        }
 
         //rnd = RndGen.init(@intCast(std.time.nanoTimestamp()));
 
