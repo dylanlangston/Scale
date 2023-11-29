@@ -52,7 +52,7 @@ jobs:
       - name: Binaryen Optimize
         run: |
           cd ${{ github.workspace }}/src/scale-website
-          npm exec --package=binaryen -c 'wasm-opt ./static/scale.wasm --post-emscripten  -all -Oz -o ./static/scale.wasm'
+          npm exec --package=binaryen -c 'wasm-opt ./static/scale.wasm -all --post-emscripten --low-memory-unused -tnh --converge -Oz --flatten --rereloop -Oz -Oz -o ./static/scale.wasm'
       - name: Build Svelte
         run: |
           cd ${{ github.workspace }}/src/scale-website
