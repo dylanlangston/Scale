@@ -70,11 +70,32 @@ pub fn DrawFunction() Views {
         WorldModel.Player = WorldModel.Player.MoveRight();
     }
 
+    // Time
+    const locale = Shared.Locale.GetLocale().?;
+    const font = Shared.GetFont(Fonts.EightBitDragon);
+
+    const time = locale.Time;
+    const fontSize = @divFloor(current_screen.width, 50);
     const duration = std.fmt.fmtDuration(@as(u64, @intFromFloat(vm.elapsedSeconds)) * 1000000000);
-    var buf: [13]u8 = undefined;
-    const timestamp = std.fmt.bufPrintZ(&buf, "{}", .{duration}) catch "Unknown!!";
-    const timestampSize = raylib.measureText(timestamp, 15);
-    raylib.drawText(timestamp, @as(i32, @intFromFloat(current_screen.width)) - timestampSize - 5, 5, 15, Colors.Miyazaki.Black);
+    var buf: [128]u8 = undefined;
+    const timestamp = std.fmt.bufPrintZ(&buf, "{s}{s}", .{ time, duration }) catch "Unknown!!";
+    const timestampSize = raylib.measureTextEx(
+        font,
+        timestamp,
+        fontSize,
+        @floatFromInt(font.glyphPadding),
+    );
+    raylib.drawTextEx(
+        font,
+        timestamp,
+        raylib.Vector2.init(
+            current_screen.width - timestampSize.x - (current_screen.width / 50),
+            current_screen.height / 100,
+        ),
+        fontSize,
+        @floatFromInt(font.glyphPadding),
+        Colors.Miyazaki.Black,
+    );
 
     // Ensure these are last, otherwise the pause screen won't display all the content
     if (Inputs.Start_Pressed()) {
