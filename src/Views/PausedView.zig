@@ -151,6 +151,9 @@ pub fn DrawFunction() Views {
     }
 
     if (Inputs.A_Pressed()) {
+        if (vm.BackgroundTexture != null) {
+            vm.BackgroundTexture.?.unload();
+        }
         return GetSelection();
     }
 

@@ -21,10 +21,6 @@ pub const PausedViewModel = ViewModel.Create(
         pub var BackgroundTexture: ?raylib.Texture = null;
 
         pub inline fn PauseView(v: Views) void {
-            if (BackgroundTexture != null) {
-                BackgroundTexture.?.unload();
-            }
-
             raylib.endDrawing();
             const img = raylib.loadImageFromScreen();
             defer img.unload();
