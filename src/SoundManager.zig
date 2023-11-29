@@ -17,10 +17,20 @@ pub const SoundManager = struct {
         }
 
         switch (sound) {
+            Sounds.Jump => {
+                return SaveSoundToCache(Sounds.Jump, ".wav", @embedFile("./Sounds/jump.wav"));
+            },
             else => {
                 return raylib.Sound{};
             },
         }
+    }
+
+    inline fn SaveSoundToCache(key: Sounds, fileType: [:0]const u8, bytes: [:0]const u8) SoundManagerErrors!raylib.Texture {
+        const w = raylib.loadWaveFromMemory(fileType, bytes);
+        const s = raylib.loadSoundFromWave(w);
+        LoadedSounds.?.put(key, s) catch return SoundManagerErrors.FailedToAppend;
+        return s;
     }
 
     pub inline fn deinit() void {
@@ -30,4 +40,6 @@ pub const SoundManager = struct {
     }
 };
 
-pub const Sounds = enum {};
+pub const Sounds = enum {
+    Jump,
+};
