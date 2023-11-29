@@ -27,6 +27,8 @@ pub const World = struct {
     pub inline fn Init() !void {
         Deinit();
 
+        c = 0;
+
         if (PlatformPatterns == null) {
             PlatformPatterns = PlatformPattern.LoadPatternsFromFile(@embedFile("../platform-patterns.json"));
         }
