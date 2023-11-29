@@ -3,16 +3,16 @@
         "number": 2,
         "sizes": [
             {
-                "width": 50,
+                "width": 25,
                 "height": 2
             },
             {
-                "width": 50,
+                "width": 25,
                 "height": 2
             }
         ],
         "padding": [
-            -25,
+            0,
             75
         ]
     },
