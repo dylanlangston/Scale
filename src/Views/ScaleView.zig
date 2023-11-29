@@ -19,11 +19,14 @@ const moveModifier: f32 = 32;
 
 pub fn DrawFunction() Views {
     const current_screen = WorldModel.GetCurrentScreenSize();
-    const scroll_speed: f32 = 20 * raylib.getFrameTime();
+
     vm.elapsedSeconds += raylib.getFrameTime();
 
+    const scroll_speed_mod: u32 = @intFromFloat(@divFloor(vm.elapsedSeconds, 10));
+    const scroll_speed: f32 = (20 + (@as(f32, @floatFromInt(scroll_speed_mod)) * 10)) * raylib.getFrameTime();
+
     WorldModel.Platforms = WorldModel.UpdatePlatforms(scroll_speed, current_screen);
-    WorldModel.Player = WorldModel.Player.UpdatePosition(scroll_speed - 0.001, current_screen);
+    WorldModel.Player = WorldModel.Player.UpdatePosition(scroll_speed - 0.0001, current_screen);
 
     raylib.clearBackground(Colors.Miyazaki.LightGreen);
 
@@ -67,13 +70,13 @@ pub fn DrawFunction() Views {
         WorldModel.Player = WorldModel.Player.MoveRight();
     }
 
-    const duration = std.fmt.fmtDuration(@as(u64, @intFromFloat(vm.elapsedSeconds * 1000000000)));
+    const duration = std.fmt.fmtDuration(@as(u64, @intFromFloat(vm.elapsedSeconds)) * 1000000000);
     var buf: [13]u8 = undefined;
-    const timestamp = std.fmt.bufPrintZ(&buf, "{s:^12}", .{duration}) catch "Unknown!!";
+    const timestamp = std.fmt.bufPrintZ(&buf, "{}", .{duration}) catch "Unknown!!";
     const timestampSize = raylib.measureText(timestamp, 15);
     raylib.drawText(timestamp, @as(i32, @intFromFloat(current_screen.width)) - timestampSize - 5, 5, 15, Colors.Miyazaki.Black);
 
-    // Ensure this is last, otherwise the pause screen won't display all the content
+    // Ensure these are last, otherwise the pause screen won't display all the content
     if (Inputs.Start_Pressed()) {
         return Shared.Pause(Views.Scale);
     }
