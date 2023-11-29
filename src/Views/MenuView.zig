@@ -12,6 +12,7 @@ const Shared = @import("../Helpers.zig").Shared;
 const Fonts = @import("../FontManager.zig").Fonts;
 const Colors = @import("../Colors.zig").Colors;
 const Logger = @import("../Logger.zig").Logger;
+const Bricks = @import("../Models/Bricks.zig").Bricks;
 
 const vm: type = MenuViewModel.GetVM();
 
@@ -20,7 +21,6 @@ pub fn DrawFunction() Views {
 
     const locale = Shared.Locale.GetLocale().?;
     const font = Shared.GetFont(Fonts.EightBitDragon);
-    const brick = Shared.GetTexture(.Brick);
 
     const title = locale.Title;
     const screenWidth = raylib.getScreenWidth();
@@ -28,36 +28,7 @@ pub fn DrawFunction() Views {
     const fontSize = @divFloor(screenWidth, 20);
     const startY = @divFloor(screenHeight, 4);
 
-    const bricks_scale_x: f32 = 800 / @as(f32, @floatFromInt(screenWidth));
-    const bricks_scale_y: f32 = 450 / @as(f32, @floatFromInt(screenHeight));
-    const brick_size_x: f32 = 32 / bricks_scale_x;
-    const brick_size_y: f32 = 32 / bricks_scale_y;
-    const bricks_x: f32 = 25;
-    const bricks_y: f32 = 14;
-    const brick_rect = raylib.Rectangle.init(
-        0,
-        0,
-        @floatFromInt(brick.width),
-        @floatFromInt(brick.height),
-    );
-    inline for (0..bricks_x) |x| {
-        inline for (0..bricks_y) |y| {
-            const dest = raylib.Rectangle.init(
-                @as(f32, @floatFromInt(x)) * brick_size_x,
-                @as(f32, @floatFromInt(y)) * brick_size_y,
-                brick_size_x,
-                brick_size_y,
-            );
-            raylib.drawTexturePro(
-                brick,
-                brick_rect,
-                dest,
-                raylib.Vector2.init(0, 0),
-                0,
-                Colors.Miyazaki.Tan,
-            );
-        }
-    }
+    Bricks.Draw(@floatFromInt(screenWidth), @floatFromInt(screenHeight));
 
     const foregroundColor = Colors.Miyazaki.Blue;
     const backgroundColor = Colors.Miyazaki.Blue_Gray.alpha(0.75);
