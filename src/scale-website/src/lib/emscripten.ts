@@ -10,10 +10,7 @@ export class Module {
     public _set_js_key?: (location: number, down: boolean) => void;
     public _requestPause?: () => void;
 
-    public preRun(mod: Module): void {
-        mod.arguments.forEach(arg => console.log("arg: " + arg));
-        mod.arguments.splice(1, 0, Module.getSettings()!);
-    }
+    public preRun(mod: Module): void {}
 
     private _Initialized: boolean = false; 
     public get Initialized(): boolean {
@@ -30,7 +27,7 @@ export class Module {
         {
             this._updateWasmLocale(Localizer.GetLocale());
         }
-
+        
         // Trigger a resize on load to ensure the correct canvas size
         window.dispatchEvent(new Event('resize'));
     }

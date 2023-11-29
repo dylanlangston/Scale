@@ -94,13 +94,13 @@ pub const Settings = struct {
         inline for (std.meta.fields(@TypeOf(diff))) |f| {
             @field(updated, f.name) = @field(diff, f.name);
         }
-        @field(updated, "Updated") = true;
+        updated.Updated = true;
         return updated;
     }
 
     pub inline fn UpdatesProcessed(base: Settings) Settings {
         var updated = base;
-        @field(updated, "Updated") = false;
+        updated.Updated = false;
         return updated;
     }
 
@@ -150,15 +150,15 @@ pub const Resolutions = [_]Resolution{
     Resolution{ .Width = 3840, .Height = 2160 },
 };
 
-inline fn GetWasmSettings() ?([:0]const u8) {
-    // We load the settings via arguments passed emscripten on startup
-    var args = std.process.ArgIterator.initWithAllocator(Shared.GetAllocator()) catch {
+extern fn WASMLoad() [*c]const u8;
+extern fn WASMLoaded([*c]const u8) void;
+inline fn GetWasmSettings() ?[:0]const u8 {
+    const wasm_settings_input_buf = WASMLoad();
+    defer WASMLoaded(wasm_settings_input_buf);
+    const settings_source: [:0]const u8 = std.mem.span(wasm_settings_input_buf);
+    return Shared.GetAllocator().dupeZ(u8, settings_source) catch {
         return null;
     };
-    defer args.deinit();
-    _ = args.skip();
-    const settings = args.next();
-    return settings;
 }
 
 export fn updateWasmResolution(width: i16, height: i16) void {
@@ -167,18 +167,18 @@ export fn updateWasmResolution(width: i16, height: i16) void {
     });
 }
 
-var wasm_settings_buf: std.ArrayList(u8) = undefined;
+var wasm_settings_output_buf: std.ArrayList(u8) = undefined;
 export fn getSettingsVal(int: usize) u8 {
-    return wasm_settings_buf.items[int];
+    return wasm_settings_output_buf.items[int];
 }
 export fn getSettingsSize() u32 {
-    return @intCast(wasm_settings_buf.items.len);
+    return @intCast(wasm_settings_output_buf.items.len);
 }
 inline fn SaveWasmSettings(settings: []u8) void {
-    wasm_settings_buf.deinit();
-    wasm_settings_buf = std.ArrayList(u8).init(Shared.GetAllocator());
+    wasm_settings_output_buf.deinit();
+    wasm_settings_output_buf = std.ArrayList(u8).init(Shared.GetAllocator());
 
-    wasm_settings_buf.appendSlice(settings) catch {
+    wasm_settings_output_buf.appendSlice(settings) catch {
         Logger.Error("Failed to save settings");
     };
 
