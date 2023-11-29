@@ -125,7 +125,7 @@ pub const Player = struct {
     ) bool {
         _ = size;
         _ = current_screen;
-        if (newPosition.x == 0) {
+        if (newPosition.x <= 1) {
             return true;
         }
 
@@ -327,7 +327,7 @@ pub const Player = struct {
                 );
 
                 newPosition = raylib.Rectangle.init(
-                    if (platformCollision == null) (newPosition.x) else (platformCollision.?.x + platformCollision.?.width + MOVE_MAX),
+                    if (platformCollision == null or newPosition.x == 0 or newPosition.x + playerSize.width == current_screen.width) (newPosition.x) else (platformCollision.?.x + platformCollision.?.width + MOVE_MAX),
                     newPosition.y,
                     newPosition.width,
                     newPosition.height,
@@ -342,7 +342,7 @@ pub const Player = struct {
                 );
 
                 newPosition = raylib.Rectangle.init(
-                    if (platformCollision == null) (newPosition.x) else (platformCollision.?.x - playerSize.width - MOVE_MAX),
+                    if (platformCollision == null or newPosition.x == 0 or newPosition.x + playerSize.width == current_screen.width) (newPosition.x) else (platformCollision.?.x - playerSize.width - MOVE_MAX),
                     newPosition.y,
                     newPosition.width,
                     newPosition.height,
