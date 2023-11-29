@@ -26,7 +26,7 @@ pub const Shared = struct {
     }
 
     const allocator: std.mem.Allocator = InitAllocator();
-    pub fn InitAllocator() std.mem.Allocator {
+    pub inline fn InitAllocator() std.mem.Allocator {
         if (builtin.os.tag == .wasi) {
             return std.heap.raw_c_allocator;
         } else if (builtin.mode == .Debug) {
@@ -36,7 +36,7 @@ pub const Shared = struct {
         }
     }
 
-    pub fn GetAllocator() std.mem.Allocator {
+    pub inline fn GetAllocator() std.mem.Allocator {
         return allocator;
     }
 
@@ -105,13 +105,13 @@ pub const Shared = struct {
         }
     };
 
-    pub fn Pause(view: Views) Views {
+    pub inline fn Pause(view: Views) Views {
         const paused_vm = PausedViewModel.GetVM();
         paused_vm.PauseView(view);
         return Views.Paused;
     }
 
-    pub fn GameOver() Views {
+    pub inline fn GameOver() Views {
         const gameover_vm = GameOverViewModel.GetVM();
         gameover_vm.GameOver();
         return Views.Game_Over;
