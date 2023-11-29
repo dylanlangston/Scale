@@ -49,6 +49,10 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           zig build -Dtarget=wasm32-emscripten -Doptimize=ReleaseFast
+      - name: Binaryen Optimize
+        run: |
+          cd ${{ github.workspace }}/src/scale-website
+          npm exec --package=binaryen -c 'wasm-opt ./static/scale.wasm --post-emscripten  -all -Oz -o ./static/scale.wasm'
       - name: Build Svelte
         run: |
           cd ${{ github.workspace }}/src/scale-website
