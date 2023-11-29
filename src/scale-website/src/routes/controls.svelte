@@ -58,7 +58,7 @@
 
 <style global lang="postcss">
       #dpad {
-        --button-size: 3rem;
+        --button-size: 3.5rem;
         height: calc(var(--button-size) * 3 + 0.5rem);
         width: calc(var(--button-size) * 3 + 0.5rem);
       }
@@ -157,24 +157,24 @@
   </div>
 
   <div class="absolute bottom-20 right-4 z-10 bg-slate-50/[.5] rounded-full p-1 w-fit h-fit m-auto select-none">
-      <button id="a" title="A" class="bg-black/[.5] rounded-full w-16 h-16 p-0 font-bold text-black" 
+      <button id="a" title="A" class="bg-black/[.5] rounded-full w-24 h-24 p-0 font-bold text-black" 
         value={Button.A}
         on:pointerdown={e => touchDown(e)}
-        on:pointerup={e => touchUp(e)}
-        on:pointerleave={e => touchUp(e)}
-        on:pointercancel={e => touchUp(e)}
-        on:lostpointercapture={e => touchUp(e)}
+        on:pointerup={e => setTimeout(() => touchUp(e))}
+        on:pointerleave={e => setTimeout(() => touchUp(e))}
+        on:pointercancel={e => setTimeout(() => touchUp(e))}
+        on:lostpointercapture={e => setTimeout(() => touchUp(e))}
       >A</button>
   </div>
 
   <div class="absolute top-4 left-4 z-10 bg-slate-50/[.5] rounded-full p-1 w-fit h-fit select-none">
-      <button id="start" title="start" class="bg-black/[.5] rounded-full w-14 h-8 p-0 font-bold text-black" 
+      <button id="start" title="Pause" class="bg-black/[.5] rounded-full w-14 h-8 p-0 font-bold text-black" 
         value={Button.Start}
         on:pointerdown={e => touchDown(e)}
-        on:pointerup={e => touchUp(e)}
-        on:pointerleave={e => touchUp(e)}
-        on:pointercancel={e => touchUp(e)}
-        on:lostpointercapture={e => touchUp(e)}
-      >Start</button>
+        on:pointerup={e => setTimeout(() => touchUp(e))}
+        on:pointerleave={e => setTimeout(() => touchUp(e))}
+        on:pointercancel={e => setTimeout(() => touchUp(e))}
+        on:lostpointercapture={e => setTimeout(() => touchUp(e))}
+      >Pause</button>
   </div>
 </div>
