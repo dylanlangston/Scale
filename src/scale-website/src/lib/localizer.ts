@@ -32,10 +32,8 @@ class LocaleGroup {
 
 export class Localizer {
     public static GetLocale(): Locales {
-
         const allLocales = Object.entries(Locales).map((_, locale) => new LocaleGroup(locale));
         const sortedLocales = allLocales.filter(l => l.Index > -1).sort((a, b) => a.Index - b.Index);
-        console.log(sortedLocales);
         const match = sortedLocales.at(0);
         if (match == undefined) return Locales.unknown;
         return match.Locale;
