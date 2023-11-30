@@ -18,7 +18,10 @@ pub const TextureManager = struct {
 
         switch (texture) {
             Textures.Brick => {
-                return SaveTextureToCache(Textures.Brick, ".png", brick);
+                return SaveTextureToCache(Textures.Brick, ".png", @embedFile("./Images/brick.png"));
+            },
+            Textures.Platform => {
+                return SaveTextureToCache(Textures.Platform, ".png", @embedFile("./Images/platform.png"));
             },
             else => {
                 return TextureManagerErrors.NotFound;
@@ -44,10 +47,8 @@ pub const TextureManager = struct {
     }
 };
 
-// Textures
-const brick: [:0]const u8 = @embedFile("./Images/brick.png");
-
 pub const Textures = enum {
-    Brick,
     Unknown,
+    Brick,
+    Platform,
 };

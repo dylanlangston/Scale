@@ -74,15 +74,29 @@ pub const Platform = struct {
     }
 
     pub inline fn Draw(self: Platform, current_screen: raylib.Rectangle) void {
-        const platformPosition = self.Position;
-        const platformSize = self.GetSize(current_screen);
-        raylib.drawRectangle(
-            @intFromFloat(platformPosition.x),
-            @intFromFloat(platformPosition.y),
-            @intFromFloat(platformSize.width),
-            @intFromFloat(platformSize.height),
-            Colors.Miyazaki.Yellow,
+        const platform = Shared.GetTexture(.Platform);
+        const platform_rect = raylib.Rectangle.init(
+            0,
+            0,
+            @floatFromInt(platform.width),
+            @floatFromInt(platform.height),
         );
+        const platformPosition = self.GetPositionAbsolute(current_screen);
+        raylib.drawTexturePro(
+            platform,
+            platform_rect,
+            platformPosition,
+            raylib.Vector2.init(0, 0),
+            0,
+            Colors.Tone.Light,
+        );
+        // raylib.drawRectangle(
+        //     @intFromFloat(platformPosition.x),
+        //     @intFromFloat(platformPosition.y),
+        //     @intFromFloat(platformSize.width),
+        //     @intFromFloat(platformSize.height),
+        //     Colors.Miyazaki.Yellow,
+        // );
     }
 
     pub inline fn GetNewPlatformsFromPattern(pattern: PlatformPattern, current_screen: raylib.Rectangle) std.ArrayList(Platform) {
