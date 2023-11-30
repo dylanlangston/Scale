@@ -324,7 +324,7 @@ pub const Player = struct {
                 newIsAirborne = true;
 
                 newVelocity = raylib.Vector2.init(
-                    0,
+                    -1,
                     newVelocity.y,
                 );
 
@@ -339,7 +339,7 @@ pub const Player = struct {
                 newIsAirborne = true;
 
                 newVelocity = raylib.Vector2.init(
-                    0,
+                    1,
                     newVelocity.y,
                 );
 
