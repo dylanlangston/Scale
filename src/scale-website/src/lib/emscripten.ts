@@ -27,7 +27,7 @@ export class Module {
         {
             this._updateWasmLocale(Localizer.GetLocale());
         }
-        
+
         // Trigger a resize on load to ensure the correct canvas size
         window.dispatchEvent(new Event('resize'));
     }

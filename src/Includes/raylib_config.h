@@ -146,11 +146,11 @@
 //#define SUPPORT_FILEFORMAT_BMP          1
 //#define SUPPORT_FILEFORMAT_TGA          1
 //#define SUPPORT_FILEFORMAT_JPG          1
-#define SUPPORT_FILEFORMAT_GIF          1
-#define SUPPORT_FILEFORMAT_QOI          1
+//#define SUPPORT_FILEFORMAT_GIF          1
+//#define SUPPORT_FILEFORMAT_QOI          1
 //#define SUPPORT_FILEFORMAT_PSD          1
-#define SUPPORT_FILEFORMAT_DDS          1
-#define SUPPORT_FILEFORMAT_HDR          1
+//#define SUPPORT_FILEFORMAT_DDS          1
+//#define SUPPORT_FILEFORMAT_HDR          1
 //#define SUPPORT_FILEFORMAT_PIC          1
 //#define SUPPORT_FILEFORMAT_PNM          1
 //#define SUPPORT_FILEFORMAT_KTX          1
@@ -197,12 +197,12 @@
 // Module: rmodels - Configuration Flags
 //------------------------------------------------------------------------------------
 // Selected desired model fileformats to be supported for loading
-#define SUPPORT_FILEFORMAT_OBJ          1
-#define SUPPORT_FILEFORMAT_MTL          1
-#define SUPPORT_FILEFORMAT_IQM          1
-#define SUPPORT_FILEFORMAT_GLTF         1
-#define SUPPORT_FILEFORMAT_VOX          1
-#define SUPPORT_FILEFORMAT_M3D          1
+//#define SUPPORT_FILEFORMAT_OBJ          1
+//#define SUPPORT_FILEFORMAT_MTL          1
+//#define SUPPORT_FILEFORMAT_IQM          1
+//#define SUPPORT_FILEFORMAT_GLTF         1
+//#define SUPPORT_FILEFORMAT_VOX          1
+//#define SUPPORT_FILEFORMAT_M3D          1
 // Support procedural mesh generation functions, uses external par_shapes.h library
 // NOTE: Some generated meshes DO NOT include generated texture coordinates
 #define SUPPORT_MESH_GENERATION         1
@@ -217,12 +217,12 @@
 //------------------------------------------------------------------------------------
 // Desired audio fileformats to be supported for loading
 #define SUPPORT_FILEFORMAT_WAV          1
-#define SUPPORT_FILEFORMAT_OGG          1
-#define SUPPORT_FILEFORMAT_MP3          1
-#define SUPPORT_FILEFORMAT_QOA          1
+//#define SUPPORT_FILEFORMAT_OGG          1
+//#define SUPPORT_FILEFORMAT_MP3          1
+//#define SUPPORT_FILEFORMAT_QOA          1
 //#define SUPPORT_FILEFORMAT_FLAC         1
-#define SUPPORT_FILEFORMAT_XM           1
-#define SUPPORT_FILEFORMAT_MOD          1
+//#define SUPPORT_FILEFORMAT_XM           1
+//#define SUPPORT_FILEFORMAT_MOD          1
 
 // raudio: Configuration values
 //------------------------------------------------------------------------------------

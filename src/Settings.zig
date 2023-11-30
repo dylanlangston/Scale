@@ -23,7 +23,7 @@ pub const Settings = struct {
         };
 
         if (builtin.target.os.tag == .wasi) {
-            SaveWasmSettings(settings.items);
+            SaveWasmSettings(settings.items, allocator);
             return true;
         }
 
@@ -43,19 +43,23 @@ pub const Settings = struct {
     pub inline fn load(allocator: Allocator) Settings {
         Logger.Info("Load settings");
         if (builtin.target.os.tag == .wasi) {
-            const wasm_settings = GetWasmSettings();
-            if (!(std.json.validate(allocator, wasm_settings.?) catch true)) {
-                Logger.Error_Formatted("Failed to validate settings: {?s}", .{wasm_settings});
-                return default_settings;
+            const wasm_settings = GetWasmSettings(allocator);
+            if (wasm_settings != null) {
+                defer allocator.free(wasm_settings.?);
+                if (!(std.json.validate(allocator, wasm_settings.?) catch true)) {
+                    Logger.Error_Formatted("Failed to validate settings: {?s}", .{wasm_settings});
+                    return default_settings;
+                }
+
+                var settings = std.json.parseFromSlice(Settings, allocator, wasm_settings.?, .{}) catch |er| {
+                    Logger.Error_Formatted("Failed to deserialize settings: {}", .{er});
+                    return default_settings;
+                };
+                defer settings.deinit();
+
+                return NormalizeSettings(settings.value);
             }
-
-            var settings = std.json.parseFromSlice(Settings, allocator, wasm_settings.?, .{}) catch |er| {
-                Logger.Error_Formatted("Failed to deserialize settings: {}", .{er});
-                return default_settings;
-            };
-            defer settings.deinit();
-
-            return NormalizeSettings(settings.value);
+            return default_settings;
         }
 
         // Open file
@@ -152,11 +156,11 @@ pub const Resolutions = [_]Resolution{
 
 extern fn WASMLoad() [*c]const u8;
 extern fn WASMLoaded([*c]const u8) void;
-inline fn GetWasmSettings() ?[:0]const u8 {
+inline fn GetWasmSettings(allocator: Allocator) ?[:0]const u8 {
     const wasm_settings_input_buf = WASMLoad();
     defer WASMLoaded(wasm_settings_input_buf);
     const settings_source: [:0]const u8 = std.mem.span(wasm_settings_input_buf);
-    return Shared.GetAllocator().dupeZ(u8, settings_source) catch {
+    return allocator.dupeZ(u8, settings_source) catch {
         return null;
     };
 }
@@ -174,9 +178,9 @@ export fn getSettingsVal(int: usize) u8 {
 export fn getSettingsSize() u32 {
     return @intCast(wasm_settings_output_buf.items.len);
 }
-inline fn SaveWasmSettings(settings: []u8) void {
+inline fn SaveWasmSettings(settings: []u8, allocator: Allocator) void {
     wasm_settings_output_buf.deinit();
-    wasm_settings_output_buf = std.ArrayList(u8).init(Shared.GetAllocator());
+    wasm_settings_output_buf = std.ArrayList(u8).init(allocator);
 
     wasm_settings_output_buf.appendSlice(settings) catch {
         Logger.Error("Failed to save settings");

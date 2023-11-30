@@ -4,6 +4,8 @@ const raylib = @import("raylib");
 const World = @import("World.zig").World;
 const Logger = @import("../Logger.zig").Logger;
 const Colors = @import("../Colors.zig").Colors;
+const Shared = @import("../Helpers.zig").Shared;
+const Sounds = @import("../SoundManager.zig").Sounds;
 
 pub const Player = struct {
     Position: raylib.Rectangle,
@@ -384,6 +386,7 @@ pub const Player = struct {
         } else if (self.IsAirborne) {
             const playerSize = Player.GetSize(current_screen);
             if (IsCollidingXLeft(undefined, self.Position, current_screen, playerSize, null)) {
+                JumpSound();
                 return Player{
                     .Position = self.Position,
                     .Velocity = raylib.Vector2.init(
@@ -395,6 +398,7 @@ pub const Player = struct {
                     .Dead = self.Dead,
                 };
             } else if (IsCollidingXRight(undefined, self.Position, current_screen, playerSize, null)) {
+                JumpSound();
                 return Player{
                     .Position = self.Position,
                     .Velocity = raylib.Vector2.init(
@@ -409,6 +413,8 @@ pub const Player = struct {
                 return self;
             }
         }
+
+        JumpSound();
 
         return Player{
             .Position = raylib.Rectangle.init(
@@ -425,6 +431,13 @@ pub const Player = struct {
             .IsMoving = self.IsMoving,
             .Dead = self.Dead,
         };
+    }
+
+    inline fn JumpSound() void {
+        const jump = Shared.GetSound(Sounds.Jump);
+        if (jump != null and !raylib.isSoundPlaying(jump.?)) {
+            raylib.playSound(jump.?);
+        }
     }
 
     const FRICTION_GROUND: f32 = 40;

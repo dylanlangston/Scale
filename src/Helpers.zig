@@ -10,6 +10,8 @@ const FontManager = @import("FontManager.zig").FontManager;
 const Fonts = @import("FontManager.zig").Fonts;
 const TextureManager = @import("TextureManager.zig").TextureManager;
 const Textures = @import("TextureManager.zig").Textures;
+const SoundManager = @import("SoundManager.zig").SoundManager;
+const Sounds = @import("SoundManager.zig").Sounds;
 const Logger = @import("Logger.zig").Logger;
 const PausedViewModel = @import("./ViewModels/PausedViewModel.zig").PausedViewModel;
 const GameOverViewModel = @import("./ViewModels/GameOverViewModel.zig").GameOverViewModel;
@@ -51,6 +53,13 @@ pub const Shared = struct {
         return TextureManager.GetTexture(font) catch |err| {
             Logger.Debug_Formatted("Failed to get texture: {}", .{err});
             return raylib.loadTextureFromImage(raylib.loadImageFromScreen());
+        };
+    }
+
+    pub fn GetSound(sound: Sounds) ?raylib.Sound {
+        return SoundManager.GetSound(sound) catch |err| {
+            Logger.Debug_Formatted("Failed to get sound: {}", .{err});
+            return null;
         };
     }
 

@@ -9,7 +9,6 @@ const Locales = @import("Localelizer.zig").Locales;
 const Logger = @import("Logger.zig").Logger;
 const Views = @import("ViewLocator.zig").Views;
 const Inputs = @import("Inputs.zig").Inputs;
-const FontManager = @import("FontManager.zig").FontManager;
 const JSController = @import("JSGameController.zig");
 
 pub inline fn main() void {
@@ -42,9 +41,11 @@ pub inline fn main() void {
             @intFromEnum(raylib.ConfigFlags.flag_window_resizable)),
     );
     raylib.initWindow(_settings.CurrentResolution.Width, _settings.CurrentResolution.Height, "Scale Game!");
+    defer raylib.closeWindow();
+    raylib.initAudioDevice();
+    defer raylib.closeAudioDevice();
     raylib.setExitKey(.key_null);
     raylib.setTargetFPS(_settings.TargetFPS);
-    defer raylib.closeWindow();
 
     // Default View on startup is the Splash Screen
     var current_view: vl.Views = vl.Views.Raylib_Splash_Screen;
