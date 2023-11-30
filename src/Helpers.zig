@@ -64,6 +64,13 @@ pub const Shared = struct {
         };
     }
 
+    pub inline fn PlaySound(sound: Sounds) void {
+        const s = GetSound(sound);
+        if (s != null and !raylib.isSoundPlaying(s.?)) {
+            raylib.playSound(s.?);
+        }
+    }
+
     var loaded_settings: ?SettingsManager = null;
     pub const Settings = struct {
         pub fn GetSettings() SettingsManager {

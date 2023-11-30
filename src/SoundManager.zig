@@ -18,6 +18,10 @@ pub const SoundManager = struct {
         }
 
         switch (sound) {
+            Sounds.GameOver => {
+                return SaveSoundToCache(Sounds.GameOver, ".wav", @embedFile("./Sounds/GameOver.wav"));
+            },
+            // Default sound is jump
             else => {
                 return SaveSoundToCache(Sounds.Jump, ".wav", @embedFile("./Sounds/jump.wav"));
             },
@@ -41,4 +45,5 @@ pub const SoundManager = struct {
 pub const Sounds = enum {
     Unknown,
     Jump,
+    GameOver,
 };

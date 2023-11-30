@@ -67,6 +67,7 @@ My interpretion of the theme is a vertical platformer that is procedurally gener
 | Sound | Creator | Tool |
 |:-------:|:------:|:---:|
 | _[jump](./src/Sounds/jump.wav)_ | [miajohnson99](https://github.com/miajohnson99) | [Chiptone](https://sfbgames.itch.io/chiptone) |
+| _[Game Over](./src/Sounds/GameOver.wav)_ | [miajohnson99](https://github.com/miajohnson99) | [BeepBox](https://www.beepbox.co/) |
 
 [^1]: As this is my first attempt, it's likely that this code isn't idiomatic or following best practices.
 [^2]: Game Off 2023 on [Itch.io](https://itch.io/jam/game-off-2023)

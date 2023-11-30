@@ -14,6 +14,7 @@ const ScaleViewModel = @import("../ViewModels/ScaleViewModel.zig").ScaleViewMode
 const PlayerModel = @import("../Models/Player.zig").Player;
 const WorldModel = @import("../Models/World.zig").World;
 const Bricks = @import("../Models/Bricks.zig").Bricks;
+const Sounds = @import("../SoundManager.zig").Sounds;
 
 const vm: type = ScaleViewModel.GetVM();
 const moveModifier: f32 = 32;
@@ -118,7 +119,10 @@ pub fn DrawFunction() Views {
     if (Inputs.Start_Pressed()) {
         return Shared.Pause(Views.Scale);
     }
-    if (WorldModel.Player.Dead) return Shared.GameOver();
+    if (WorldModel.Player.Dead) {
+        Shared.PlaySound(Sounds.GameOver);
+        return Shared.GameOver();
+    }
 
     return Views.Scale;
 }

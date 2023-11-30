@@ -386,7 +386,7 @@ pub const Player = struct {
         } else if (self.IsAirborne) {
             const playerSize = Player.GetSize(current_screen);
             if (IsCollidingXLeft(undefined, self.Position, current_screen, playerSize, null)) {
-                JumpSound();
+                Shared.PlaySound(Sounds.Jump);
                 return Player{
                     .Position = self.Position,
                     .Velocity = raylib.Vector2.init(
@@ -398,7 +398,7 @@ pub const Player = struct {
                     .Dead = self.Dead,
                 };
             } else if (IsCollidingXRight(undefined, self.Position, current_screen, playerSize, null)) {
-                JumpSound();
+                Shared.PlaySound(Sounds.Jump);
                 return Player{
                     .Position = self.Position,
                     .Velocity = raylib.Vector2.init(
@@ -414,7 +414,7 @@ pub const Player = struct {
             }
         }
 
-        JumpSound();
+        Shared.PlaySound(Sounds.Jump);
 
         return Player{
             .Position = raylib.Rectangle.init(
@@ -431,13 +431,6 @@ pub const Player = struct {
             .IsMoving = self.IsMoving,
             .Dead = self.Dead,
         };
-    }
-
-    inline fn JumpSound() void {
-        const jump = Shared.GetSound(Sounds.Jump);
-        if (jump != null and !raylib.isSoundPlaying(jump.?)) {
-            raylib.playSound(jump.?);
-        }
     }
 
     const FRICTION_GROUND: f32 = 40;
