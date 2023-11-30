@@ -62,4 +62,8 @@ My interpretion of the theme is a vertical platformer that is procedurally gener
 |:-------:|:------:|
 | _Miyazaki 16_ | https://lospec.com/palette-list/miyazaki-16 |
 
+| Sound | Creator | Tool |
+|:-------:|:------:|:---:|
+| _[jump](./src/Sounds/jump.wav)_ | [miajohnson99](https://github.com/miajohnson99) | [Chiptone](https://sfbgames.itch.io/chiptone) |
+
 [^1]: Game Off 2023 on [Itch.io](https://itch.io/jam/game-off-2023)
