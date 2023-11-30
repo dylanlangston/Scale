@@ -149,8 +149,11 @@
       window.addEventListener(event, f);
     }
 
-    clickCanvasEvent("keydown");
-    clickCanvasEvent("pointerdown");
+    if (!isMobile) {
+      clickCanvasEvent("keydown");
+      clickCanvasEvent("pointerdown");
+    }
+
 
     if (Module.updateSettingsFromQueryString())
     {

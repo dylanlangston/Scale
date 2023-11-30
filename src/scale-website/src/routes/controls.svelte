@@ -1,5 +1,7 @@
 <script lang="ts">
     import { Button } from "$lib/gameController";
+    import { onMount} from "svelte";
+
 
     export let handleButtonPressed = (button: Button) => {
         console.log("Button Pressed: " + button);
@@ -54,6 +56,15 @@
         handleButtonReleased(<any>(<HTMLButtonElement>n).value);
       });
     }
+
+    onMount(() => {
+      const dpadElement = document.querySelector("#dpad");
+      const clickCanvas = () => {
+        window.Module.canvas.click();
+        dpadElement?.removeEventListener("focus", clickCanvas);
+      };
+      dpadElement?.addEventListener("focus", clickCanvas);
+    });
 </script>
 
 <style global lang="postcss">
