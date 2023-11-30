@@ -25,13 +25,21 @@ pub fn DrawFunction() Views {
 
     const scroll_speed_mod: u32 = @intFromFloat(@divFloor(vm.elapsedSeconds, 10));
     const scroll_speed: f32 = (20 + (@as(f32, @floatFromInt(scroll_speed_mod)) * 10)) * raylib.getFrameTime();
+    vm.offset_y += scroll_speed;
+    if (vm.offset_y > current_screen.height) {
+        vm.offset_y -= current_screen.height;
+    }
 
     WorldModel.Platforms = WorldModel.UpdatePlatforms(scroll_speed, current_screen);
     WorldModel.Player = WorldModel.Player.UpdatePosition(scroll_speed - 0.0001, current_screen);
 
     raylib.clearBackground(Colors.Miyazaki.LightGreen);
 
-    Bricks.Draw(current_screen.width, current_screen.height);
+    Bricks.Draw(
+        current_screen.width,
+        current_screen.height,
+        vm.offset_y,
+    );
 
     for (WorldModel.Platforms.items) |platform| {
         platform.Draw(current_screen);

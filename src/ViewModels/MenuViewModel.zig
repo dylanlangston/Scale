@@ -15,6 +15,7 @@ pub const MenuViewModel = ViewModel.Create(
     struct {
         pub var selection = Selection.Start;
         pub var Rectangles: [std.enums.directEnumArrayLen(Selection, 0) - 1]raylib.Rectangle = undefined;
+        pub var offset_y: f32 = 0;
 
         pub inline fn GetSelectionText(select: Selection) [:0]const u8 {
             const locale = Shared.Locale.GetLocale().?;
@@ -42,6 +43,8 @@ pub const MenuViewModel = ViewModel.Create(
 );
 
 fn init() void {
+    MenuViewModel.GetVM().offset_y = 0;
+
     Logger.Info("Init Menu View Model");
 }
 

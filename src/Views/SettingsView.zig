@@ -24,7 +24,11 @@ pub fn DrawFunction() Views {
     const fontSize = @divFloor(screenWidth, 20);
     const startY = @divFloor(screenHeight, 4);
 
-    Bricks.Draw(@floatFromInt(screenWidth), @floatFromInt(screenHeight));
+    Bricks.Draw(
+        @floatFromInt(screenWidth),
+        @floatFromInt(screenHeight),
+        1,
+    );
 
     const TitleTextSize = raylib.measureTextEx(
         font,

@@ -25,10 +25,21 @@ pub fn DrawFunction() Views {
     const title = locale.Title;
     const screenWidth = raylib.getScreenWidth();
     const screenHeight = raylib.getScreenHeight();
+    const screenHeightF: f32 = @floatFromInt(screenHeight);
     const fontSize = @divFloor(screenWidth, 20);
     const startY = @divFloor(screenHeight, 4);
 
-    Bricks.Draw(@floatFromInt(screenWidth), @floatFromInt(screenHeight));
+    const scroll_speed: f32 = 20 * raylib.getFrameTime();
+    vm.offset_y += scroll_speed;
+    if (vm.offset_y > screenHeightF) {
+        vm.offset_y -= screenHeightF;
+    }
+
+    Bricks.Draw(
+        @floatFromInt(screenWidth),
+        @floatFromInt(screenHeight),
+        vm.offset_y,
+    );
 
     const foregroundColor = Colors.Miyazaki.Blue;
     const backgroundColor = Colors.Miyazaki.Blue_Gray.alpha(0.75);

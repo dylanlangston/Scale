@@ -12,6 +12,7 @@ const RndGen = std.rand.DefaultPrng;
 pub const ScaleViewModel = ViewModel.Create(
     struct {
         pub var elapsedSeconds: f64 = undefined;
+        pub var offset_y: f32 = 0;
     },
     .{
         .Init = init,
@@ -20,7 +21,9 @@ pub const ScaleViewModel = ViewModel.Create(
 );
 
 fn init() void {
-    ScaleViewModel.GetVM().elapsedSeconds = 0;
+    const vm = ScaleViewModel.GetVM();
+    vm.elapsedSeconds = 0;
+    vm.offset_y = 0;
 
     WorldModel.Init() catch {
         Logger.Error("Failed to Init World!");
