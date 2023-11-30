@@ -13,28 +13,23 @@ pub const World = struct {
     pub var Player: PlayerModel = undefined;
     pub var Platforms: std.ArrayList(PlatformModel) = undefined;
     var PlatformPatterns: ?LoadedPattern = null;
+    var rnd: RndGen = undefined;
 
-    var c: usize = 0;
     inline fn GetPattern() PlatformPattern {
-        const pattern = PlatformPatterns.?[c];
-        if (c + 1 >= PlatformPatterns.?.len) {
-            c = 0;
-        } else {
-            c += 1;
-        }
+        const patterns = PlatformPatterns.?.get();
+        const random = rnd.random().intRangeAtMost(usize, 0, patterns.len - 1);
+        const pattern = patterns[random];
         return pattern;
     }
 
     pub inline fn Init() !void {
         Deinit();
 
-        c = 0;
+        rnd = RndGen.init(@intCast(std.time.nanoTimestamp()));
 
         if (PlatformPatterns == null) {
             PlatformPatterns = PlatformPattern.LoadPatternsFromFile(@embedFile("../platform-patterns.json"));
         }
-
-        //rnd = RndGen.init(@intCast(std.time.nanoTimestamp()));
 
         const screenWidth: f32 = @floatFromInt(raylib.getScreenWidth());
         const screenHeight: f32 = @floatFromInt(raylib.getScreenHeight());
