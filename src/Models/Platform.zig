@@ -9,6 +9,7 @@ const Shared = @import("../Helpers.zig").Shared;
 pub const Platform = struct {
     Position: raylib.Rectangle,
     Size: PlatformSize,
+    Pattern: ?PlatformPattern = null,
 
     inline fn GetSizeX(self: Platform, current_screen: raylib.Rectangle) f32 {
         const new_size_x: f32 = self.Size.width / 100 * current_screen.width;
@@ -113,6 +114,7 @@ pub const Platform = struct {
                     current_screen.height,
                 ),
                 .Size = pattern.sizes[i],
+                .Pattern = pattern,
             }) catch {
                 Logger.Error("Failed to create new platform");
             };
@@ -139,6 +141,29 @@ pub const PlatformPattern = struct {
     //         .padding = padding,
     //     };
     // }
+
+    pub fn CheckXOverLap(self: PlatformPattern, other: PlatformPattern) bool {
+        for (0..self.number) |s| {
+            const s_width = self.sizes[s].width;
+            const s_padding = self.padding[s];
+            const s_totalWidth = s_width + s_padding;
+            for (0..other.number) |o| {
+                const o_width = other.sizes[o].width;
+                const o_padding = other.padding[o];
+                const o_totalWidth = o_width + o_padding;
+
+                // if the initial platforms start positions is greater than the other platforms start position
+                if (s_padding <= o_padding) {
+                    // If the width of the initial platform is less than the width of the other platform
+                    if (s_totalWidth >= o_totalWidth) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
 
     pub inline fn LoadPatternsFromFile(file: [:0]const u8) LoadedPattern {
         const alloc = Shared.GetAllocator();

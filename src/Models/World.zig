@@ -179,7 +179,12 @@ pub const World = struct {
             //     },
             // };
 
-            const pattern = GetPattern();
+            var pattern = GetPattern();
+            if (topmostPlatform.?.Pattern != null) {
+                while (pattern.CheckXOverLap(topmostPlatform.?.Pattern.?)) {
+                    pattern = GetPattern();
+                }
+            }
             const newPlatforms = PlatformModel.GetNewPlatformsFromPattern(pattern, current_screen);
             defer newPlatforms.deinit();
             for (newPlatforms.items) |newPlatform| {
