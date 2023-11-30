@@ -20,7 +20,9 @@ This [Progressive Web App](https://developer.mozilla.org/en-US/docs/Web/Progress
 - [Typescript](https://www.typescriptlang.org/)
 - [TailwindCSS](https://tailwindcss.com/)
 
-#### What's Game Off? [^1]
+This was my first attempt[^1] coding using Zig as well as my first app to target [web assembly](https://developer.mozilla.org/en-US/docs/WebAssembly). 
+
+#### What's Game Off? [^2]
 
 > [Game Off](https://itch.io/jam/game-off-2023) is GitHub's annual game jam challenging individuals and teams to build a game during the month of November. Use whatever programming languages, game engines, or libraries you like. You're also welcome to use AI tools to help generate code, assets, or anything in between!
 >
@@ -31,7 +33,7 @@ My interpretion of the theme is a vertical platformer that is procedurally gener
 ------
 
 ### Getting Started
-*This repository includes a [devcontainer.json](https://github.com/dylanlangston/Scale/blob/main/.devcontainer/devcontainer.json) and prebuilt [Codespace](https://docs.github.com/en/codespaces/getting-started/quickstart) images to get up and running quickly with a full-featured development environment in the cloud! For local development check out [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) and [DevPod](https://devpod.sh/).*
+*This repository includes a [devcontainer.json](https://github.com/dylanlangston/Scale/blob/main/.devcontainer/devcontainer.json) and prebuilt [Codespace](https://docs.github.com/en/codespaces/getting-started/quickstart) images to get up and running quickly with a full-featured development environment in the cloud!*[^3]
 
 #### Clone
 1. Clone this repository: `git clone https://github.com/dylanlangston/Scale.git`
@@ -66,4 +68,6 @@ My interpretion of the theme is a vertical platformer that is procedurally gener
 |:-------:|:------:|:---:|
 | _[jump](./src/Sounds/jump.wav)_ | [miajohnson99](https://github.com/miajohnson99) | [Chiptone](https://sfbgames.itch.io/chiptone) |
 
-[^1]: Game Off 2023 on [Itch.io](https://itch.io/jam/game-off-2023)
+[^1]: As this is my first attempt, it's likely that this code isn't idiomatic or following best practices.
+[^2]: Game Off 2023 on [Itch.io](https://itch.io/jam/game-off-2023)
+[^3]: For local development check out [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) and [DevPod](https://devpod.sh/).
