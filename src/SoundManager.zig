@@ -19,11 +19,23 @@ pub const SoundManager = struct {
 
         switch (sound) {
             Sounds.GameOver => {
-                return SaveSoundToCache(Sounds.GameOver, ".wav", @embedFile("./Sounds/GameOver.wav"));
+                const gameover = SaveSoundToCache(Sounds.GameOver, ".wav", @embedFile("./Sounds/GameOver.wav"));
+                if (gameover) |s| {
+                    raylib.setSoundVolume(s, 3);
+                } else |err| {
+                    Logger.Error_Formatted("Failed to set sound volumn: {}", .{err});
+                }
+                return gameover;
             },
             // Default sound is jump
             else => {
-                return SaveSoundToCache(Sounds.Jump, ".wav", @embedFile("./Sounds/jump.wav"));
+                const jump = SaveSoundToCache(Sounds.Jump, ".wav", @embedFile("./Sounds/jump.wav"));
+                if (jump) |s| {
+                    raylib.setSoundVolume(s, 0.5);
+                } else |err| {
+                    Logger.Error_Formatted("Failed to set sound volumn: {}", .{err});
+                }
+                return jump;
             },
         }
     }
