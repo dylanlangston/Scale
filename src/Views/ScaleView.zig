@@ -81,6 +81,12 @@ pub fn DrawFunction() Views {
         WorldModel.Player = WorldModel.Player.MoveRight();
     }
 
+    // Gameplay intro
+    if (vm.introShown == false) {
+        vm.introShown = true;
+        return Shared.GameIntro();
+    }
+
     // Time
     const locale = Shared.Locale.GetLocale().?;
     const font = Shared.GetFont(Fonts.EightBitDragon);
@@ -108,7 +114,7 @@ pub fn DrawFunction() Views {
         Colors.Miyazaki.Light_Blue,
     );
 
-    // Ensure these are last, otherwise the pause screen won't display all the content
+    // Ensure these are last, otherwise the framebuffer won't display all the 'background' content
     if (Inputs.Start_Pressed()) {
         return Shared.Pause(Views.Scale);
     }

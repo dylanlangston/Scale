@@ -22,4 +22,10 @@ pub const View = struct {
             isInitialized = false;
         }
     }
+    pub inline fn shouldBypassDeinit(self: View) bool {
+        if (@intFromPtr(self.VM) != 0 and self.VM.*.BypassDeinit.*) {
+            return true;
+        }
+        return false;
+    }
 };

@@ -12,12 +12,11 @@ const Colors = @import("../Colors.zig").Colors;
 const Logger = @import("../Logger.zig").Logger;
 const BaseView = @import("../Views/View.zig").View;
 const GameOverViewModel = @import("../ViewModels/GameOverViewModel.zig").GameOverViewModel;
-const PauseOptions = @import("../ViewModels/PausedViewModel.zig").PauseOptions;
 
 const vm: type = GameOverViewModel.GetVM();
 
 pub fn DrawFunction() Views {
-    raylib.clearBackground(Colors.Blue.Base);
+    raylib.clearBackground(Colors.Gray.Base);
 
     const screenWidth: f32 = @floatFromInt(raylib.getScreenWidth());
     const screenHeight: f32 = @floatFromInt(raylib.getScreenHeight());

@@ -4,6 +4,7 @@ pub const ViewModel = struct {
     Init: *const fn () void = undefined,
     DeInit: *const fn () void = undefined,
     Get: *const fn () void,
+    BypassDeinit: *const bool = undefined,
 
     pub inline fn Create(comptime view_model: type, options: ?VMCreationOptions) ViewModel {
         const Inner = struct {
@@ -15,10 +16,12 @@ pub const ViewModel = struct {
         if (options != null) {
             const init = options.?.Init;
             const deinit = options.?.DeInit;
+            const bypassDeinit = &options.?.BypassDeinit;
             return ViewModel{
                 .Get = @constCast(@ptrCast(&Inner.func)),
                 .Init = init,
                 .DeInit = deinit,
+                .BypassDeinit = bypassDeinit,
             };
         }
 
@@ -36,4 +39,5 @@ pub const ViewModel = struct {
 pub const VMCreationOptions = struct {
     Init: *const fn () void = undefined,
     DeInit: *const fn () void = undefined,
+    BypassDeinit: bool = false,
 };

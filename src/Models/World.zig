@@ -212,11 +212,13 @@ pub const World = struct {
     }
 
     pub inline fn Deinit() void {
+        Player = undefined;
         Platforms.clearAndFree();
         if (PlatformPatterns != null) {
             PlatformPatterns.?.deinit();
             PlatformPatterns = null;
         }
+        rnd = undefined;
     }
 
     pub inline fn GetCurrentScreenSize() raylib.Rectangle {

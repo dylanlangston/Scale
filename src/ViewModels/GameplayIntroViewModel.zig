@@ -8,19 +8,11 @@ const Colors = @import("../Colors.zig").Colors;
 const Views = @import("../ViewLocator.zig").Views;
 const RndGen = std.rand.DefaultPrng;
 
-pub const PauseOptions = enum {
-    Continue,
-    Quit,
-};
-
-pub const PausedViewModel = ViewModel.Create(
+pub const GameplayIntroViewModel = ViewModel.Create(
     struct {
-        pub var selection = PauseOptions.Continue;
-
-        pub var View: Views = undefined;
         pub var BackgroundTexture: ?raylib.Texture = null;
 
-        pub inline fn PauseView(v: Views) void {
+        pub inline fn GameIntro() void {
             raylib.endDrawing();
             const img = raylib.loadImageFromScreen();
             defer img.unload();
@@ -29,8 +21,6 @@ pub const PausedViewModel = ViewModel.Create(
                 BackgroundTexture.?,
                 @intFromEnum(raylib.TextureFilter.texture_filter_trilinear),
             );
-            View = v;
-            selection = PauseOptions.Continue;
         }
     },
     .{

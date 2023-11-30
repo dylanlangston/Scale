@@ -55,6 +55,10 @@ pub inline fn main() void {
     }
     defer DeinitViews();
 
+    // Get the current view
+    var view = vl.ViewLocator.Build(current_view);
+    view.init();
+
     Logger.Info_Formatted("Platform {}", .{builtin.os.tag});
 
     // Load locale
@@ -88,10 +92,6 @@ pub inline fn main() void {
         raylib.beginDrawing();
         defer raylib.endDrawing();
 
-        // Get the current view
-        const view = vl.ViewLocator.Build(current_view);
-        view.init();
-
         // Draw the current view
         const new_view = view.DrawRoutine();
         defer current_view = new_view;
@@ -101,9 +101,18 @@ pub inline fn main() void {
         }
 
         if (new_view != current_view) {
-            if (new_view != Views.Paused) view.deinit();
+            // get the next view
+            const next_view = vl.ViewLocator.Build(new_view);
 
-            Logger.Debug_Formatted("New View: {}", .{current_view});
+            // deinit old view
+            const should_deinit = !next_view.shouldBypassDeinit();
+            if (should_deinit) view.deinit();
+
+            // Update the View
+            view = next_view;
+            view.init();
+
+            Logger.Debug_Formatted("New View: {}", .{new_view});
         }
 
         // Quit main loop

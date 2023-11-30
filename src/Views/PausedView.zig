@@ -13,6 +13,7 @@ const Logger = @import("../Logger.zig").Logger;
 const BaseView = @import("../Views/View.zig").View;
 const PausedViewModel = @import("../ViewModels/PausedViewModel.zig").PausedViewModel;
 const PauseOptions = @import("../ViewModels/PausedViewModel.zig").PauseOptions;
+const ViewLocator = @import("../ViewLocator.zig").ViewLocator;
 
 const vm: type = PausedViewModel.GetVM();
 
@@ -166,6 +167,7 @@ inline fn GetSelection() Views {
             return vm.View;
         },
         PauseOptions.Quit => {
+            ViewLocator.Destroy(vm.View);
             return Views.Menu;
         },
     }

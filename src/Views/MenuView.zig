@@ -155,7 +155,7 @@ pub fn DrawFunction() Views {
 inline fn GetSelection() Views {
     switch (vm.selection) {
         Selection.Start => {
-            return Views.GameplayIntro;
+            return Views.Scale;
         },
         Selection.Settings => {
             return Views.Settings;
@@ -169,4 +169,7 @@ inline fn GetSelection() Views {
     }
 }
 
-pub const MenuView = View{ .DrawRoutine = &DrawFunction, .VM = &MenuViewModel };
+pub const MenuView = View{
+    .DrawRoutine = DrawFunction,
+    .VM = &MenuViewModel,
+};

@@ -15,6 +15,7 @@ const Sounds = @import("SoundManager.zig").Sounds;
 const Logger = @import("Logger.zig").Logger;
 const PausedViewModel = @import("./ViewModels/PausedViewModel.zig").PausedViewModel;
 const GameOverViewModel = @import("./ViewModels/GameOverViewModel.zig").GameOverViewModel;
+const GameplayIntroViewModel = @import("./ViewModels/GameplayIntroViewModel.zig").GameplayIntroViewModel;
 const Views = @import("ViewLocator.zig").Views;
 
 pub const Shared = struct {
@@ -118,6 +119,12 @@ pub const Shared = struct {
         const paused_vm = PausedViewModel.GetVM();
         paused_vm.PauseView(view);
         return Views.Paused;
+    }
+
+    pub inline fn GameIntro() Views {
+        const gameintro_vm = GameplayIntroViewModel.GetVM();
+        gameintro_vm.GameIntro();
+        return Views.GameplayIntro;
     }
 
     pub inline fn GameOver() Views {

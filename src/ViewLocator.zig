@@ -42,8 +42,12 @@ pub const ViewLocator = struct {
 
     pub inline fn Build(view: Views) BaseView {
         const BuiltView = GetView(view);
-        BuiltView.init();
         return BuiltView;
+    }
+
+    pub inline fn Destroy(view: Views) void {
+        const BuiltView = GetView(view);
+        BuiltView.deinit();
     }
 };
 
