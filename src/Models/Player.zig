@@ -456,23 +456,29 @@ pub const Player = struct {
     }
 
     pub inline fn MoveLeft(self: Player) Player {
-        if (self.IsAirborne) {
-            return Player{
-                .Position = self.Position,
-                .Velocity = raylib.Vector2.init(
-                    @max(self.Velocity.x + raylib.getFrameTime(), 0),
-                    self.Velocity.y,
-                ),
-                .IsAirborne = self.IsAirborne,
-                .IsMoving = true,
-                .Dead = self.Dead,
-            };
-        }
+        // if (self.IsAirborne) {
+        //     return Player{
+        //         .Position = self.Position,
+        //         .Velocity = raylib.Vector2.init(
+        //             @max(self.Velocity.x + raylib.getFrameTime(), MOVE_MAX),
+        //             self.Velocity.y,
+        //         ),
+        //         .IsAirborne = self.IsAirborne,
+        //         .IsMoving = true,
+        //         .Dead = self.Dead,
+        //     };
+        // }
 
         return Player{
             .Position = self.Position,
             .Velocity = raylib.Vector2.init(
-                MOVE_MAX,
+                @max(
+                    self.Velocity.x + raylib.getFrameTime() / FRICTION_GROUND,
+                    @max(
+                        if (self.IsAirborne) MOVE_MAX / 2 else MOVE_MAX,
+                        self.Velocity.x,
+                    ),
+                ),
                 self.Velocity.y,
             ),
             .IsAirborne = self.IsAirborne,
@@ -482,23 +488,29 @@ pub const Player = struct {
     }
 
     pub inline fn MoveRight(self: Player) Player {
-        if (self.IsAirborne) {
-            return Player{
-                .Position = self.Position,
-                .Velocity = raylib.Vector2.init(
-                    @min(self.Velocity.x - raylib.getFrameTime(), 0),
-                    self.Velocity.y,
-                ),
-                .IsAirborne = self.IsAirborne,
-                .IsMoving = true,
-                .Dead = self.Dead,
-            };
-        }
+        // if (self.IsAirborne) {
+        //     return Player{
+        //         .Position = self.Position,
+        //         .Velocity = raylib.Vector2.init(
+        //             @min(self.Velocity.x - raylib.getFrameTime(), -MOVE_MAX),
+        //             self.Velocity.y,
+        //         ),
+        //         .IsAirborne = self.IsAirborne,
+        //         .IsMoving = true,
+        //         .Dead = self.Dead,
+        //     };
+        // }
 
         return Player{
             .Position = self.Position,
             .Velocity = raylib.Vector2.init(
-                -MOVE_MAX,
+                @min(
+                    self.Velocity.x - raylib.getFrameTime() / FRICTION_GROUND,
+                    @min(
+                        if (self.IsAirborne) -MOVE_MAX / 2 else -MOVE_MAX,
+                        self.Velocity.x,
+                    ),
+                ),
                 self.Velocity.y,
             ),
             .IsAirborne = self.IsAirborne,
