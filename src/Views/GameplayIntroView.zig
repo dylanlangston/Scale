@@ -9,6 +9,7 @@ const Inputs = @import("../Inputs.zig").Inputs;
 const Shared = @import("../Helpers.zig").Shared;
 const Fonts = @import("../FontManager.zig").Fonts;
 const Colors = @import("../Colors.zig").Colors;
+const Logger = @import("../Logger.zig").Logger;
 const GameplayIntroViewModel = @import("../ViewModels/GameplayIntroViewModel.zig").GameplayIntroViewModel;
 
 const vm: type = GameplayIntroViewModel.GetVM();
@@ -74,25 +75,41 @@ pub fn DrawFunction() Views {
 
     const locale = Shared.Locale.GetLocale().?;
 
-    const text = locale.Gameplay_Intro;
-    const textSize = raylib.measureTextEx(
-        font,
-        text,
-        fontSize * 2,
-        @floatFromInt(font.glyphPadding),
-    );
-    const textSizeF: f32 = textSize.y;
-    raylib.drawTextEx(
-        font,
-        text,
-        raylib.Vector2.init(
-            ((screenWidth - textSize.x) / 2),
-            (screenHeight - textSizeF) / 2,
-        ),
-        textSizeF,
-        @floatFromInt(font.glyphPadding),
-        foregroundColor,
-    );
+    var split_text = std.mem.splitSequence(u8, locale.Gameplay_Intro, "\n");
+    var text_raw: ?[]const u8 = split_text.next();
+    const padding = fontSize / 2;
+    var index: f32 = 0;
+    while (text_raw != null) {
+        const alloc = Shared.GetAllocator();
+        const text: [:0]const u8 = alloc.dupeZ(
+            u8,
+            text_raw.?,
+        ) catch text_raw.?[0..text_raw.?.len :0];
+
+        defer alloc.free(text);
+
+        Logger.Info_Formatted("Index: {}, Text: {s}", .{ index, text });
+        const textSize = raylib.measureTextEx(
+            font,
+            text,
+            fontSize,
+            @floatFromInt(font.glyphPadding),
+        );
+        raylib.drawTextEx(
+            font,
+            text,
+            raylib.Vector2.init(
+                ((screenWidth - textSize.x) / 2),
+                startY + fontSize + ((textSize.y + padding) * index),
+            ),
+            textSize.y,
+            @floatFromInt(font.glyphPadding),
+            foregroundColor,
+        );
+
+        text_raw = split_text.next();
+        index += 1;
+    }
 
     if (Inputs.A_Pressed()) {
         if (vm.BackgroundTexture != null) {

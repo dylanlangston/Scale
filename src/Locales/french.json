@@ -4,7 +4,7 @@
     "Menu_StartGame": "Start Game",
     "Menu_Settings": "Settings",
     "Menu_Quit": "Exit",
-    "Gameplay_Intro": "Welcome...",
+    "Gameplay_Intro": "Welcome!\n\nThe goal is to Scale from\nplatform to platform.\nThe longer you play the\nfaster the platforms move.\n\nHow long can you survive?",
     "Paused": "Paused",
     "Continue": "Continue",
     "Quit": "Quit",
