@@ -61,9 +61,9 @@
       const dpadElement = document.querySelector("#dpad");
       const clickCanvas = () => {
         window.Module.canvas.click();
-        dpadElement?.removeEventListener("focus", clickCanvas);
+        dpadElement?.removeEventListener("pointerdown", clickCanvas);
       };
-      dpadElement?.addEventListener("focus", clickCanvas);
+      dpadElement?.addEventListener("pointerdown", clickCanvas);
     });
 </script>
 

@@ -154,7 +154,6 @@
       clickCanvasEvent("pointerdown");
     }
 
-
     if (Module.updateSettingsFromQueryString())
     {
       window.location.search = "";
