@@ -141,7 +141,7 @@ pub fn DrawFunction() Views {
     if (Inputs.Down_Pressed()) {
         if (builtin.target.os.tag == .wasi) {
             // Disable quit in WASM
-            if (selection_int < 1) {
+            if (selection_int < 0) {
                 vm.selection = @enumFromInt(selection_int + 1);
             }
         } else if (selection_int < 2) {
