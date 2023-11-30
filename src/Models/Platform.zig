@@ -140,11 +140,28 @@ pub const PlatformPattern = struct {
     //     };
     // }
 
-    pub inline fn LoadPatternsFromFile(file: [:0]const u8) []PlatformPattern {
-        const platformPatterns = std.json.parseFromSlice([]PlatformPattern, Shared.GetAllocator(), file, .{}) catch {
+    pub inline fn LoadPatternsFromFile(file: [:0]const u8) LoadedPattern {
+        const alloc = Shared.GetAllocator();
+        const platformPatterns = std.json.parseFromSlice([]PlatformPattern, alloc, file, .{}) catch {
             Logger.Error("Failed to load platform patterns!");
             return undefined;
         };
-        return platformPatterns.value;
+        return LoadedPattern.init(platformPatterns);
     }
+
+    pub const LoadedPattern = struct {
+        PlatformPatterns: std.json.Parsed([]PlatformPattern),
+
+        pub fn init(platformPatterns: std.json.Parsed([]PlatformPattern)) LoadedPattern {
+            return LoadedPattern{
+                .PlatformPatterns = platformPatterns,
+            };
+        }
+        pub inline fn get(self: LoadedPattern) []PlatformPattern {
+            return self.PlatformPatterns.value;
+        }
+        pub fn deinit(self: LoadedPattern) void {
+            self.PlatformPatterns.deinit();
+        }
+    };
 };

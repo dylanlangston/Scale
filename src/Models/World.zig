@@ -4,6 +4,7 @@ const raylib = @import("raylib");
 const PlayerModel = @import("../Models/Player.zig").Player;
 const PlatformModel = @import("../Models/Platform.zig").Platform;
 const PlatformPattern = @import("../Models/Platform.zig").PlatformPattern;
+const LoadedPattern = @import("../Models/Platform.zig").PlatformPattern.LoadedPattern;
 const Shared = @import("../Helpers.zig").Shared;
 const Logger = @import("../Logger.zig").Logger;
 const RndGen = std.rand.DefaultPrng;
@@ -11,7 +12,7 @@ const RndGen = std.rand.DefaultPrng;
 pub const World = struct {
     pub var Player: PlayerModel = undefined;
     pub var Platforms: std.ArrayList(PlatformModel) = undefined;
-    var PlatformPatterns: ?[]PlatformPattern = null;
+    var PlatformPatterns: ?LoadedPattern = null;
 
     var c: usize = 0;
     inline fn GetPattern() PlatformPattern {
@@ -217,6 +218,10 @@ pub const World = struct {
 
     pub inline fn Deinit() void {
         Platforms.clearAndFree();
+        if (PlatformPatterns != null) {
+            PlatformPatterns.?.deinit();
+            PlatformPatterns = null;
+        }
     }
 
     pub inline fn GetCurrentScreenSize() raylib.Rectangle {
