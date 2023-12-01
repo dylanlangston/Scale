@@ -88,7 +88,6 @@ pub fn DrawFunction() Views {
 
         defer alloc.free(text);
 
-        Logger.Info_Formatted("Index: {}, Text: {s}", .{ index, text });
         const textSize = raylib.measureTextEx(
             font,
             text,
