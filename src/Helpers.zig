@@ -153,6 +153,9 @@ pub const Shared = struct {
         // Textures
         defer TextureManager.deinit();
 
+        // Sounds
+        defer SoundManager.deinit();
+
         // Settings
         _ = loaded_settings.?.save(Shared.GetAllocator());
     }
