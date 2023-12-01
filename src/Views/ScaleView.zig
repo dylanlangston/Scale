@@ -20,8 +20,9 @@ const vm: type = ScaleViewModel.GetVM();
 const moveModifier: f32 = 32;
 
 pub fn DrawFunction() Views {
+    // Play music if not already
+    Shared.PlayMusic(.Theme);
 
-    
     const current_screen = WorldModel.GetCurrentScreenSize();
 
     vm.elapsedSeconds += raylib.getFrameTime();
