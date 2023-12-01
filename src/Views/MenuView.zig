@@ -17,6 +17,9 @@ const Bricks = @import("../Models/Bricks.zig").Bricks;
 const vm: type = MenuViewModel.GetVM();
 
 pub fn DrawFunction() Views {
+    // Play music if not already
+    Shared.PlayMusic(.Theme);
+
     raylib.clearBackground(Colors.Gray.Base);
 
     const locale = Shared.Locale.GetLocale().?;

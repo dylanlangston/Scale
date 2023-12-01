@@ -90,7 +90,7 @@ pub inline fn main() void {
     // Stop Music
     defer {
         const themeMusic = Shared.GetMusic(.Theme);
-        if (themeMusic != null) {
+        if (themeMusic != null and raylib.isMusicStreamPlaying(themeMusic.?)) {
             raylib.stopMusicStream(themeMusic.?);
         }
     }
@@ -99,9 +99,6 @@ pub inline fn main() void {
     while (!raylib.windowShouldClose()) {
         raylib.beginDrawing();
         defer raylib.endDrawing();
-
-        // Play music if not already
-        Shared.PlayMusic(.Theme);
 
         // Draw the current view
         const new_view = view.DrawRoutine();

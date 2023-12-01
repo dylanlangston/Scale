@@ -20,6 +20,8 @@ const vm: type = ScaleViewModel.GetVM();
 const moveModifier: f32 = 32;
 
 pub fn DrawFunction() Views {
+
+    
     const current_screen = WorldModel.GetCurrentScreenSize();
 
     vm.elapsedSeconds += raylib.getFrameTime();
