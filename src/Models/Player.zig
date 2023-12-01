@@ -324,7 +324,7 @@ pub const Player = struct {
                 newIsAirborne = true;
 
                 newVelocity = raylib.Vector2.init(
-                    -1,
+                    1,
                     newVelocity.y,
                 );
 
@@ -339,7 +339,7 @@ pub const Player = struct {
                 newIsAirborne = true;
 
                 newVelocity = raylib.Vector2.init(
-                    1,
+                    -1,
                     newVelocity.y,
                 );
 
@@ -383,7 +383,7 @@ pub const Player = struct {
     pub inline fn Jump(self: Player, current_screen: raylib.Rectangle) Player {
         if (self.IsAirborne and self.IsMoving) {
             return self;
-        } else if (self.IsAirborne) {
+        } else if (self.IsAirborne and !self.IsMoving) {
             const playerSize = Player.GetSize(current_screen);
             if (IsCollidingXLeft(undefined, self.Position, current_screen, playerSize, null)) {
                 Shared.PlaySound(Sounds.Jump);
