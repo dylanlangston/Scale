@@ -75,7 +75,7 @@ My interpretion of the theme is a vertical platformer ~~that is procedurally gen
 |:-------:|:------:|:---:|:-------:|
 | _[Theme](./src/Music/theme.ogg)_ | [miajohnson99](https://github.com/miajohnson99) | [BeepBox](https://www.beepbox.co/) | Creative Commons (by) Attribution |
 
-All the included textures were created using [Piskel](https://www.piskelapp.com/p/create/sprite).
+All the included textures were created using [Piskel](https://www.piskelapp.com/p/create/sprite) and are licensed as Creative Commons (by) Attribution.
 
 [^1]: As this is my first attempt, it's likely that this code isn't idiomatic or following best practices.
 [^2]: Game Off 2023 on [Itch.io](https://itch.io/jam/game-off-2023)
