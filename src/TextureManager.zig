@@ -17,6 +17,18 @@ pub const TextureManager = struct {
         }
 
         switch (texture) {
+            Textures.Player => {
+                return SaveTextureToCache(Textures.Player, ".png", @embedFile("./Images/player.png"));
+            },
+            Textures.PlayerMoving => {
+                return SaveTextureToCache(Textures.PlayerMoving, ".png", @embedFile("./Images/player-moving.png"));
+            },
+            Textures.PlayerJumping => {
+                return SaveTextureToCache(Textures.PlayerJumping, ".png", @embedFile("./Images/player-jumping.png"));
+            },
+            Textures.PlayerDead => {
+                return SaveTextureToCache(Textures.PlayerDead, ".png", @embedFile("./Images/player-dead.png"));
+            },
             Textures.Brick => {
                 return SaveTextureToCache(Textures.Brick, ".png", @embedFile("./Images/brick.png"));
             },
@@ -51,4 +63,8 @@ pub const Textures = enum {
     Unknown,
     Brick,
     Platform,
+    Player,
+    PlayerMoving,
+    PlayerJumping,
+    PlayerDead,
 };

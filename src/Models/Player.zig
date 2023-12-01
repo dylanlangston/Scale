@@ -512,15 +512,39 @@ pub const Player = struct {
         };
     }
 
+    inline fn GetTexture(self: Player) raylib.Texture {
+        if (self.Dead)
+            return Shared.GetTexture(.PlayerDead);
+
+        if (self.IsAirborne)
+            return Shared.GetTexture(.PlayerJumping);
+
+        if (self.IsMoving)
+            return Shared.GetTexture(.PlayerMoving);
+
+        return Shared.GetTexture(.Player);
+    }
+
     pub inline fn Draw(self: Player, current_screen: raylib.Rectangle) void {
+        const player_texture = self.GetTexture();
+        const shouldMirror_Mod: f32 = if (self.IsMoving and self.Velocity.x < 0) -1 else 1;
+        Logger.Info_Formatted("Should Mirror: {}", .{shouldMirror_Mod});
+
+        const player_rect = raylib.Rectangle.init(
+            0,
+            0,
+            @as(f32, @floatFromInt(player_texture.width)) * (shouldMirror_Mod),
+            @floatFromInt(player_texture.height),
+        );
         const playerSize = GetSize(current_screen);
-        const playerPosition = self.GetPosition(current_screen, playerSize);
-        raylib.drawRectangle(
-            @intFromFloat(playerPosition.x),
-            @intFromFloat(playerPosition.y),
-            @intFromFloat(playerSize.width),
-            @intFromFloat(playerSize.height),
-            Colors.Miyazaki.Red,
+        const playerPosition = self.GetPositionAbsolute(current_screen, playerSize);
+        raylib.drawTexturePro(
+            player_texture,
+            player_rect,
+            playerPosition,
+            raylib.Vector2.init(0, 0),
+            0,
+            Colors.Tone.Light,
         );
     }
 };
