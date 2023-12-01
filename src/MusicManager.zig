@@ -20,7 +20,7 @@ pub const MusicManager = struct {
         switch (Music) {
             // Default Music is jump
             else => {
-                const theme = SaveMusicToCache(Musics.Theme, ".wav", @embedFile("./Music/theme.wav"));
+                const theme = SaveMusicToCache(Musics.Theme, ".ogg", @embedFile("./Music/theme.ogg"));
                 if (theme) |s| {
                     raylib.setMusicVolume(s, 0.5);
                 } else |err| {

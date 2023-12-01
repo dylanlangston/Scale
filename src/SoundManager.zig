@@ -19,7 +19,7 @@ pub const SoundManager = struct {
 
         switch (sound) {
             Sounds.GameOver => {
-                const gameover = SaveSoundToCache(Sounds.GameOver, ".wav", @embedFile("./Sounds/GameOver.wav"));
+                const gameover = SaveSoundToCache(Sounds.GameOver, ".ogg", @embedFile("./Sounds/GameOver.ogg"));
                 if (gameover) |s| {
                     raylib.setSoundVolume(s, 3);
                 } else |err| {
@@ -29,7 +29,7 @@ pub const SoundManager = struct {
             },
             // Default sound is jump
             else => {
-                const jump = SaveSoundToCache(Sounds.Jump, ".wav", @embedFile("./Sounds/jump.wav"));
+                const jump = SaveSoundToCache(Sounds.Jump, ".ogg", @embedFile("./Sounds/jump.ogg"));
                 if (jump) |s| {
                     raylib.setSoundVolume(s, 0.5);
                 } else |err| {
