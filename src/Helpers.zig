@@ -11,6 +11,7 @@ const Fonts = @import("FontManager.zig").Fonts;
 const TextureManager = @import("TextureManager.zig").TextureManager;
 const Textures = @import("TextureManager.zig").Textures;
 const SoundManager = @import("SoundManager.zig").SoundManager;
+const MusicManager = @import("MusicManager.zig").MusicManager;
 const Sounds = @import("SoundManager.zig").Sounds;
 const Logger = @import("Logger.zig").Logger;
 const PausedViewModel = @import("./ViewModels/PausedViewModel.zig").PausedViewModel;
@@ -155,6 +156,9 @@ pub const Shared = struct {
 
         // Sounds
         defer SoundManager.deinit();
+
+        // Music
+        defer MusicManager.deinit();
 
         // Settings
         _ = loaded_settings.?.save(Shared.GetAllocator());
