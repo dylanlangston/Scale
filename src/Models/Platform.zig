@@ -82,17 +82,27 @@ pub const Platform = struct {
             0,
             0,
             @floatFromInt(platform.width),
-            @floatFromInt(platform.height),
+            10,
         );
         const platformPosition = self.GetPositionAbsolute(current_screen);
-        raylib.drawTexturePro(
-            platform,
-            platform_rect,
-            platformPosition,
-            raylib.Vector2.init(0, 0),
-            0,
-            Colors.Tone.Light,
-        );
+        const platform_texture_repeat: usize = @as(usize, @intFromFloat(platformPosition.width)) / @as(usize, @intCast(platform.width));
+        for (0..platform_texture_repeat) |i| {
+            const dest = raylib.Rectangle.init(
+                platformPosition.x + (@as(f32, @floatFromInt(i)) * platform_rect.width),
+                platformPosition.y,
+                platform_rect.width,
+                platform_rect.height,
+            );
+            raylib.drawTexturePro(
+                platform,
+                platform_rect,
+                dest,
+                raylib.Vector2.init(0, 0),
+                0,
+                Colors.Tone.Light,
+            );
+        }
+
         // raylib.drawRectangle(
         //     @intFromFloat(platformPosition.x),
         //     @intFromFloat(platformPosition.y),
