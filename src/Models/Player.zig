@@ -325,7 +325,7 @@ pub const Player = struct {
 
                 newVelocity = raylib.Vector2.init(
                     0,
-                    if (newIsAirborne) newVelocity.y else 0,
+                    newVelocity.y,
                 );
 
                 newPosition = raylib.Rectangle.init(
@@ -340,7 +340,7 @@ pub const Player = struct {
 
                 newVelocity = raylib.Vector2.init(
                     0,
-                    if (newIsAirborne) newVelocity.y else 0,
+                    newVelocity.y,
                 );
 
                 newPosition = raylib.Rectangle.init(
