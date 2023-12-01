@@ -28,12 +28,14 @@ This was my first attempt[^1] coding using Zig as well as my first app to target
 >
 > The theme for this year's jam is **SCALE**!
 
-My interpretion of the theme is a vertical platformer that is procedurally generated. 
+My interpretion of the theme is a vertical platformer ~~that is procedurally generated~~[^3]. 
+
+<a href="https://dylanlangston.itch.io/scale">![Play on Itch.io](itch.io-banner.png)</a>
 
 ------
 
 ### Getting Started
-*This repository includes a [devcontainer.json](https://github.com/dylanlangston/Scale/blob/main/.devcontainer/devcontainer.json) and prebuilt [Codespace](https://docs.github.com/en/codespaces/getting-started/quickstart) images to get up and running quickly with a full-featured development environment in the cloud!*[^3]
+*This repository includes a [devcontainer.json](https://github.com/dylanlangston/Scale/blob/main/.devcontainer/devcontainer.json) and prebuilt [Codespace](https://docs.github.com/en/codespaces/getting-started/quickstart) images to get up and running quickly with a full-featured development environment in the cloud!*[^4]
 
 #### Clone
 1. Clone this repository: `git clone https://github.com/dylanlangston/Scale.git`
@@ -69,6 +71,9 @@ My interpretion of the theme is a vertical platformer that is procedurally gener
 | _[jump](./src/Sounds/jump.wav)_ | [miajohnson99](https://github.com/miajohnson99) | [Chiptone](https://sfbgames.itch.io/chiptone) |
 | _[Game Over](./src/Sounds/GameOver.wav)_ | [miajohnson99](https://github.com/miajohnson99) | [BeepBox](https://www.beepbox.co/) |
 
+All the included textures were created using [Piskel](https://www.piskelapp.com/p/create/sprite).
+
 [^1]: As this is my first attempt, it's likely that this code isn't idiomatic or following best practices.
 [^2]: Game Off 2023 on [Itch.io](https://itch.io/jam/game-off-2023)
-[^3]: For local development check out [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) and [DevPod](https://devpod.sh/).
+[^3]: The platforms are pre-generated and randomly placed due to time constraints. 
+[^4]: For local development check out [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) and [DevPod](https://devpod.sh/).
