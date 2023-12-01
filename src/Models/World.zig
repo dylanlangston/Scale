@@ -5,6 +5,7 @@ const PlayerModel = @import("../Models/Player.zig").Player;
 const PlatformModel = @import("../Models/Platform.zig").Platform;
 const PlatformPattern = @import("../Models/Platform.zig").PlatformPattern;
 const LoadedPattern = @import("../Models/Platform.zig").PlatformPattern.LoadedPattern;
+const MirroredPattern = @import("../Models/Platform.zig").PlatformPattern.MirroredPattern;
 const Shared = @import("../Helpers.zig").Shared;
 const Logger = @import("../Logger.zig").Logger;
 const RndGen = std.rand.DefaultPrng;
@@ -12,11 +13,13 @@ const RndGen = std.rand.DefaultPrng;
 pub const World = struct {
     pub var Player: PlayerModel = undefined;
     pub var Platforms: std.ArrayList(PlatformModel) = undefined;
-    var PlatformPatterns: ?LoadedPattern = null;
+    var loadedPatterns: ?LoadedPattern = null;
+    var mirroredPatterns: ?MirroredPattern = null;
+    var PlatformPatterns: ?[]PlatformPattern = null;
     var rnd: RndGen = undefined;
 
     inline fn GetPattern() PlatformPattern {
-        const patterns = PlatformPatterns.?.get();
+        const patterns = PlatformPatterns.?;
         const random = rnd.random().intRangeAtMost(usize, 0, patterns.len - 1);
         const pattern = patterns[random];
         return pattern;
@@ -28,7 +31,17 @@ pub const World = struct {
         rnd = RndGen.init(@intCast(std.time.nanoTimestamp()));
 
         if (PlatformPatterns == null) {
-            PlatformPatterns = PlatformPattern.LoadPatternsFromFile(@embedFile("../platform-patterns.json"));
+            loadedPatterns = PlatformPattern.LoadPatternsFromFile(@embedFile("../platform-patterns.json"));
+            const normal_patterns = loadedPatterns.?.get();
+            mirroredPatterns = PlatformPattern.MirrorAllPlatformPatterns(normal_patterns);
+            if (std.mem.concat(Shared.GetAllocator(), PlatformPattern, &[_][]PlatformPattern{
+                normal_patterns,
+                mirroredPatterns.?.get(),
+            })) |patterns| {
+                PlatformPatterns = patterns;
+            } else |err| {
+                Logger.Error_Formatted("Failed to mirror platfrorms: {}", .{err});
+            }
         }
 
         const screenWidth: f32 = @floatFromInt(raylib.getScreenWidth());
@@ -85,18 +98,32 @@ pub const World = struct {
                 .width = 25,
             },
         });
-        try Platforms.append(PlatformModel{
-            .Position = raylib.Rectangle.init(
-                screenWidth / 4,
+        const platforms = PlatformModel.GetNewPlatformsFromPattern(
+            GetPattern(),
+            raylib.Rectangle.init(
+                0,
                 0,
                 screenWidth,
                 screenHeight,
             ),
-            .Size = .{
-                .height = 2,
-                .width = 50,
-            },
-        });
+        );
+        defer platforms.deinit();
+        for (platforms.items) |p| {
+            try Platforms.append(p);
+        }
+
+        // try Platforms.append(PlatformModel{
+        //     .Position = raylib.Rectangle.init(
+        //         screenWidth / 3,
+        //         0,
+        //         screenWidth,
+        //         screenHeight,
+        //     ),
+        //     .Size = .{
+        //         .height = 2,
+        //         .width = 33,
+        //     },
+        // });
     }
 
     pub inline fn CheckForPlatformCollision(item: raylib.Rectangle, current_screen: raylib.Rectangle) ?raylib.Rectangle {
@@ -180,10 +207,8 @@ pub const World = struct {
             // };
 
             var pattern = GetPattern();
-            if (topmostPlatform.?.Pattern != null) {
-                while (pattern.CheckXOverLap(topmostPlatform.?.Pattern.?)) {
-                    pattern = GetPattern();
-                }
+            while (topmostPlatform.?.Pattern != null and PlatformPattern.CheckOverLap(pattern, topmostPlatform.?.Pattern.?)) {
+                pattern = GetPattern();
             }
             const newPlatforms = PlatformModel.GetNewPlatformsFromPattern(pattern, current_screen);
             defer newPlatforms.deinit();
@@ -217,13 +242,19 @@ pub const World = struct {
     }
 
     pub inline fn Deinit() void {
-        Player = undefined;
         Platforms.clearAndFree();
         if (PlatformPatterns != null) {
-            PlatformPatterns.?.deinit();
+            Shared.GetAllocator().free(PlatformPatterns.?);
             PlatformPatterns = null;
         }
-        rnd = undefined;
+        if (loadedPatterns != null) {
+            loadedPatterns.?.deinit();
+            loadedPatterns = null;
+        }
+        if (mirroredPatterns != null) {
+            mirroredPatterns.?.deinit();
+            mirroredPatterns = null;
+        }
     }
 
     pub inline fn GetCurrentScreenSize() raylib.Rectangle {

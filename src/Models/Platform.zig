@@ -71,6 +71,7 @@ pub const Platform = struct {
         return Platform{
             .Position = self.GetPosition(yOffset, current_screen),
             .Size = self.Size,
+            .Pattern = self.Pattern,
         };
     }
 
@@ -142,27 +143,72 @@ pub const PlatformPattern = struct {
     //     };
     // }
 
-    pub fn CheckXOverLap(self: PlatformPattern, other: PlatformPattern) bool {
-        for (0..self.number) |s| {
-            const s_width = self.sizes[s].width;
-            const s_padding = self.padding[s];
-            const s_totalWidth = s_width + s_padding;
-            for (0..other.number) |o| {
-                const o_width = other.sizes[o].width;
-                const o_padding = other.padding[o];
-                const o_totalWidth = o_width + o_padding;
+    pub fn CheckOverLap(self: PlatformPattern, other: PlatformPattern) bool {
+        if (self.number == other.number) return true;
 
-                // if the initial platforms start positions is greater than the other platforms start position
-                if (s_padding <= o_padding) {
-                    // If the width of the initial platform is less than the width of the other platform
-                    if (s_totalWidth >= o_totalWidth) {
-                        return false;
-                    }
+        return false;
+    }
+
+    inline fn MirrorPlatformPattern(pattern: PlatformPattern, alloc: *std.mem.Allocator) ?PlatformPattern {
+        var flippedPadding = alloc.dupe(f32, pattern.padding) catch |err| {
+            Logger.Error_Formatted("Failed to mirror platform: {}", .{err});
+            return null;
+        };
+        std.mem.reverse(
+            f32,
+            flippedPadding,
+        );
+        var flippedSizes = alloc.dupe(PlatformSize, pattern.sizes) catch |err| {
+            Logger.Error_Formatted("Failed to mirror platform: {}", .{err});
+            return null;
+        };
+        std.mem.reverse(
+            PlatformSize,
+            flippedSizes,
+        );
+        return PlatformPattern{
+            .number = pattern.number,
+            .sizes = flippedSizes,
+            .padding = flippedPadding,
+        };
+    }
+
+    inline fn Equals(self: PlatformPattern, otherPlatform: PlatformPattern) bool {
+        if (self.number != otherPlatform.number) return false;
+        if (self.padding.len == otherPlatform.padding.len) {
+            for (0..self.padding.len) |i| {
+                if (self.padding[i] != otherPlatform.padding[i])
+                    return false;
+            }
+        } else return false;
+
+        if (self.sizes.len == otherPlatform.sizes.len) {
+            for (0..self.sizes.len) |i| {
+                if (self.sizes[i].width != otherPlatform.sizes[i].width) {
+                    return false;
+                } else if (self.sizes[i].height != otherPlatform.sizes[i].height) {
+                    return false;
                 }
+            }
+        } else return false;
+
+        return true;
+    }
+
+    pub inline fn MirrorAllPlatformPatterns(patterns: []PlatformPattern) MirroredPattern {
+        var arena = std.heap.ArenaAllocator.init(Shared.GetAllocator());
+        var alloc = arena.allocator();
+        var mirroredPatterns = std.ArrayList(PlatformPattern).init(alloc);
+        for (patterns) |pattern| {
+            const mirrored = MirrorPlatformPattern(pattern, &alloc);
+            if (mirrored != null and !pattern.Equals(mirrored.?)) {
+                mirroredPatterns.append(mirrored.?) catch |err| {
+                    Logger.Error_Formatted("Failed to mirror platform: {}", .{err});
+                };
             }
         }
 
-        return true;
+        return MirroredPattern.init(mirroredPatterns, arena);
     }
 
     pub inline fn LoadPatternsFromFile(file: [:0]const u8) LoadedPattern {
@@ -187,6 +233,24 @@ pub const PlatformPattern = struct {
         }
         pub fn deinit(self: LoadedPattern) void {
             self.PlatformPatterns.deinit();
+        }
+    };
+
+    pub const MirroredPattern = struct {
+        Arena: std.heap.ArenaAllocator,
+        PlatformPatterns: std.ArrayList(PlatformPattern),
+
+        pub fn init(platformPatterns: std.ArrayList(PlatformPattern), arena: std.heap.ArenaAllocator) MirroredPattern {
+            return MirroredPattern{
+                .PlatformPatterns = platformPatterns,
+                .Arena = arena,
+            };
+        }
+        pub inline fn get(self: MirroredPattern) []PlatformPattern {
+            return self.PlatformPatterns.items;
+        }
+        pub fn deinit(self: MirroredPattern) void {
+            self.Arena.deinit();
         }
     };
 };
