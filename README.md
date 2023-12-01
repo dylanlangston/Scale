@@ -71,7 +71,7 @@ My interpretion of the theme is a vertical platformer ~~that is procedurally gen
 | _[jump](./src/Sounds/jump.ogg)_ | [miajohnson99](https://github.com/miajohnson99) | [Chiptone](https://sfbgames.itch.io/chiptone) | Creative Commons (by) Attribution |
 | _[Game Over](./src/Sounds/GameOver.ogg)_ | [miajohnson99](https://github.com/miajohnson99) | [BeepBox](https://www.beepbox.co/) | Creative Commons (by) Attribution |
 
-| Sound | Creator | Tool | License |
+| Music | Creator | Tool | License |
 |:-------:|:------:|:---:|:-------:|
 | _[Theme](./src/Music/theme.ogg)_ | [miajohnson99](https://github.com/miajohnson99) | [BeepBox](https://www.beepbox.co/) | Creative Commons (by) Attribution |
 
