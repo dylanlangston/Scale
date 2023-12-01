@@ -66,10 +66,14 @@ My interpretion of the theme is a vertical platformer ~~that is procedurally gen
 |:-------:|:------:|
 | _Miyazaki 16_ | https://lospec.com/palette-list/miyazaki-16 |
 
-| Sound | Creator | Tool |
-|:-------:|:------:|:---:|
-| _[jump](./src/Sounds/jump.wav)_ | [miajohnson99](https://github.com/miajohnson99) | [Chiptone](https://sfbgames.itch.io/chiptone) |
-| _[Game Over](./src/Sounds/GameOver.wav)_ | [miajohnson99](https://github.com/miajohnson99) | [BeepBox](https://www.beepbox.co/) |
+| Sound | Creator | Tool | License |
+|:-------:|:------:|:---:|:-------:|
+| _[jump](./src/Sounds/jump.ogg)_ | [miajohnson99](https://github.com/miajohnson99) | [Chiptone](https://sfbgames.itch.io/chiptone) | Creative Commons (by) Attribution |
+| _[Game Over](./src/Sounds/GameOver.ogg)_ | [miajohnson99](https://github.com/miajohnson99) | [BeepBox](https://www.beepbox.co/) | Creative Commons (by) Attribution |
+
+| Sound | Creator | Tool | License |
+|:-------:|:------:|:---:|:-------:|
+| _[Theme](./src/Music/theme.ogg)_ | [miajohnson99](https://github.com/miajohnson99) | [BeepBox](https://www.beepbox.co/) | Creative Commons (by) Attribution |
 
 All the included textures were created using [Piskel](https://www.piskelapp.com/p/create/sprite).
 
