@@ -87,10 +87,21 @@ pub inline fn main() void {
 
     raylib.setWindowTitle(locale.?.Title);
 
+    // Stop Music
+    defer {
+        const themeMusic = Shared.GetMusic(.Theme);
+        if (themeMusic != null) {
+            raylib.stopMusicStream(themeMusic.?);
+        }
+    }
+
     Logger.Info("Begin Game Loop");
     while (!raylib.windowShouldClose()) {
         raylib.beginDrawing();
         defer raylib.endDrawing();
+
+        // Play music if not already
+        Shared.PlayMusic(.Theme);
 
         // Draw the current view
         const new_view = view.DrawRoutine();

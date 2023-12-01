@@ -20,13 +20,13 @@ pub const MusicManager = struct {
         switch (Music) {
             // Default Music is jump
             else => {
-                const jump = SaveMusicToCache(Musics.Jump, ".wav", @embedFile("./Sounds/jump.wav"));
-                if (jump) |s| {
+                const theme = SaveMusicToCache(Musics.Theme, ".wav", @embedFile("./Music/theme.wav"));
+                if (theme) |s| {
                     raylib.setMusicVolume(s, 0.5);
                 } else |err| {
                     Logger.Error_Formatted("Failed to set Music volumn: {}", .{err});
                 }
-                return jump;
+                return theme;
             },
         }
     }
@@ -46,4 +46,5 @@ pub const MusicManager = struct {
 
 pub const Musics = enum {
     Unknown,
+    Theme,
 };
