@@ -50,7 +50,7 @@ pub fn DrawFunction() Views {
     const TitleTextSize = raylib.measureTextEx(
         titleFont,
         title,
-        @as(f32, @floatFromInt(fontSize)) * 4,
+        @as(f32, @floatFromInt(fontSize)) * 3.25,
         @floatFromInt(font.glyphPadding),
     );
     const titleFontsizeF: f32 = TitleTextSize.y;

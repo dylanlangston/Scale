@@ -23,7 +23,7 @@ pub fn DrawFunction() Views {
     const screenWidth: f32 = @floatFromInt(raylib.getScreenWidth());
     const screenHeight: f32 = @floatFromInt(raylib.getScreenHeight());
     const font = Shared.GetFont(Fonts.EightBitDragon);
-    const fontSize = @divFloor(screenWidth, 20);
+    const fontSize = @divFloor(screenWidth, 25);
     const startY = @divFloor(screenHeight, 4);
     const startX = @divFloor(screenWidth, 4);
 

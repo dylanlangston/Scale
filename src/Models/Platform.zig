@@ -77,6 +77,7 @@ pub const Platform = struct {
 
     pub inline fn Draw(self: Platform, current_screen: raylib.Rectangle) void {
         const platform = Shared.GetTexture(.Platform);
+
         const platform_rect = raylib.Rectangle.init(
             0,
             0,

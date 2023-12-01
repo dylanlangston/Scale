@@ -20,7 +20,7 @@ pub fn DrawFunction() Views {
     const screenWidth: f32 = @floatFromInt(raylib.getScreenWidth());
     const screenHeight: f32 = @floatFromInt(raylib.getScreenHeight());
     const font = Shared.GetFont(Fonts.EightBitDragon);
-    const fontSize = @divFloor(screenWidth, 50);
+    const fontSize = @divFloor(screenWidth, 55);
     const startY = @divFloor(screenHeight, 4);
     const startX = @divFloor(screenWidth, 4);
 
@@ -99,7 +99,7 @@ pub fn DrawFunction() Views {
             text,
             raylib.Vector2.init(
                 ((screenWidth - textSize.x) / 2),
-                startY + fontSize + ((textSize.y + padding) * index),
+                startY + (fontSize * 1.75) + ((textSize.y + padding) * index),
             ),
             textSize.y,
             @floatFromInt(font.glyphPadding),

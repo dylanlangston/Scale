@@ -18,7 +18,7 @@ pub fn DrawFunction() Views {
     const locale = Shared.Locale.GetLocale().?;
     const font = Shared.GetFont(Fonts.EightBitDragon);
 
-    const title = locale.Settings;
+    const title = locale.Menu_Settings;
     const screenWidth = raylib.getScreenWidth();
     const screenHeight = raylib.getScreenHeight();
     const fontSize = @divFloor(screenWidth, 20);

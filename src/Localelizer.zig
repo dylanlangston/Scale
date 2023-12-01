@@ -71,7 +71,6 @@ pub const Locale = struct {
     Continue: [:0]const u8,
     Time: [:0]const u8,
     Quit: [:0]const u8,
-    Settings: [:0]const u8,
     Game_Over: [:0]const u8,
     Missing_Text: [:0]const u8,
 };

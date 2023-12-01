@@ -80,7 +80,7 @@ pub fn DrawFunction() Views {
     const textSize = raylib.measureTextEx(
         font,
         text,
-        fontSize * 2,
+        fontSize * 1.75,
         @floatFromInt(font.glyphPadding),
     );
     const textSizeF: f32 = textSize.y;

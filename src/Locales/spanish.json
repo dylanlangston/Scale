@@ -1,15 +1,14 @@
 {
-    "Dylan_Splash_Text": "DylanLangston Games",
-    "Title": "Scale",
-    "Menu_StartGame": "Start Game",
-    "Menu_Settings": "Settings",
-    "Menu_Quit": "Exit",
-    "Gameplay_Intro": "Welcome!\n\nThe goal is to Scale from\nplatform to platform.\nThe longer you play the\nfaster the platforms move.\n\nHow long can you survive?",
-    "Paused": "Paused",
-    "Continue": "Continue",
-    "Quit": "Quit",
-    "Time": "Time: ",
-    "Settings": "Settings",
-    "Game_Over": "Game Over",
-    "Missing_Text": "Text not found!"
+    "Dylan_Splash_Text": "DylanLangston Juegos",
+    "Title": "Escala",
+    "Menu_StartGame": "Iniciar Juego",
+    "Menu_Settings": "Configuracion",
+    "Menu_Quit": "Salir",
+    "Gameplay_Intro": "!Bienvenido!\n\nEl objetivo es escalar de\nplataforma en plataforma.\nCuanto mas tiempo juegues, mas\nrapido se mueven las plataformas.\n\n?Cuanto tiempo puedes sobrevivir?",
+    "Paused": "Pausado",
+    "Continue": "Continuar",
+    "Quit": "Salir",
+    "Time": "Tiempo: ",
+    "Game_Over": "Fin del Juego",
+    "Missing_Text": "!Texto no encontrado!"
 }
