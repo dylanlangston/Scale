@@ -75,11 +75,11 @@ pub fn DrawFunction() Views {
     // }
 
     if (Inputs.Left_Held()) {
-        WorldModel.Player = WorldModel.Player.MoveLeft();
+        WorldModel.Player = WorldModel.Player.MoveLeft(current_screen);
     }
 
     if (Inputs.Right_Held()) {
-        WorldModel.Player = WorldModel.Player.MoveRight();
+        WorldModel.Player = WorldModel.Player.MoveRight(current_screen);
     }
 
     // Gameplay intro

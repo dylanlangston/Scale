@@ -163,8 +163,8 @@ pub const Player = struct {
         size: PlayerSize,
         platformCollision: ?raylib.Rectangle,
     ) bool {
-        _ = current_screen;
         _ = size;
+        _ = current_screen;
         if (newPosition.y < 0) {
             return true;
         }
@@ -321,11 +321,11 @@ pub const Player = struct {
 
             if (IsCollidingXLeft(originalPosition, newPosition, current_screen, playerSize, platformCollision)) {
                 newIsMoving = false;
-                newIsAirborne = true;
+                newIsAirborne = if (newIsAirborne) !IsCollidingYBottom(originalPosition, newPosition, current_screen, playerSize, platformCollision) else false;
 
                 newVelocity = raylib.Vector2.init(
-                    1,
-                    newVelocity.y,
+                    0,
+                    if (newIsAirborne) newVelocity.y else 0,
                 );
 
                 newPosition = raylib.Rectangle.init(
@@ -336,11 +336,11 @@ pub const Player = struct {
                 );
             } else if (IsCollidingXRight(originalPosition, newPosition, current_screen, playerSize, platformCollision)) {
                 newIsMoving = false;
-                newIsAirborne = true;
+                newIsAirborne = if (newIsAirborne) !IsCollidingYBottom(originalPosition, newPosition, current_screen, playerSize, platformCollision) else false;
 
                 newVelocity = raylib.Vector2.init(
-                    -1,
-                    newVelocity.y,
+                    0,
+                    if (newIsAirborne) newVelocity.y else 0,
                 );
 
                 newPosition = raylib.Rectangle.init(
@@ -448,20 +448,8 @@ pub const Player = struct {
         };
     }
 
-    pub inline fn MoveLeft(self: Player) Player {
-        // if (self.IsAirborne) {
-        //     return Player{
-        //         .Position = self.Position,
-        //         .Velocity = raylib.Vector2.init(
-        //             @max(self.Velocity.x + raylib.getFrameTime(), MOVE_MAX),
-        //             self.Velocity.y,
-        //         ),
-        //         .IsAirborne = self.IsAirborne,
-        //         .IsMoving = true,
-        //         .Dead = self.Dead,
-        //     };
-        // }
-
+    pub inline fn MoveLeft(self: Player, current_screen: raylib.Rectangle) Player {
+        _ = current_screen;
         return Player{
             .Position = self.Position,
             .Velocity = raylib.Vector2.init(
@@ -480,20 +468,8 @@ pub const Player = struct {
         };
     }
 
-    pub inline fn MoveRight(self: Player) Player {
-        // if (self.IsAirborne) {
-        //     return Player{
-        //         .Position = self.Position,
-        //         .Velocity = raylib.Vector2.init(
-        //             @min(self.Velocity.x - raylib.getFrameTime(), -MOVE_MAX),
-        //             self.Velocity.y,
-        //         ),
-        //         .IsAirborne = self.IsAirborne,
-        //         .IsMoving = true,
-        //         .Dead = self.Dead,
-        //     };
-        // }
-
+    pub inline fn MoveRight(self: Player, current_screen: raylib.Rectangle) Player {
+        _ = current_screen;
         return Player{
             .Position = self.Position,
             .Velocity = raylib.Vector2.init(
@@ -528,7 +504,6 @@ pub const Player = struct {
     pub inline fn Draw(self: Player, current_screen: raylib.Rectangle) void {
         const player_texture = self.GetTexture();
         const shouldMirror_Mod: f32 = if (self.IsMoving and self.Velocity.x < 0) -1 else 1;
-        Logger.Info_Formatted("Should Mirror: {}", .{shouldMirror_Mod});
 
         const player_rect = raylib.Rectangle.init(
             0,
